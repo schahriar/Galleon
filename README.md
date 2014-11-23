@@ -1,3 +1,4 @@
+![Galleon Logo](logo.png)
 Galleon
 =======
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(expect%20it%20in%2012%20days)-red.svg?style=flat-square)
