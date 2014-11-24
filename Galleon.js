@@ -6,12 +6,13 @@
 
 /* -- Modules -- */
 // Core
-var incoming = require('./incoming/incoming.js');
+var incoming = require('./incoming/incoming');
 
 // Essential
-var portscanner = require('portscanner');
+var eventEmmiter = require('events').EventEmitter;
 
-// Debug
+// Utilities
+var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
 /* -- ------- -- */
 
@@ -46,11 +47,12 @@ module.exports = {
 		//
 		
 		// Require a port check
-		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
-		console.log('PortCheck Successful');
-		var I = incoming.listen(config.port); // Start SMTP Incoming Server
-		console.log('Incoming is ' + I);
-		callback(I);
+		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config, callback], requirements);
+
+		var INCOMING = new incoming();
+		INCOMING.listen(config.port); // Start SMTP Incoming Server
+		
+		callback(INCOMING);
 	}
 }
 
