@@ -8,9 +8,9 @@ module.exports.listen = function(port){
 		disableWebhook: true,
 		logLevel: 'error'
 	});
+	
+	return mailin;
 }
-
-module.exports.self = mailin;
 
 /*
 module.exports.events = new event();
