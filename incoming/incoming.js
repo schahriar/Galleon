@@ -1,5 +1,5 @@
 var mailin = require('mailin');
-var event = require('events').EventEmitter();
+var event = require('events').EventEmitter;
 
 /* Start the Mailin server. */
 module.exports.listen = function(port){
@@ -10,7 +10,7 @@ module.exports.listen = function(port){
 	});
 }
 
-module.export.events = new event;
+module.export.events = new event();
 /* Event emitted when a connection with the Mailin smtp server is initiated. */
 mailin.on('startMessage', function(connection){ module.export.events.emit('connection', connection) });
 
