@@ -1,14 +1,25 @@
 {
   "name": "Galleon",
   "description": "A badass SMTP mail server built on Node to make your life simpler.",
+	
   "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
-  "dependencies": {
-    "mailin": "^1.0.0"
-  },
+	
+  "main": "Galleon.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/schahriar/Galleon.git"
   },
-  "license" : "MIT",
-  "engine": "node 0.11.x"
+	
+  "dependencies": {
+    "mailin": "^1.0.0"
+  },
+	
+  "engine": "node 0.11.x",
+	
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.githubusercontent.com/schahriar/Galleon/master/LICENSE"
+    }
+  ]
 }
