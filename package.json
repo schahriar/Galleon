@@ -3,6 +3,7 @@
   "description": "A badass SMTP mail server built on Node to make your life simpler.",
   "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
   "dependencies": {
+    "colors": "^1.0.3",
     "mailin": "^1.0.0",
     "portscanner": "^1.0.0"
   },
