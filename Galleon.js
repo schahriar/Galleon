@@ -48,9 +48,9 @@ module.exports = {
 		// Require a port check
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
 		console.log('PortCheck Successful');
-		var incoming = incoming.listen(config.port); // Start SMTP Incoming Server
-		console.log('Incoming is ' incoming);
-		callback(incoming);
+		var I = incoming.listen(config.port); // Start SMTP Incoming Server
+		console.log('Incoming is ' I);
+		callback(I);
 	}
 }
 
