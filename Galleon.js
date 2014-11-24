@@ -34,6 +34,7 @@ colors.setTheme({
 });
 
 module.exports = {
+	incoming: undefined,
 	watch: function(config, requirements){
 		var self = module.exports.watch;
 
@@ -49,7 +50,7 @@ module.exports = {
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
 		
 		incoming.listen(config.port); // Start SMTP Incoming Server
-		module.exports.incoming = incoming.events; // Make incoming visible globally
+		this.incoming = incoming.self; // Make incoming visible globally
 	}
 }
 
