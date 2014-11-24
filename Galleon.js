@@ -49,7 +49,7 @@ module.exports = {
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
 		
 		incoming.listen(config.port); // Start SMTP Incoming Server
-		module.exports.incoming = incoming; // Make incoming visible globally
+		module.exports.incoming = incoming.events; // Make incoming visible globally
 	}
 }
 
