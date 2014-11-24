@@ -34,7 +34,6 @@ colors.setTheme({
 });
 
 module.exports = {
-	incoming: undefined,
 	watch: function(config, callback, requirements){
 		var self = module.exports.watch;
 
@@ -49,9 +48,9 @@ module.exports = {
 		// Require a port check
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
 		console.log('PortCheck Successful');
-		module.exports = incoming.listen(config.port); // Start SMTP Incoming Server
-		console.log('Incoming is ' module.exports.incoming);
-		callback(module.exports);
+		var incoming = incoming.listen(config.port); // Start SMTP Incoming Server
+		console.log('Incoming is ' incoming);
+		callback(incoming);
 	}
 }
 
