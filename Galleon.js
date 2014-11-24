@@ -49,7 +49,7 @@ module.exports = {
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config], requirements);
 		console.log('PortCheck Successful');
 		var I = incoming.listen(config.port); // Start SMTP Incoming Server
-		console.log('Incoming is ' I);
+		console.log('Incoming is ' + I);
 		callback(I);
 	}
 }
