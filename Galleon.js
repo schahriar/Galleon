@@ -7,6 +7,9 @@
 /* -- Modules -- */
 // Core
 var incoming = require('./incoming/incoming');
+var outgoing = require('./outgoing/outgoing');
+
+var outbound = require('./outgoing/outbound');
 
 // Essential
 var eventEmmiter = require('events').EventEmitter;
@@ -35,7 +38,7 @@ colors.setTheme({
 });
 
 module.exports = {
-	watch: function(config, callback, requirements){
+	dock: function(config, callback, requirements){
 		var self = module.exports.watch;
 
 		// Defaults
@@ -52,12 +55,35 @@ module.exports = {
 		var INCOMING = new incoming();
 		INCOMING.listen(config.port); // Start SMTP Incoming Server
 		
-		callback(INCOMING);
+		var OUTGOING = new outgoing();
+		OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
+		
+		// ERROR | INCOMING | OUTGOING //
+		callback(null, INCOMING, OUTGOING);
+	},
+	
+	dispatch: function(mail, options, transporter, callback, requirements){
+		/*
+			This function should be improved to dispatch
+			multiple emails.
+		*/
+		var self = module.exports.watch;
+		
+		if(!transporter) transporter = null;
+		
+		var OUTBOUND = new outbound();
+		OUTBOUND.createTransporter(transporter, function(error, transporter){
+			if(!!error) return handlers.error.fatal('#OUTBOUND-Transporter-New-Failed',error);
+			
+			OUTBOUND.send(transporter, mail, options, function(error, response){
+				callback(error,response,transporter);
+			})
+		});
 	}
 }
 
 //
-// All needs are fulfilled here (works almost like promises but better organized
+// All needs are fulfilled here (works almost like promises but better organized)
 //
 handlers.needs = {
 	portCheck: function(call, port, args, requirements){
@@ -111,7 +137,8 @@ handlers.error = {
 	codes: {
 		'#Needs-PortCheck-!Port': 'Port should be a whole number\nYou Sir passed %s',
 		'#Needs-PortCheck-Port-Occupied': 'Can\'t access port %s\n try stoping other SMTP services such as Postfix running on port 25',
-		'#Needs-fulfill-!Array': ['Need handler requires array arguments\nYou Sir passed %s', 'But guess what? We corrected your mistake!'],
+		'#OUTBOUND-Transporter-New-Failed': 'Failed to create new Outbound Transporter\n%s',
+		'#Needs-fulfill-!Array': ['Need handler requires array arguments\nYou Sir passed %s', 'But guess what? We corrected your mistake!']
 		
 	}
 }
