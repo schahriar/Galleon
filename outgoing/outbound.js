@@ -59,7 +59,7 @@ util.inherits(Outbound, eventEmmiter);
 
 Outbound.prototype.createTransporter = function(transporter, callback){
 	try {
-		if(transporter == null) 
+		if((transporter == null)||(!transporter)) 
 		   transporter = nodemailer.createTransport();
 		
 		callback(null, transporter);
