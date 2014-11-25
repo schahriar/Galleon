@@ -63,7 +63,7 @@ Outbound.prototype.createTransporter = function(transporter, callback){
 		   transporter = nodemailer.createTransport();
 		
 		callback(null, transporter);
-	}catch(error) callback(error);
+	}catch(error){ callback(error) };
 }
 
 // Currently only sends to individual emails

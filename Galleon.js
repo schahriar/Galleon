@@ -39,7 +39,7 @@ colors.setTheme({
 
 module.exports = {
 	dock: function(config, callback, requirements){
-		var self = module.exports.watch;
+		var self = module.exports.dock;
 
 		// Defaults
 		//
@@ -55,11 +55,11 @@ module.exports = {
 		var INCOMING = new incoming();
 		INCOMING.listen(config.port); // Start SMTP Incoming Server
 		
-		var OUTGOING = new outgoing();
-		OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
+		//var OUTGOING = new outgoing();
+		//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
 		
 		// ERROR | INCOMING | OUTGOING //
-		callback(null, INCOMING, OUTGOING);
+		callback(undefined, INCOMING);
 	},
 	
 	dispatch: function(mail, options, transporter, callback, requirements){
@@ -67,7 +67,7 @@ module.exports = {
 			This function should be improved to dispatch
 			multiple emails.
 		*/
-		var self = module.exports.watch;
+		var self = module.exports.dispatch;
 		
 		if(!transporter) transporter = null;
 		
