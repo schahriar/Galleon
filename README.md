@@ -8,8 +8,8 @@ A badass SMTP mail server built on Node to make your life simpler.
 var Galleon = require('Galleon');
 
 Galleon.dock({port:25}, function(error, incoming, outgoing){
-	if(!error) return console.log(error);
-	else console.log("Connection Established");
+	if(error) return console.log(error);
+	else console.log("Connection Established.");
 	
 	incoming.on('mail', function(connection, mail){
 		console.log(mail.from);
