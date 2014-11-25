@@ -62,7 +62,7 @@ Outbound.prototype.createTransporter = function(transporter, callback){
 		if((transporter == null)||(!transporter)) 
 		   transporter = nodemailer.createTransport();
 		
-		callback(null, transporter);
+		callback(undefined, transporter);
 	}catch(error){ callback(error) };
 }
 
