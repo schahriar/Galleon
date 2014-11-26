@@ -86,11 +86,16 @@ Outbound.prototype.send = function (transporter, mail, options, callback) {
 		// This will increase the chances of your email landing
 		// 	in the Inbox rather than Spam, I mean why would you
 		//  want your email in Spam? #KeepStrict
-		if(!validator.isEmail(mail.from.address)) return _this.emit("error", { status: "From field is not a valid Email Address!", code:"#Invalid-From-Address" }); 
+		if(mail.to.constructor === Object){
+			if(!validator.isEmail(mail.from.address)) return _this.emit("error", { status: "From field is not a valid Email Address!", code:"#Invalid-From-Address" });
+		}else if((mail.from.constructor === String)&&(!validator.isEmail(mail.from))) return _this.emit("error", { status: "From field is not a valid Email Address!", code:"#Invalid-From-Address" });
 	}
 	
 	if(!options._unsafeMode){
-		if(!validator.isEmail(mail.to)) return _this.emit("error", { status: "To field is not a valid Email Address! This could possibly result your emails to be sent to Neverland.", code:"#Invalid-To-Address" }); 
+		if(mail.to.constructor === Object){
+			if(!validator.isEmail(mail.to.address)) return _this.emit("error", { status: "To field is not a valid Email Address! This could possibly result your emails to be sent to Neverland.", code:"#Invalid-To-Address" });
+			mail.to.name = validator.toString(mail.to.name);
+		}
 		
 		// Convert to string
 		mail.subject = validator.toString(mail.subject);
