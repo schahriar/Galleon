@@ -6,10 +6,10 @@
 
 /* -- Modules -- */
 // Core
-var incoming = require('./incoming/incoming');
-var outgoing = require('./outgoing/outgoing');
+var incoming = require('./fleet/incoming/incoming');
+var outgoing = require('./fleet/outgoing/outgoing');
 
-var outbound = require('./outgoing/outbound');
+var outbound = require('./fleet/outgoing/outbound');
 
 // Essential
 var eventEmmiter = require('events').EventEmitter;
@@ -69,11 +69,24 @@ module.exports = {
 		*/
 		var self = module.exports.dispatch;
 		
-		if(!transporter) transporter = null;
+		// Humane programming
+		if((!options)&&(!callback)&&(transporter.constructor !== Function)){
+			// Assign callback to options if transporter or callback are not defined
+			callback = options;
+			// Set transporter to undefined - Outbound automatically creates a new one
+			transporter = undefined;
+			// Set options to an empty object
+			options = new Object;
+		}else if((transporter.constructor === Function)&&(!callback)){
+			// Assign callback to transporter if no transporter is defined
+			callback = transporter;
+			// Set transporter to undefined - Outbound automatically creates a new one
+			transporter = undefined;
+		}
 		
 		var OUTBOUND = new outbound();
 		OUTBOUND.createTransporter(transporter, function(error, transporter){
-			if(!!error) return handlers.error.fatal('#OUTBOUND-Transporter-New-Failed',error);
+			if(!!error) handlers.error.fatal('#OUTBOUND-Transporter-New-Failed',error);
 			
 			OUTBOUND.send(transporter, mail, options, function(error, response){
 				callback(error,response,transporter);
