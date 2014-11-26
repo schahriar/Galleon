@@ -76,8 +76,11 @@ Incoming.prototype.listen = function (port) {
 		// Tiny bit of arranging
 		var organized = data;
 		
-		organized.from = data.from[0].address;
-		organized.to   = data.to[0].address;
+		if(data.from.constructor === Array)
+			organized.from = data.from[0].address;
+		
+		if(data.to.constructor === Array)
+			organized.to   = data.to[0].address;
 		
 		organized.fromAll = data.from;
 		organized.toAll = data.to;
