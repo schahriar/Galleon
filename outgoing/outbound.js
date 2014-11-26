@@ -106,12 +106,12 @@ Outbound.prototype.send = function (transporter, mail, options, callback) {
 	/* Convert plain from to fomatted e.g. 'Name <sender@server.com>' */
 	
 	// Attach sender's name to email
-	if((!mail.from.name)&&(mail.from.name != "")){
+	if((!!mail.from.name)&&(mail.from.name != "")){
 		mail.from.address = validator.toString(mail.from.name + '<' + mail.from.address + '>');
 	}
 	
 	// Attach receiver's name to email
-	if((!mail.to.name)&&(mail.to.name != "")){
+	if((!!mail.to.name)&&(mail.to.name != "")){
 		mail.to.address = validator.toString(mail.to.name + '<' + mail.to.address + '>');
 	}
 	
