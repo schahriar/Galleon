@@ -79,5 +79,9 @@ Who doesn't love a [MIT license](https://raw.githubusercontent.com/schahriar/Gal
 Make sure you read the license and don't participate in any form of abuse (Spam, etc.) using any parts of this project.
 
 ## Status
+--------
+`Beta version` will eliminate most if not all the limitations of the current memory based system by implementing a database control system.
+
+--------
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
 ![version](http://img.shields.io/badge/Version-0.1.2%20(Insane Mailman)-2ecc71.svg?style=flat-square)
