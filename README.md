@@ -76,7 +76,7 @@ Galleon.dispatch({
 ```
 # License
 Who doesn't love a [MIT license](https://raw.githubusercontent.com/schahriar/Galleon/master/LICENSE)?
-Make sure you read the licesne and don't participate in any form of abuse (Spam, etc.) using any parts of this project.
+Make sure you read the license and don't participate in any form of abuse (Spam, etc.) using any parts of this project.
 
 ## Status
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
