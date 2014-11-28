@@ -1,5 +1,5 @@
 {
-  "name": "Galleon",
+  "name": "galleon",
   "description": "A badass SMTP mail server built on Node to make your life simpler.",
   "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
   "dependencies": {
@@ -7,7 +7,8 @@
     "mailin": "^1.0.0",
     "nodemailer": "^1.3.0",
     "portscanner": "^1.0.0",
-    "validator": "^3.22.1"
+    "validator": "^3.22.1",
+    "waterline": "^0.10.14"
   },
   "repository": {
     "type": "git",
