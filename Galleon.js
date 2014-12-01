@@ -21,16 +21,16 @@ var colors = require('colors'); // Better looking error handling
 /// Database
 	// Waterline
 	var Waterline = require('waterline');
-	var Database = require('./fleet/database.js');
+	var Database = require('./fleet/database');
 	// -------------------------------------------
 	// Adapters
 	var mongodb = require('sails-mongo');
 	// ----------------------------------
 	// Connection
-	var connections = require('./fleet/connections.js');
+	var connections = require('./fleet/connections');
 	// ---------------------------------------------
 	// Models
-	var Mail = require('./fleet/models/Mail.js');
+	var Mail = require('./fleet/models/Mail');
 ///
 /* -- ------- -- */
 
