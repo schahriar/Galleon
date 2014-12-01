@@ -4,6 +4,7 @@
   "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
   "dependencies": {
     "colors": "^1.0.3",
+    "lodash": "^2.4.1",
     "mailin": "^1.0.0",
     "nodemailer": "^1.3.0",
     "portscanner": "^1.0.0",
