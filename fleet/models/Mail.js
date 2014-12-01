@@ -1,11 +1,9 @@
 var Waterline = require('waterline');
-// Connection
-var connections = require('../connections');
 
 module.exports = Waterline.Collection.extend({
 	// Idenitity is a unique name for this model
   	identity: 'mail',
-	connection: connections.storage,
+	connection: 'storage',
 	
 	types: {
 		stamp: function(time){
