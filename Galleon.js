@@ -17,6 +17,23 @@ var eventEmmiter = require('events').EventEmitter;
 // Utilities
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
+
+/// Database
+	// Waterline
+	var Waterline = require('waterline');
+	var Database = require('./fleet/database.js');
+	// -------------------------------------------
+	// Adapters
+	var mongodb = require('sails-mongo');
+	// ----------------------------------
+	// Connection
+	var connections = require('./fleet/connections.js');
+	// ---------------------------------------------
+	// Models
+	var storage = require('./fleet/models/Mail.js');
+	// Load Models
+	Waterline.loadCollection(storage);
+///
 /* -- ------- -- */
 
 var handlers = {};
@@ -27,7 +44,7 @@ colors.setTheme({
 	input: 'grey',
 	verbose: 'cyan',
 	prompt: 'grey',
-	info: 'green',
+	success: 'green',
 	data: 'grey',
 	help: 'cyan',
 	warn: 'yellow',
@@ -48,6 +65,9 @@ module.exports = {
 		
 		if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
 		//
+		
+		// Require Database connection
+		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, config, [config, callback], requirements);
 		
 		// Require a port check
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config, callback], requirements);
@@ -99,6 +119,26 @@ module.exports = {
 // All needs are fulfilled here (works almost like promises but better organized)
 //
 handlers.needs = {
+	
+	databaseConnection: function(call, options, args, requirements){
+		Database({
+			adapters: {
+				'mongodb': mongodb
+			},
+			collections: {
+				storage: storage
+			},
+			connections: connections
+		}, function waterlineReady (err, ontology) {
+			if (err) throw err;
+			
+			console.log("Database connection established".success);
+			// Otherwise return a pass to original
+			requirements.databaseConnection = pass;
+			handlers.needs.fulfill(call, args, requirements);
+		});
+	},
+	
 	portCheck: function(call, port, args, requirements){
 		
 		// Check if port is valid
