@@ -1,6 +1,6 @@
 var Waterline = require('waterline');
 // Connection
-var connections = require('../fleet/connections');
+var connections = require('../connections');
 
 module.exports = Waterline.Collection.extend({
 	// Idenitity is a unique name for this model
