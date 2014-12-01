@@ -1,9 +1,9 @@
 module.exports = {
-	security: {
+	/*security: {
 	  'default': 'mongo',
 
 	  mongo: {
-		module: 'mongodb',
+		adapter: 'mongodb',
 		host: 'localhost',
 		port: 27017,
 		user: 'security',
@@ -11,13 +11,13 @@ module.exports = {
 		database: 'security'
 	  }
 
-	},
+	},*/
 
 	storage: {
 	  'default': 'mongo',
 
 	  mongo: {
-		module: 'mongodb',
+		adapter: 'mongodb',
 		host: 'localhost',
 		port: 27017,
 		user: 'storage',
@@ -27,11 +27,11 @@ module.exports = {
 
 	},
 
-	queue: {
+	/*queue: {
 	  'default': 'mongo',
 
 	  mongo: {
-		module: 'mongodb',
+		adapter: 'mongodb',
 		host: 'localhost',
 		port: 27017,
 		user: 'queue',
@@ -39,5 +39,5 @@ module.exports = {
 		database: 'queue'
 	  }
 
-	}
+	}*/
 }
