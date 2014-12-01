@@ -31,8 +31,6 @@ var colors = require('colors'); // Better looking error handling
 	// ---------------------------------------------
 	// Models
 	var storage = require('./fleet/models/Mail.js');
-	// Load Models
-	Waterline.loadCollection(storage);
 ///
 /* -- ------- -- */
 
