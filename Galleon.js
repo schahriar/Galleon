@@ -30,7 +30,7 @@ var colors = require('colors'); // Better looking error handling
 	var connections = require('./fleet/connections.js');
 	// ---------------------------------------------
 	// Models
-	var storage = require('./fleet/models/Mail.js');
+	var Mail = require('./fleet/models/Mail.js');
 ///
 /* -- ------- -- */
 
@@ -124,7 +124,7 @@ handlers.needs = {
 				'mongodb': mongodb
 			},
 			collections: {
-				storage: storage
+				Mail: Mail
 			},
 			connections: connections
 		}, function waterlineReady (err, ontology) {
