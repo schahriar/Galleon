@@ -15,7 +15,7 @@ module.exports = {
 		user: 'storage',
 		password: 'storage_control',
 		database: 'storage'
-	},
+	}
 
 	/*queue: {
 		adapter: 'mongodb',

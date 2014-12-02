@@ -117,12 +117,13 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
+		console.log(connections, mail);
 		Database({
 			adapters: {
 				'mongodb': mongodb
 			},
 			collections: {
-				Mail: require('./fleet/models/Mail')
+				mail: require('./fleet/models/Mail')
 			},
 			connections: connections
 		}, function waterlineReady (err, ontology) {
