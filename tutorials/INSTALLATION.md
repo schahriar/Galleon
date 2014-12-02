@@ -15,6 +15,10 @@ sudo service mongod start
 sudo apt-get update
 sudo apt-get install nodejs npm
 ```
+### Install [SpamAssasin](http://spamassassin.apache.org/downloads.cgi?update=201402111327)
+```
+sudo apt-get install spamassassin spamc
+```
 ### Install [Galleon](https://github.com/schahriar/Galleon)
 ```javascript
 npm install Galleon
