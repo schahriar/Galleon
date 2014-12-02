@@ -122,7 +122,7 @@ handlers.needs = {
 				'mongodb': mongodb
 			},
 			collections: {
-				mail: Waterline.Collection.extend(require('./fleet/models/Mail'))
+				mail: require('./fleet/models/Mail')
 			},
 			connections: connections
 		}, function waterlineReady (err, ontology) {
