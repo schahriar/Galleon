@@ -53,7 +53,7 @@ var Incoming = function(port){
 
 util.inherits(Incoming, eventEmmiter);
 
-Incoming.prototype.listen = function (port, databaseConnection) {
+Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
 	
     mailin.start({
@@ -73,8 +73,10 @@ Incoming.prototype.listen = function (port, databaseConnection) {
 		console.log(connection);
 		_this.emit('connection', connection);
 	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
+	
 	mailin.on('data', function(connection, chunk){ _this.emit('stream', connection, chunk) }); // Event emmited when data chunk is sent - Useful for Galleon's internal functions such as ratelimiting and bandwidth limiting
 	// Event emitted after a message was received and parsed //
+	
 	mailin.on('message', function(connection, data, raw){
 		// Tiny bit of arranging
 		var parsed = data;
@@ -88,6 +90,10 @@ Incoming.prototype.listen = function (port, databaseConnection) {
 		parsed.fromAll = data.from;
 		parsed.toAll = data.to;
 		
+		Spamc.report(parsed.text, function (error, result) {
+		  console.log(result.report.score);
+	  	});
+		
 		databaseConnection.collections.mail.create({
 			sender: parsed.from,
 			receiver: parsed.to,
@@ -97,15 +103,18 @@ Incoming.prototype.listen = function (port, databaseConnection) {
 			text: parsed.text,
 			html: parsed.html,
 			
+			read: false,
+			spamScore: 0,
+			
 			// STRING ENUM: ['pending', 'approved', 'denied']
 			state: 'approved'
 		}, function(error, model){
 			if(!error){
-				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content & Database model
-				_this.emit('mail', connection, parsed, raw, model);
+				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database model & Database object
+				_this.emit('mail', connection, parsed, raw, model, databaseConnection);
 			}else{
-				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content & Database failure
-				_this.emit('mail', connection, parsed, raw, error);
+				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database failure & Database object
+				_this.emit('mail', connection, parsed, raw, error, databaseConnection);
 			}
 		});
 	});

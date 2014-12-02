@@ -1,7 +1,7 @@
 module.exports = {
 	// Idenitity is a unique name for this model
   	identity: 'mail',
-	connection: 'mongodb',
+	connection: 'storage',
 	
 	types: {
 		stamp: function(time){
@@ -47,6 +47,18 @@ module.exports = {
 			type: 'string',
 			notEmpty: true,
 			required: true // Convert text to HTML if !HTML
+		},
+		
+		// Indicates if an email has been read
+		read: {
+			type: 'boolean',
+			required: true
+		},
+		
+		// Ranges from 0 to 100
+		spamScore: {
+			type: 'integer',
+			required: true
 		},
 		
 		state: {

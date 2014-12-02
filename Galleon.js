@@ -17,6 +17,7 @@ var eventEmmiter = require('events').EventEmitter;
 // Utilities
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
+var Spamc = require('spamc');
 
 /// Database
 	// Waterline
@@ -27,7 +28,7 @@ var colors = require('colors'); // Better looking error handling
 	var mongodb = require('sails-mongo');
 	// ----------------------------------
 	// Connection
-	var connections = require('./fleet/connections');
+	var connections = require('../connections');
 	// ---------------------------------------------
 ///
 /* -- ------- -- */
@@ -69,7 +70,7 @@ module.exports = {
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config, callback], requirements);
 
 		var INCOMING = new incoming();
-		INCOMING.listen(config.port, requirements.databaseConnection); // Start SMTP Incoming Server
+		INCOMING.listen(config.port, requirements.databaseConnection, new Spamc()); // Start SMTP Incoming Server
 		
 		//var OUTGOING = new outgoing();
 		//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
