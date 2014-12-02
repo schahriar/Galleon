@@ -55,6 +55,12 @@ module.exports = {
 			required: true
 		},
 		
+		// Indicates if an email is spam
+		isSpam: {
+			type: 'boolean',
+			required: true
+		},
+		
 		// Ranges from 0 to 100
 		spamScore: {
 			type: 'integer',

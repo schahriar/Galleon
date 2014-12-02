@@ -70,7 +70,6 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		We'll later use this file to extend Mailin functionality without a need to fork the entire repository
 	*/
 	mailin.on('startMessage', function(connection){
-		console.log(connection);
 		_this.emit('connection', connection);
 	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
 	
@@ -90,32 +89,34 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		parsed.fromAll = data.from;
 		parsed.toAll = data.to;
 		
-		Spamc.report(raw, function (error, result) {
-		  console.log(error, result);
-	  	});
+		Spamc.report(raw, function (error, labResults) {
+			if(error) console.log(error);
 		
-		databaseConnection.collections.mail.create({
-			sender: parsed.from,
-			receiver: parsed.to,
-			to: parsed.toAll,
-			stamp: { sent: parsed.date , received: new Date() },
-			subject: parsed.subject,
-			text: parsed.text,
-			html: parsed.html,
-			
-			read: false,
-			spamScore: 0,
-			
-			// STRING ENUM: ['pending', 'approved', 'denied']
-			state: 'approved'
-		}, function(error, model){
-			if(!error){
-				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database model & Database object
-				_this.emit('mail', connection, parsed, raw, model, databaseConnection);
-			}else{
-				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database failure & Database object
-				_this.emit('mail', connection, parsed, raw, error, databaseConnection);
-			}
+			databaseConnection.collections.mail.create({
+				sender: parsed.from,
+				receiver: parsed.to,
+				to: parsed.toAll,
+				stamp: { sent: parsed.date , received: new Date() },
+				subject: parsed.subject,
+				text: parsed.text,
+				html: parsed.html,
+
+				read: false,
+				
+				isSpam: labResults.isSpam,
+				spamScore: labResults.spamScore,
+
+				// STRING ENUM: ['pending', 'approved', 'denied']
+				state: 'approved'
+			}, function(error, model){
+				if(!error){
+					// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database model & Database object
+					_this.emit('mail', connection, parsed, raw, model, databaseConnection);
+				}else{
+					// Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database failure & Database object
+					_this.emit('mail', connection, parsed, raw, error, databaseConnection);
+				}
+			});
 		});
 	});
 };
