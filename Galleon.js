@@ -28,7 +28,7 @@ var Spamc = require('spamc');
 	var mongodb = require('sails-mongo');
 	// ----------------------------------
 	// Connection
-	var connections = require('../connections');
+	var connections = require('./connections');
 	// ---------------------------------------------
 ///
 /* -- ------- -- */
