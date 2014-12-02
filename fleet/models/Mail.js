@@ -1,6 +1,4 @@
-var Waterline = require('waterline');
-
-module.exports = Waterline.Collection.extend({
+module.exports = {
 	// Idenitity is a unique name for this model
   	identity: 'mail',
 	connection: 'storage',
@@ -56,4 +54,4 @@ module.exports = Waterline.Collection.extend({
 			enum: ['pending', 'approved', 'denied']
 		}
 	}
-});
+};
