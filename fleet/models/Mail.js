@@ -1,7 +1,7 @@
 module.exports = {
 	// Idenitity is a unique name for this model
   	identity: 'mail',
-	connection: 'storage',
+	connection: 'mongodb',
 	
 	types: {
 		stamp: function(time){

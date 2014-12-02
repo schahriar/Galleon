@@ -69,7 +69,7 @@ module.exports = {
 		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config, callback], requirements);
 
 		var INCOMING = new incoming();
-		INCOMING.listen(config.port); // Start SMTP Incoming Server
+		INCOMING.listen(config.port, requirements.databaseConnection); // Start SMTP Incoming Server
 		
 		//var OUTGOING = new outgoing();
 		//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
@@ -129,8 +129,8 @@ handlers.needs = {
 			if (err) throw err;
 			
 			console.log("Database connection established".success);
-			// Otherwise return a pass to original
-			requirements.databaseConnection = pass;
+			// Otherwise return the database connection
+			requirements.databaseConnection = ontology;
 			handlers.needs.fulfill(call, args, requirements);
 		});
 	},

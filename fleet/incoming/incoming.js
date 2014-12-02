@@ -53,7 +53,7 @@ var Incoming = function(port){
 
 util.inherits(Incoming, eventEmmiter);
 
-Incoming.prototype.listen = function (port) {
+Incoming.prototype.listen = function (port, databaseConnection) {
 	var _this = this;
 	
     mailin.start({
@@ -69,23 +69,45 @@ Incoming.prototype.listen = function (port) {
 	/*
 		We'll later use this file to extend Mailin functionality without a need to fork the entire repository
 	*/
-	mailin.on('startMessage', function(connection){ _this.emit('connection', connection) }); // Event emitted when a connection with the Mailin smtp server is initiated. //
+	mailin.on('startMessage', function(connection){
+		console.log(connection);
+		_this.emit('connection', connection);
+	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
 	mailin.on('data', function(connection, chunk){ _this.emit('stream', connection, chunk) }); // Event emmited when data chunk is sent - Useful for Galleon's internal functions such as ratelimiting and bandwidth limiting
 	// Event emitted after a message was received and parsed //
-	mailin.on('message', function(connection, data, content){
+	mailin.on('message', function(connection, data, raw){
 		// Tiny bit of arranging
-		var organized = data;
+		var parsed = data;
 		
 		if(data.from.constructor === Array)
-			organized.from = data.from[0].address;
+			parsed.from = data.from[0].address;
 		
 		if(data.to.constructor === Array)
-			organized.to   = data.to[0].address;
+			parsed.to   = data.to[0].address;
 		
-		organized.fromAll = data.from;
-		organized.toAll = data.to;
+		parsed.fromAll = data.from;
+		parsed.toAll = data.to;
 		
-		_this.emit('mail', connection, organized, content);
+		databaseConnection.collections.mail.create({
+			sender: parsed.from,
+			receiver: parsed.to,
+			to: parsed.toAll,
+			stamp: { sent: parsed.date , received: new Date() },
+			subject: parsed.subject,
+			text: parsed.text,
+			html: parsed.html,
+			
+			// STRING ENUM: ['pending', 'approved', 'denied']
+			state: 'approved'
+		}, function(error, model){
+			if(!error){
+				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content & Database model
+				_this.emit('mail', connection, parsed, raw, model);
+			}else{
+				// Emits 'mail' event with - SMTP Connection, Mail object, Raw content & Database failure
+				_this.emit('mail', connection, parsed, raw, error);
+			}
+		});
 	});
 };
 
