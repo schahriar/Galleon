@@ -117,7 +117,7 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
-		console.log(connections, mail);
+		console.log(connections, require('./fleet/models/Mail'));
 		Database({
 			adapters: {
 				'mongodb': mongodb
