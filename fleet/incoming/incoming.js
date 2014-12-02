@@ -90,7 +90,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		parsed.fromAll = data.from;
 		parsed.toAll = data.to;
 		
-		Spamc.report(parsed.text, function (error, result) {
+		Spamc.report(raw, function (error, result) {
 		  console.log(error, result);
 	  	});
 		
