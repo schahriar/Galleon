@@ -91,7 +91,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		parsed.toAll = data.to;
 		
 		Spamc.report(parsed.text, function (error, result) {
-		  console.log(result.report.score);
+		  console.log(error, result);
 	  	});
 		
 		databaseConnection.collections.mail.create({
