@@ -8,7 +8,7 @@ A badass SMTP mail server built on Node to make your life simpler.
 Get ready to sail into a new world featuring:
 - ~~***Michael Bay explosions***~~ *fixed*
 - Web based user interface (Available in beta release)
-- Spam protection by default (Available soon)
+- Spam protection by default (Almost fully implemented)
 - Simple Mail Transfer Protocol on your preferred ports (Listen, Process, Send)
 - Connection control (ratelimiting, bandwith limiting and other terms that makes me sound professional)
 - Did I mention super fast? (Blame it on Node)
@@ -80,8 +80,8 @@ Make sure you read the license and don't participate in any form of abuse (Spam,
 
 ## Status
 --------
-`Beta version` will eliminate most if not all the limitations of the current memory based system by implementing a database control system.
+`Beta version (0.2.x)` will eliminate most if not all the limitations of the current memory based system by implementing a database control system.
 
 --------
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
-![version](http://img.shields.io/badge/Version-0.1.2%20(Insane Mailman)-2ecc71.svg?style=flat-square)
+![version](http://img.shields.io/badge/Version-0.1.3%20(Working Class Hero)-2ecc71.svg?style=flat-square)
