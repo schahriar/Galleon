@@ -22,7 +22,7 @@ var Spamc = require('spamc');
 /// Database
 	// Waterline
 	var Waterline = require('waterline');
-	var Database = require('./fleet/database');
+	var Database = require('./fleet/bootstrap');
 	// -------------------------------------------
 	// Adapters
 	var mongodb = require('sails-mongo');
