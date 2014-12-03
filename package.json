@@ -28,7 +28,7 @@
     "url": "git://github.com/schahriar/Galleon.git"
   },
   "scripts": {
-    "deploy": "node seascape/server.js"
+    "start": "node ./seascape/server.js"
   },
   "main": "Galleon.js",
   "license": "MIT",
