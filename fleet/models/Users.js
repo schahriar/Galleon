@@ -13,7 +13,7 @@ module.exports = {
 		username: {
 			type: 'string',
 			required: true,
-			index: true
+			unique: true
 		},
 
 		access: {
