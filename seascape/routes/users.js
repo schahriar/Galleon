@@ -7,7 +7,6 @@ router.get('/', function(req, res) {
 		if(error) return res.json({ error: error }, 500);
 		res.json(models);
 	});
-	res.send('Users');
 });
 
 module.exports = router;
