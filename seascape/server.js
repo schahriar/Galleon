@@ -1,3 +1,5 @@
+var Database = require('../fleet/connection');
+// Express
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -57,5 +59,11 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
-app.listen(3000);
+// Make Database connection
+// & Start the server
+Database(function(connection){
+	app.models = connection.collections;
+	app.connections = connection.connections;
+	
+	app.listen(3000);
+});
