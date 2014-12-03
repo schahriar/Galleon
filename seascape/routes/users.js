@@ -53,7 +53,7 @@ router.route('/:username')
 		// * Between 2 to 256 characters
 		// * Special characters allowed (&)
 		// * Alpha
-		if((!validator.matches(user.name, /^([ \u00c0-\u01ffa-zA-Z-\&'\-])+$/)),(validator.isLength(user.name,2,256))
+		if((!validator.matches(user.name, /^([ \u00c0-\u01ffa-zA-Z-\&'\-])+$/))&&(validator.isLength(user.name,2,256))
 		   return res.json({ error: "Invalid Name", code: "!N" }, 500);
 		
 		// REGEX to match:
@@ -84,6 +84,7 @@ router.route('/:username')
 					if(error) return res.json({ error: error }, 500);
 					// In production this should only return _id
 					res.json(user);
+					next();
 				})
 			});
 		});
