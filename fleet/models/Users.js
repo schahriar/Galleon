@@ -39,7 +39,7 @@ module.exports = {
 		
 		lastLogin: {
 			type: 'json',
-			required: true
+			required: false
 		}
 	}
 };

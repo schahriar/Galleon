@@ -73,7 +73,9 @@ router.route('/:username')
 		
 		
 		bcrypt.genSalt(10, function(error, salt) {
+			if(error) return res.json({ error: error }, 500);
 			bcrypt.hash(user.password, salt, function(error, hash) {
+				if(error) return res.json({ error: error }, 500);
 				req.database.models.users.create({
 					username: user.username,
 					name: user.name,
