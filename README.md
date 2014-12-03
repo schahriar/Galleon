@@ -80,8 +80,13 @@ Make sure you read the license and don't participate in any form of abuse (Spam,
 
 ## Status
 --------
+
 `Beta version (0.2.x)` will eliminate most if not all the limitations of the current memory based system by implementing a database control system.
 
 --------
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
 ![version](http://img.shields.io/badge/Version-0.1.3%20(Working Class Hero)-2ecc71.svg?style=flat-square)
+
+## What's next?
+1. **XSS Filtering**
+2. **CLI**
