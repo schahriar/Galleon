@@ -4,9 +4,7 @@ module.exports = {
 	connection: 'authentication',
 	
 	types: {
-		stamp: function(time){
-			return time.sent && time.received
-		}
+		
 	},
 	
 	attributes: {
@@ -15,11 +13,16 @@ module.exports = {
 			required: true,
 			unique: true
 		},
+		
+		name: {
+			type: 'string',
+			required: true,
+			index: true
+		},
 
 		access: {
 			type: 'json',
-			required: true,
-			index: true
+			required: true
 		},
 		
 		password: {
