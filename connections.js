@@ -8,5 +8,14 @@ module.exports = {
 		user: 'storage',
 		password: 'storage_control',
 		database: 'storage'
-	}
+	},
+	authentication: {
+		adapter: 'mongodb',
+		host: 'localhost',
+		port: 27017, // Default port for MongoDB
+		user: 'user',
+		password: 'user_control',
+		database: 'users'
+	},
+		
 }

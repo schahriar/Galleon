@@ -1,23 +1,27 @@
 {
-  "name": "galleon",
-  "description": "A badass SMTP mail server built on Node to make your life simpler.",
-  "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
-  "dependencies": {
-    "colors": "^1.0.3",
-    "lodash": "^2.4.1",
-    "mailin": "^1.0.0",
-    "nodemailer": "^1.3.0",
-    "portscanner": "^1.0.0",
-    "sails-mongo": "^0.10.4",
-    "spamc": "0.0.3",
-    "validator": "^3.22.1",
-    "waterline": "^0.10.14"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/schahriar/Galleon.git"
-  },
-  "license": "MIT",
-  "engine": "node 0.11.x",
-  "version": "0.1.2"
+	"name": "galleon",
+	"description": "A badass SMTP mail server built on Node to make your life simpler.",
+	"author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
+	"dependencies": {
+		"colors": "^1.0.3",
+		"lodash": "^2.4.1",
+		"mailin": "^1.0.0",
+		"nodemailer": "^1.3.0",
+		"portscanner": "^1.0.0",
+		"sails-mongo": "^0.10.4",
+		"spamc": "0.0.3",
+		"validator": "^3.22.1",
+		"waterline": "^0.10.14"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/schahriar/Galleon.git"
+	},
+	"scripts": {
+		"deploy": "node server.js"
+	},
+	"main": "Galleon.js",
+	"license": "MIT",
+	"engine": "node 0.11.x",
+	"version": "0.1.3"
 }
