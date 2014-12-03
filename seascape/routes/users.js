@@ -11,14 +11,14 @@ router.get('/', function(req, res) {
 	// as field exclusion or filtering currently is not implemented into the
 	// module.
 	req.database.models.users.find().exec(function(error, models) {
-		if(error) return res.json({ error: error }, 500);
+		if(error) return res.status(500).json({ error: error });
 		res.json(models);
 	});
 });
 
 router.param('username', function(req, res, next, username) {
 	req.database.models.users.findOne({username:username}).exec(function(error, user) {
-		if(error) return res.json({ error: error }, 500);
+		if(error) return res.status(500).json({ error: error });
 		// Return 404 if the user is not found
 		if(!user) res.status(404).send('Sorry, we cannot find <'+username.toString()+'>!');
 		req.user = user;
@@ -47,43 +47,45 @@ router.route('/:username')
 		// * Alphanumeric
 		// * Must start with a letter
 		if(!validator.matches(user.username, /^[a-zA-Z]\w{4,64}$/))
-			return res.json({ error: "Invalid Username", code: "!U" }, 500);
+			return res.status(500).json({ error: "Invalid Username", code: "!U" });
 	
 		// REGEX to match:
 		// * Between 2 to 256 characters
 		// * Special characters allowed (&)
 		// * Alpha
 		if((!validator.matches(user.name, /^([ \u00c0-\u01ffa-zA-Z-\&'\-])+$/))&&(validator.isLength(user.name,2,256)))
-		   return res.json({ error: "Invalid Name", code: "!N" }, 500);
+		   return res.status(500).json({ error: "Invalid Name", code: "!N" });
 		
 		// REGEX to match:
 		// * Between 6 to 20 characters
 		// * Special characters allowed (@,$,!,%,*,?,&)
 		// * Alphanumeric
 		if(!validator.matches(user.password, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
-			return res.json({ error: "Invalid Password", code: "!P" }, 500);
+			return res.status(500).json({ error: "Invalid Password", code: "!P" });
 	
 		if(validator.isLength(user.access.emails,3,1024)){
 			// This will not work since Node is async
 			// I am just putting it here for future implementations
 			/*_.(user.access.emails.split('|')).forEach(function(email){
-				if(!validator.isEmail(email)) res.json({ error: "Invalid Email: " + email.toString(), code: "!AR!" }, 500);
+				if(!validator.isEmail(email)) res.status(500).json({ error: "Invalid Email: " + email.toString(), code: "!AR!" }, 500);
 			});*/
-		}else return res.json({ error: "Invalid Access Rights - Too long", code: "!AR" }, 500);
+		}else return res.status(500).json({ error: "Invalid Access Rights - Too long", code: "!AR" });
 		
 		
 		bcrypt.genSalt(10, function(error, salt) {
-			if(error) return res.json({ error: error }, 500);
+			if(error) return res.status(500).json({ error: error });
+			
 			bcrypt.hash(user.password, salt, function(error, hash) {
-				if(error) return res.json({ error: error }, 500);
+				if(error) return res.status(500).json({ error: error });
+				
 				req.database.models.users.create({
 					username: user.username,
 					name: user.name,
 					access: user.access,
-					password: user.hash,
-					salt: user.salt,
+					password: hash,
+					salt: salt,
 				},function(error, user){
-					if(error) return res.json({ error: error }, 500);
+					if(error) return res.status(500).json({ error: error });
 					// In production this should only return _id
 					res.json(user);
 					next();
