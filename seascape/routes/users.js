@@ -14,7 +14,9 @@ router.get('/', function(req, res) {
 
 router.param('username', function(req, res, next, username) {
 	req.database.models.users.findOne({username:username}).exec(function(error, user) {
-		if(error) return res.status(404).send('Sorry, we cannot find <'+username.toString()+'>!');
+		if(error) return res.json({ error: error }, 500);
+		// Return 404 if the user is not found
+		if(!user) res.status(404).send('Sorry, we cannot find <'+username.toString()+'>!');
 		req.user = user;
 		next();
 	});
