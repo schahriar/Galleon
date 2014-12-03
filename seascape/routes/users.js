@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-	req.models.users.find().exec(function(error, models) {
+	req.database.models.users.find().exec(function(error, models) {
 		if(error) return res.json({ error: error }, 500);
 		res.json(models);
 	});
