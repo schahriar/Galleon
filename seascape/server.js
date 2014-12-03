@@ -25,6 +25,13 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Database middleware
+app.use(function (req, res, next) {
+	req.models = app.models;
+	req.connections = app.connections;
+	next();
+})
+
 app.use('/', routes);
 app.use('/users', users);
 
