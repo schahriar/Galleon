@@ -27,8 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Database middleware
 app.use(function (req, res, next) {
-	req.models = app.models;
-	req.connections = app.connections;
+	req.database = { models: app.models, connections: app.connections }
 	next();
 })
 
