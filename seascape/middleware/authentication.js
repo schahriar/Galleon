@@ -4,7 +4,7 @@ var bcrypt = require('bcryptjs');
 exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
 		
-		if((req.path != urls.login)||(false)){
+		if((req.path != urls.login)&&(false)){
 			/// Basic cookie based authentication
 			var cookie = req.signedCookies.authentication;
 			if((!cookie)||(cookie == '')){ // :O No cookie!
@@ -14,7 +14,7 @@ exports = module.exports = function(urls){
 				/// Do a ton of cool security stuff here
 				//
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
-					if((error)||(!session)||(!session._id)) req.authenticated = false;
+					if((error)||(!session)) req.authenticated = false;
 					else req.authenticated = { email: session.email };
 				});
 			}
