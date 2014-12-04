@@ -5,4 +5,12 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'Galleon' });
 });
 
+router.post('/attempt/', function(req,res) {
+	req.signIn(req, res, function(error, session){
+		if(error) res.status(500).json({ error: error });
+		//
+		res.json(session);
+	});
+});
+
 module.exports = router;
