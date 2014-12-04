@@ -1,39 +1,34 @@
 module.exports = {
 	// Idenitity is a unique name for this model
-  	identity: 'users',
+  	identity: 'session',
 	connection: 'authentication',
 	
 	types: {
-		
+		stamp: function(time){
+			return time.opened && time.expires
+		}
 	},
 	
 	attributes: {
 		username: {
 			type: 'string',
 			required: true,
-			unique: true
-		},
-		
-		name: {
-			type: 'string',
-			required: true,
-			index: true
+			unique: true // This will disable dual sessions
 		},
 
 		access: {
-			type: 'json',
-			required: true
-		},
-		
-		password: {
 			type: 'string',
-			maxLength: 512,
+			enum: ['approved', 'provoked']
+		},
+		
+		ipAddress: {
+			type: 'string',
 			required: true
 		},
 		
-		lastLogin: {
-			type: 'json',
-			required: false
+		stamp: {
+		  type: 'json',
+		  stamp: true
 		}
 	}
 };

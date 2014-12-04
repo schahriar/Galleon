@@ -7,17 +7,6 @@ var _ = require('lodash');
 
 var pass = true, fail = false;
 
-/* GET users listing. */
-router.get('/', function(req, res) {
-	// Waterline has a big performance issue when it comes to field exclusion
-	// as field exclusion or filtering currently is not implemented into the
-	// module.
-	req.database.models.users.find().exec(function(error, models) {
-		if(error) return res.status(500).json({ error: error });
-		res.json(models);
-	});
-});
-
 router.param('user', function(req, res, next, username) {
 	req.database.models.users.findOne({username:username}).exec(function(error, user) {
 		if(error) req.user = fail;
@@ -31,13 +20,13 @@ router.param('user', function(req, res, next, username) {
 
 router.route('/:user').get(function(req, res, next) {
 	  // Return 404 if the user is not found
-	  if(!req.user) return res.status(404).send('Ohhh No... We didn\'t catch that username. Perhaps you can try again!');
+	  if(!req.user) return res.status(404).json({ error: 'Ohhh No... We didn\'t catch that username. Perhaps you can try again!', code: '_U'});
 	  res.json(req.user);
 })
 
 router.route('/create/:user').put(function(req, res, next) {
 	// If User exists
-	if(req.user) return res.send('Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?');
+	if(req.user) return res.json({ error: 'Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?', code: '.U'});
 	
 	var user = {
 		username: req.username,
@@ -79,26 +68,20 @@ router.route('/create/:user').put(function(req, res, next) {
 		});*/
 	}else return res.status(500).json({ error: "Invalid Access Rights - Too long", code: "!AR" });
 
-
-	bcrypt.genSalt(10, function(error, salt) {
+	bcrypt.hash(user.password, 10, function(error, hash) {
 		if(error) return res.status(500).json({ error: error });
 
-		bcrypt.hash(user.password, salt, function(error, hash) {
+		req.database.models.users.create({
+			username: user.username,
+			name: user.name,
+			access: user.access,
+			password: hash,
+		},function(error, user){
 			if(error) return res.status(500).json({ error: error });
-
-			req.database.models.users.create({
-				username: user.username,
-				name: user.name,
-				access: user.access,
-				password: hash,
-				salt: salt,
-			},function(error, user){
-				if(error) return res.status(500).json({ error: error });
-				// In production this should only return _id
-				res.json(user);
-				next();
-			})
-		});
+			// In production this should only return _id
+			res.json(user);
+			next();
+		})
 	});
 })
 
