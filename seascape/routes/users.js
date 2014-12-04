@@ -29,7 +29,7 @@ router.route('/create/:email').put(function(req, res, next) {
 	if(req.user) return res.json({ error: 'Ohhh No... An email with that address already exists! Perhaps add some obnoxious number to the end?', code: '.U'});
 	
 	var user = {
-		email: req.email,
+		email: req.param('email'),
 		name: req.param('name'),
 		isAdmin: validator.toBoolean(req.param('isAdmin')),
 		emails: req.param('emails'),
