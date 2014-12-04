@@ -12,8 +12,7 @@ exports = module.exports = function(urls){
 			} else {
 				console.log(cookie);
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
-					if(error) req.authenticated = false;
-					// Do some useful session time/access/ip comparisons here
+					if((error)||(!session._id)) req.authenticated = false;
 					else req.authenticated = { username: session.username };
 				});
 			}
