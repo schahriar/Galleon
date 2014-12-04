@@ -27,13 +27,13 @@ app.use(cookieParser('Your_very_secret_cookie_code'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(authentication({login: '/login'}))
-
 // Database middleware
 app.use(function (req, res, next) {
 	req.database = { models: app.models, connections: app.connections }
 	next();
-})
+});
+
+app.use(authentication({login: '/login'}));
 
 app.use('/', routes);
 app.use('/users', users);
