@@ -40,6 +40,7 @@ app.use(authentication({login: '/login'}));
 app.use('/', routes);
 app.use('/login', login);
 
+app.use('/users', users);
 app.use('/mail', mailbox);
 
 // catch 404 and forward to error handler
