@@ -31,10 +31,9 @@ exports = module.exports = function(urls){
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
 					if(result){
-						console.log(req.database);
 						// Create a new session token
 						req.database.models.sessions.create({
-							username: username,
+							username: user.username,
 							access: 'approved',
 							ipAddress: req.ip,
 							stamp: { opened: opened, expires: expires }
