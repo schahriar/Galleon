@@ -25,6 +25,8 @@ exports = module.exports = function(urls){
 			var expires = opened.add(7, 'days');
 			
 			req.database.models.users.findOne({ username: req.param('username') }).exec(function(error, user) {
+				if(error) return callback(error);
+				
 				bcrypt.compare(req.param('password'), user.hash, function(error, result) {
 					if(error) return callback(error);
 					if(result){
