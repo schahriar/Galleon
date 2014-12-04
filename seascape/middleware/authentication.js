@@ -7,7 +7,7 @@ exports = module.exports = function(urls){
 		/// Basic cookie based authentication
 		var cookie = req.signedCookies.authentication;
 		if((!cookie)||(cookie == '')){ // :O No cookie!
-			res.redirect(urls.login);
+			return res.redirect(urls.login);
 		} else {
 			console.log(cookie);
 			req.database.models.sessions.findOne({ _id: JSON.parse(cookie).sessionID }).exec(function(error, session) {
