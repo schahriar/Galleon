@@ -27,7 +27,7 @@ router.param('user', function(req, res, next, username) {
 router.route('/:user')
 	.get(function(req, res, next) {
 	  // Return 404 if the user is not found
-	  if(!user) return res.status(404).send('Sorry, we cannot find -'+username.toString()+'-!');
+	  if(!user) return res.status(404).send('Ohhh No... We didn\'t catch that username. Perhaps you can try again!');
 	  res.json(req.user);
 	})
 	.put(function(req, res, next) {
