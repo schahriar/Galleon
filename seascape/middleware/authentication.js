@@ -4,19 +4,21 @@ var bcrypt = require('bcryptjs');
 exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
 		
-		/// Basic cookie based authentication
-		var cookie = req.signedCookies.authentication;
-		if((!cookie)||(cookie == '')){ // :O No cookie!
-			return res.redirect(urls.login);
-		} else {
-			console.log(cookie);
-			req.database.models.sessions.findOne({ _id: JSON.parse(cookie).sessionID }).exec(function(error, session) {
-				if(error) req.authenticated = false;
-				// Do some useful session time/access/ip comparisons here
-				else req.authenticated = { username: session.username };
-			});
+		if(req.path != urls.login){
+			/// Basic cookie based authentication
+			var cookie = req.signedCookies.authentication;
+			if((!cookie)||(cookie == '')){ // :O No cookie!
+				return res.redirect(urls.login);
+			} else {
+				console.log(cookie);
+				req.database.models.sessions.findOne({ _id: JSON.parse(cookie).sessionID }).exec(function(error, session) {
+					if(error) req.authenticated = false;
+					// Do some useful session time/access/ip comparisons here
+					else req.authenticated = { username: session.username };
+				});
+			}
+			///
 		}
-		///
 		
 		req.signIn = function(req, res, callback){
 			var opened = moment();

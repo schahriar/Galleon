@@ -27,7 +27,7 @@ app.use(cookieParser('Your_very_secret_cookie_code'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(['/users','/users/*','/mail','/mail/*'], authentication({login: '/login'}))
+app.use(authentication({login: '/login'}))
 
 // Database middleware
 app.use(function (req, res, next) {
