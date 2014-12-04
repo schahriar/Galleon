@@ -19,7 +19,8 @@ module.exports = function(callback){
 		},
 		collections: {
 			mail: require('./models/Mail'),
-			users: require('./models/Users')
+			users: require('./models/Users'),
+			sessions: require('./models/Session')
 		},
 		connections: connections
 	}, function waterlineReady (error, ontology) {
