@@ -41,8 +41,8 @@ router.route('/create/:email').put(function(req, res, next) {
 	// * Special characters allowed (_)
 	// * Alphanumeric
 	// * Must start with a letter
-	if(!validator.matches(user.email, /^[a-zA-Z]\w{4,64}$/))
-		return res.status(500).json({ error: "Invalid Username", code: "!U" });
+	if(!validator.isEmail(user.email))
+		return res.status(500).json({ error: "Invalid Email", code: "!U" });
 
 	// REGEX to match:
 	// * Between 2 to 256 characters
