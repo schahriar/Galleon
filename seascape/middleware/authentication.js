@@ -12,7 +12,7 @@ exports = module.exports = function(urls){
 			} else {
 				console.log(cookie);
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
-					if((error)||(!session._id)) req.authenticated = false;
+					if((error)||(!session)||(!session._id)) req.authenticated = false;
 					else req.authenticated = { username: session.username };
 				});
 			}
