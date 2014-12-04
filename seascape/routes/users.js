@@ -34,7 +34,7 @@ router.route('/:user').get(function(req, res, next) {
 
 router.route('/create/:user').put(function(req, res, next) {
 	// If User exists
-	if(user) return res..send('Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?');
+	if(user) return res.send('Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?');
 	
 	var user = {
 		username: req.user,
