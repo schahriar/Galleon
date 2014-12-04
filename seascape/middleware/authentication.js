@@ -11,7 +11,7 @@ exports = module.exports = function(urls){
 				return res.redirect(urls.login);
 			} else {
 				console.log(cookie);
-				req.database.models.sessions.findOne({ _id: JSON.parse(cookie).sessionID }).exec(function(error, session) {
+				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
 					if(error) req.authenticated = false;
 					// Do some useful session time/access/ip comparisons here
 					else req.authenticated = { username: session.username };
