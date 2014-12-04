@@ -26,6 +26,7 @@ exports = module.exports = function(urls){
 			
 			req.database.models.users.findOne({ username: req.param('username') }).exec(function(error, user) {
 				if(error) return callback(error);
+				if(!!user._id) return callback('Username does not match a record');
 				
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
