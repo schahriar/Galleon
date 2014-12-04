@@ -9,7 +9,7 @@ var pass = true, fail = false;
 
 router.param('email', function(req, res, next, email) {
 	req.database.models.users.findOne({email:email}).exec(function(error, user) {
-		if(error) req.user = fail;
+		if((error)||(!user)) req.user = fail;
 		else {
 			req.user = user;
 			req.email = user.email;
