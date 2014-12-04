@@ -21,23 +21,26 @@ router.get('/', function(req, res) {
 router.param('user', function(req, res, next, username) {
 	req.database.models.users.findOne({username:username}).exec(function(error, user) {
 		if(error) req.user = fail;
-		else req.user = user;
-		next();
+		else {
+			req.user = user;
+			req.username = username;
+			next();
+		}
 	});
 });
 
 router.route('/:user').get(function(req, res, next) {
 	  // Return 404 if the user is not found
-	  if(!user) return res.status(404).send('Ohhh No... We didn\'t catch that username. Perhaps you can try again!');
+	  if(!req.user) return res.status(404).send('Ohhh No... We didn\'t catch that username. Perhaps you can try again!');
 	  res.json(req.user);
 })
 
 router.route('/create/:user').put(function(req, res, next) {
 	// If User exists
-	if(user) return res.send('Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?');
+	if(req.user) return res.send('Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?');
 	
 	var user = {
-		username: req.user,
+		username: req.username,
 		name: req.param('name'),
 		access: {
 			isAdmin: validator.toBoolean(req.param('isAdmin')),
