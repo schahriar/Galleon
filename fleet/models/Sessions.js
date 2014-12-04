@@ -1,6 +1,6 @@
 module.exports = {
 	// Idenitity is a unique name for this model
-  	identity: 'session',
+  	identity: 'sessions',
 	connection: 'authentication',
 	
 	types: {
