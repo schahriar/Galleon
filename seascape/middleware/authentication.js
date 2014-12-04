@@ -10,10 +10,12 @@ exports = module.exports = function(urls){
 			if((!cookie)||(cookie == '')){ // :O No cookie!
 				return res.redirect(urls.login);
 			} else {
-				console.log(cookie);
+				//
+				/// Do a ton of cool security stuff here
+				//
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
 					if((error)||(!session)||(!session._id)) req.authenticated = false;
-					else req.authenticated = { username: session.username };
+					else req.authenticated = { email: session.email };
 				});
 			}
 			///
@@ -23,16 +25,16 @@ exports = module.exports = function(urls){
 			var opened = moment();
 			var expires = opened.add(7, 'days');
 			
-			req.database.models.users.findOne({ username: req.param('username') }).exec(function(error, user) {
+			req.database.models.users.findOne({ email: req.param('email') }).exec(function(error, user) {
 				if(error) return callback(error);
-				if(!!user._id) return callback('Username does not match a record');
+				if(!!user._id) return callback('Email does not match a record');
 				
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
 					if(result){
 						// Create a new session token
 						req.database.models.sessions.create({
-							username: user.username,
+							email: user.email,
 							access: 'approved',
 							ipAddress: req.ip,
 							stamp: { opened: opened, expires: expires }

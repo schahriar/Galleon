@@ -7,34 +7,32 @@ var _ = require('lodash');
 
 var pass = true, fail = false;
 
-router.param('user', function(req, res, next, username) {
-	req.database.models.users.findOne({username:username}).exec(function(error, user) {
+router.param('email', function(req, res, next, email) {
+	req.database.models.users.findOne({email:email}).exec(function(error, user) {
 		if(error) req.user = fail;
 		else {
 			req.user = user;
-			req.username = username;
+			req.email = user.email;
 			next();
 		}
 	});
 });
 
-router.route('/:user').get(function(req, res, next) {
+router.route('/:email').get(function(req, res, next) {
 	  // Return 404 if the user is not found
-	  if(!req.user) return res.status(404).json({ error: 'Ohhh No... We didn\'t catch that username. Perhaps you can try again!', code: '_U'});
+	  if(!req.user) return res.status(404).json({ error: 'Ohhh No... We didn\'t catch that email. Perhaps you can try again!', code: '_U'});
 	  res.json(req.user);
 })
 
-router.route('/create/:user').put(function(req, res, next) {
+router.route('/create/:email').put(function(req, res, next) {
 	// If User exists
-	if(req.user) return res.json({ error: 'Ohhh No... A user with that username already exists! Perhaps add some obnoxious number to the end?', code: '.U'});
+	if(req.user) return res.json({ error: 'Ohhh No... An email with that address already exists! Perhaps add some obnoxious number to the end?', code: '.U'});
 	
 	var user = {
-		username: req.username,
+		email: req.email,
 		name: req.param('name'),
-		access: {
-			isAdmin: validator.toBoolean(req.param('isAdmin')),
-			emails: req.param('emails')
-		},
+		isAdmin: validator.toBoolean(req.param('isAdmin')),
+		emails: req.param('emails'),
 		password: req.param('password')
 	}
 
@@ -43,7 +41,7 @@ router.route('/create/:user').put(function(req, res, next) {
 	// * Special characters allowed (_)
 	// * Alphanumeric
 	// * Must start with a letter
-	if(!validator.matches(user.username, /^[a-zA-Z]\w{4,64}$/))
+	if(!validator.matches(user.email, /^[a-zA-Z]\w{4,64}$/))
 		return res.status(500).json({ error: "Invalid Username", code: "!U" });
 
 	// REGEX to match:
@@ -72,9 +70,9 @@ router.route('/create/:user').put(function(req, res, next) {
 		if(error) return res.status(500).json({ error: error });
 
 		req.database.models.users.create({
-			username: user.username,
+			email: user.email,
 			name: user.name,
-			access: user.access,
+			isAdmin: user.isAdmin,
 			password: hash,
 		},function(error, user){
 			if(error) return res.status(500).json({ error: error });

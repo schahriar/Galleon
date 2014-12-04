@@ -8,7 +8,7 @@ module.exports = {
 	},
 	
 	attributes: {
-		username: {
+		email: {
 			type: 'string',
 			required: true,
 			unique: true
@@ -20,8 +20,8 @@ module.exports = {
 			index: true
 		},
 
-		access: {
-			type: 'json',
+		isAdmin: {
+			type: 'boolean',
 			required: true
 		},
 		
