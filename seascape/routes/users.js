@@ -32,13 +32,13 @@ router.route('/:user')
 	})
 	.put(function(req, res, next) {
 		var user = {
-			username: req.param('username').toString(),
-			name: req.param('name').toString(),
+			username: req.param('username'),
+			name: req.param('name'),
 			access: {
-				isAdmin: validator.toBoolean(req.param('isAdmin').toString()),
+				isAdmin: validator.toBoolean(req.param('isAdmin')),
 				emails: req.param('emails')
 			},
-			password: req.param('password').toString()
+			password: req.param('password')
 		}
 		
 		// REGEX to match:
@@ -67,7 +67,7 @@ router.route('/:user')
 			// This will not work since Node is async
 			// I am just putting it here for future implementations
 			/*_.(user.access.emails.split('|')).forEach(function(email){
-				if(!validator.isEmail(email)) res.status(500).json({ error: "Invalid Email: " + email.toString(), code: "!AR!" }, 500);
+				if(!validator.isEmail(email)) res.status(500).json({ error: "Invalid Email: " + email, code: "!AR!" }, 500);
 			});*/
 		}else return res.status(500).json({ error: "Invalid Access Rights - Too long", code: "!AR" });
 		
