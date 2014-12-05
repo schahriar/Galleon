@@ -28,13 +28,16 @@ router.route('/create/:email').put(function(req, res, next) {
 	// If User exists
 	if(req.user) return res.json({ error: 'Ohhh No... An email with that address already exists! Perhaps add some obnoxious number to the end?', code: '.U'});
 	
+	if((!req.param('email'))||(!req.param('name'))||(!req.param('password'))) return res.json({ error: 'Ohhh No... We didn\'t get enough arguments.', code: '_A'});
+	
 	var user = {
 		email: req.param('email'),
 		name: req.param('name'),
 		isAdmin: validator.toBoolean(req.param('isAdmin')),
-		emails: req.param('emails'),
 		password: req.param('password')
 	}
+	
+	console.log(email, name, isAdmin);
 
 	// REGEX to match:
 	// * Between 4 to 64 characters
@@ -68,7 +71,8 @@ router.route('/create/:email').put(function(req, res, next) {
 
 	bcrypt.hash(user.password, 10, function(error, hash) {
 		if(error) return res.status(500).json({ error: error });
-
+		
+		console.log(hash);
 		req.database.models.users.create({
 			email: user.email,
 			name: user.name,
