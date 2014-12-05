@@ -16,7 +16,6 @@ exports = module.exports = function(urls){
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
 					if((error)||(!session)) {
 						req.authenticated = false;
-						return res.redirect(urls.login);
 					}
 					else req.authenticated = { email: session.email };
 				});
