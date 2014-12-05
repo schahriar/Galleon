@@ -49,7 +49,7 @@ exports = module.exports = function(urls){
 								if(error) return callback(error);
 
 								res.cookie('authentication', { sessionID: session._id.toString(), opened: opened }, { signed: true });
-								callback(undefined, session);
+								return callback(undefined, session);
 							});
 						})
 					}
@@ -66,7 +66,7 @@ exports = module.exports = function(urls){
 				//	 system.
 				if(error) console.log(error);
 				res.clearCookie('authentication');
-				callback(undefined);
+				return callback(undefined);
 			});
 		}
 		
