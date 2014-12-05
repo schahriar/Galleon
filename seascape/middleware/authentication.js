@@ -4,7 +4,7 @@ var bcrypt = require('bcryptjs');
 exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
 		
-		if((req.path != urls.login)&&(false)){
+		if(req.path != urls.login){
 			/// Basic cookie based authentication
 			var cookie = req.signedCookies.authentication;
 			if((!cookie)||(cookie == '')){ // :O No cookie!
