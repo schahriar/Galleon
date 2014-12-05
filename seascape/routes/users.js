@@ -37,8 +37,6 @@ router.route('/create/:email').put(function(req, res, next) {
 		isAdmin: validator.toBoolean(req.param('isAdmin')),
 		password: req.param('password')
 	}
-	
-	console.log(email, name, isAdmin);
 
 	// REGEX to match:
 	// * Between 4 to 64 characters
