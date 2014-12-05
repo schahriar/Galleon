@@ -13,7 +13,9 @@ exports = module.exports = function(urls){
 				//
 				/// Do a ton of cool security stuff here
 				//
+				console.log(cookie.sessionID);
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
+					console.log(session);
 					if((error)||(!session)) req.authenticated = false;
 					else req.authenticated = { email: session.email };
 				});
