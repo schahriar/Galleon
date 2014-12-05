@@ -33,18 +33,22 @@ exports = module.exports = function(urls){
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
 					if(result){
-						// Create a new session token
-						req.database.models.sessions.create({
-							email: user.email,
-							access: 'approved',
-							ipAddress: req.ip,
-							stamp: { opened: opened, expires: expires }
-						}, function(error, session){
-							if(error) return callback(error);
+						req.database.models.sessions.destroy({ email: req.param('email') }, function(error){
+							// Log any errors here
+							if(error) console.log(error);
+							// Create a new session token
+							req.database.models.sessions.create({
+								email: user.email,
+								access: 'approved',
+								ipAddress: req.ip,
+								stamp: { opened: opened, expires: expires }
+							}, function(error, session){
+								if(error) return callback(error);
 
-							res.cookie('authentication', { sessionID: session._id, opened: opened }, { signed: true });
-							callback(undefined, session);
-						});
+								res.cookie('authentication', { sessionID: session._id, opened: opened }, { signed: true });
+								callback(undefined, session);
+							});
+						})
 					}
 				});
 			})
