@@ -60,14 +60,6 @@ router.route('/create/:email').put(function(req, res, next) {
 	if(!validator.matches(user.password, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
 		return res.status(500).json({ error: "Invalid Password", code: "!P" });
 
-	if(validator.isLength(user.access.emails,3,1024)){
-		// This will not work since Node is async
-		// I am just putting it here for future implementations
-		/*_.(user.access.emails.split('|')).forEach(function(email){
-			if(!validator.isEmail(email)) res.status(500).json({ error: "Invalid Email: " + email, code: "!AR!" }, 500);
-		});*/
-	}else return res.status(500).json({ error: "Invalid Access Rights - Too long", code: "!AR" });
-
 	bcrypt.hash(user.password, 10, function(error, hash) {
 		if(error) return res.status(500).json({ error: error });
 		
