@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-var md5sum = crypto.createHash('md5');
 var shortId = require('shortid');
 
 module.exports = {
@@ -47,6 +46,6 @@ module.exports = {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables email checking without exposing the email
 		// to session token.
-		attributes.sessionID = shortId.generate() + '__' + md5sum.update(attributes.email).digest('hex');;
+		attributes.sessionID = shortId.generate() + '__' + crypto.createHash('md5').update(attributes.email).digest('hex');
 	}
 };
