@@ -15,6 +15,7 @@ router.param('email', function(req, res, next, email) {
 			req.email = user.email;
 			next();
 		}
+		next();
 	});
 });
 
