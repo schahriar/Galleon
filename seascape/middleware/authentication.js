@@ -43,7 +43,7 @@ exports = module.exports = function(urls){
 								email: user.email,
 								access: 'approved',
 								ipAddress: req.ip,
-								stamp: { opened: opened, expires: expires }
+								stamp: { opened: opened.toISOString() , expires: expires.toISOString() }
 							}, function(error, session){
 								if(error) return callback(error);
 

@@ -16,7 +16,7 @@ module.exports = {
 	attributes: {
 		sessionID: {
 			type: 'string',
-			required: true,
+			required: false, // Automatically created
 			maxLength: 48,
 			unique: true,
 		},
