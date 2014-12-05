@@ -50,7 +50,16 @@ exports = module.exports = function(urls){
 		},
 			
 		req.signOut = function(req, res, callback){
-			res.clearCookie('authentication');
+			req.database.models.sessions.destroy({ _id: req.signedCookies.authentication.sessionID}, function(error){
+				// Should do better logging here
+				// An invalid sessionID would either
+				//   mean a broken secret key or
+				//   possibly an error in the token
+				//	 system.
+				if(error) console.log(error);
+				res.clearCookie('authentication');
+				callback(undefined);
+			});
 		}
 		
 		next();
