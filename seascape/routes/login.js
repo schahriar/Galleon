@@ -6,7 +6,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/out', function(req, res) {
-	req.singOut(req, res, function(/* Could use some error handling here */){
+	req.signOut(req, res, function(/* Could use some error handling here */){
 		res.redirect('/');
 	});
 });
