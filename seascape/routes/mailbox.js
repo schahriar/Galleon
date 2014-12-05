@@ -3,7 +3,6 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	console.log(req.authenticated);
 	if(!req.authenticated) return res.status(500).json({ error: "Not Authenticated" });
 	
 	// Add better error handling here

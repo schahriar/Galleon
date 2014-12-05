@@ -5,6 +5,7 @@ exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
 		
 		if(req.path != urls.login){
+			console.log(req.signedCookies, req.cookies);
 			/// Basic cookie based authentication
 			var cookie = req.signedCookies.authentication;
 			if((!cookie)||(cookie == '')){ // :O No cookie!
@@ -13,10 +14,11 @@ exports = module.exports = function(urls){
 				//
 				/// Do a ton of cool security stuff here
 				//
-				console.log(cookie.sessionID);
 				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
-					console.log(session);
-					if((error)||(!session)) req.authenticated = false;
+					if((error)||(!session)) {
+						req.authenticated = false;
+						return res.redirect(urls.login);
+					}
 					else req.authenticated = { email: session.email };
 				});
 			}
