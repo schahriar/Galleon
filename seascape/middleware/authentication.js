@@ -30,7 +30,7 @@ exports = module.exports = function(urls){
 			req.database.models.users.findOne({ email: req.param('email') }).exec(function(error, user) {
 				if(error) return callback(error);
 				if(!user) return callback('User not found.');
-				if(!!user._id) return callback('Email does not match a record');
+				if(!user.id) return callback('Email does not match a record');
 				
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
@@ -47,7 +47,7 @@ exports = module.exports = function(urls){
 							}, function(error, session){
 								if(error) return callback(error);
 
-								res.cookie('authentication', { sessionID: session._id.toString(), opened: opened }, { signed: true });
+								res.cookie('authentication', { sessionID: session.id, opened: opened }, { signed: true });
 								return callback(undefined, session);
 							});
 						})
