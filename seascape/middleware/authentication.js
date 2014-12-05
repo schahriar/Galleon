@@ -5,7 +5,6 @@ exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
 		
 		if(req.path != urls.login){
-			console.log(req.signedCookies, req.cookies);
 			/// Basic cookie based authentication
 			var cookie = req.signedCookies.authentication;
 			if((!cookie)||(cookie == '')){ // :O No cookie!
@@ -49,7 +48,7 @@ exports = module.exports = function(urls){
 							}, function(error, session){
 								if(error) return callback(error);
 
-								res.cookie('authentication', { sessionID: session._id, opened: opened }, { signed: true });
+								res.cookie('authentication', { sessionID: session._id.toString(), opened: opened }, { signed: true });
 								callback(undefined, session);
 							});
 						})
