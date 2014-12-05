@@ -10,7 +10,7 @@ module.exports = {
 	},
 	
 	attributes: {
-		username: {
+		email: {
 			type: 'string',
 			required: true,
 			unique: true // This will disable dual sessions
