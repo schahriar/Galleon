@@ -13,7 +13,7 @@ exports = module.exports = function(urls){
 				//
 				/// Do a ton of cool security stuff here
 				//
-				req.database.models.sessions.findOne({ _id: cookie.sessionID }).exec(function(error, session) {
+				req.database.models.sessions.findOne({ id: cookie.sessionID }).exec(function(error, session) {
 					if((error)||(!session)) {
 						req.authenticated = false;
 					}
@@ -57,7 +57,7 @@ exports = module.exports = function(urls){
 		},
 			
 		req.signOut = function(req, res, callback){
-			req.database.models.sessions.destroy({ _id: req.signedCookies.authentication.sessionID}, function(error){
+			req.database.models.sessions.destroy({ id: req.signedCookies.authentication.sessionID}, function(error){
 				// Should do better logging here
 				// An invalid sessionID would either
 				//   mean a broken secret key or
