@@ -8,7 +8,7 @@ router.get('/', function(req, res) {
 		req.database.models.mail.find().where({ receiver: credentials.email }).exec(function(error, mails){
 			if(error) res.status(500).json({ error: "Not Authenticated" });
 			if((!mails)||(mails.length < 1)) mails = [];
-			res.render('mailbox', { mails: mails }).end();
+			res.render('mailbox', { mails: mails });
 			res.set("Connection", "close");
 		});
 	});
