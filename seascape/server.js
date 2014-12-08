@@ -12,7 +12,7 @@ var routes = require('./routes/index');
 var login = require('./routes/login');
 
 var users = require('./routes/users');
-var mailbox = require('./routes/mail');
+var mail = require('./routes/mail');
 var mailbox = require('./routes/mailbox');
 
 var app = express();
