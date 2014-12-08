@@ -47,5 +47,6 @@ module.exports = {
 		// Hashsum enables email checking without exposing the email
 		// to session token.
 		attributes.sessionID = shortId.generate() + '__' + crypto.createHash('md5').update(attributes.email).digest('hex');
+		callback();
 	}
 };
