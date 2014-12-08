@@ -10,15 +10,14 @@ exports = module.exports = function(urls){
 			if((!cookie)||(cookie == '')){ // :O No cookie!
 				return res.redirect(urls.login);
 			} else {
-				//
-				/// Do a ton of cool security stuff here
-				//
-				req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
-					if((error)||(!session)) {
-						req.authenticated = false;
-					}
-					else req.authenticated = { email: session.email };
-				});
+				req.getCredentials = function(callback){	
+					//
+					/// Do a ton of cool security stuff here
+					//
+					req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
+						callback(error, { email: session.email });
+					});
+				}
 			}
 			///
 		}
