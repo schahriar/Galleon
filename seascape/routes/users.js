@@ -20,9 +20,10 @@ router.param('email', function(req, res, next, email) {
 });
 
 router.route('/:email').get(function(req, res, next) {
-	  // Return 500 if the user is not found
-	  if(!req.user) return res.status(500).json({ error: 'Ohhh No... We didn\'t catch that email. Perhaps you can try again!', code: '_U'});
-	  res.json(req.user);
+	// Return 500 if the user is not found
+	if(!req.user) return res.status(500).json({ error: 'Ohhh No... We didn\'t catch that email. Perhaps you can try again!', code: '_U'});
+	res.json(req.user);
+	res.set("Connection", "close");
 })
 
 router.route('/create/:email').put(function(req, res, next) {
