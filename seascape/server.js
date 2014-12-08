@@ -63,7 +63,6 @@ if (app.get('env') === 'development') {
             message: err.message,
             error: err
         });
-		res.set("Connection", "close");
     });
 }
 
@@ -75,7 +74,6 @@ app.use(function(err, req, res, next) {
         message: err.message,
         error: {}
     });
-	res.set("Connection", "close");
 });
 
 // Make Database connection

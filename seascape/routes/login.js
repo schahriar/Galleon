@@ -15,7 +15,7 @@ router.post('/', function(req,res) {
 	req.signIn(req, res, function(error, session){
 		if(error) res.status(500).json({ error: error });
 		//
-		res.redirect('/mailbox');
+		res.json(session);
 	});
 });
 
