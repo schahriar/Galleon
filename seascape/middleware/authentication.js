@@ -16,7 +16,7 @@ exports = module.exports = function(urls){
 					/// Do a ton of cool security stuff here
 					//
 					req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
-						if((!session)||(!session.email) return res.redirect(urls.login);
+						if((!session)||(!session.email)) return res.redirect(urls.login);
 						callback(error, { email: session.email });
 					});
 				}
