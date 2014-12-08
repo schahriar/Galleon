@@ -9,10 +9,6 @@ router.get('/', function(req, res) {
 			if(error) res.status(500).json({ error: "Not Authenticated" });
 			if((!mails)||(mails.length < 1)) mails = [];
 			res.render('mailbox', { mails: mails });
-<<<<<<< HEAD
-			res.set("Connection", "close");
-=======
->>>>>>> parent of 4a39943... Added connection close
 		});
 	});
 });
