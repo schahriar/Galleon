@@ -2,4 +2,7 @@ extends layout
 
 block content
   h1= "Please Login"
-  p Welcome to #{title}
+  form(name="login", action="/login", method="post")
+      input(type="text", name="email")
+      input(type="password", name="password")
+      input(type="submit", value="login")
