@@ -10,7 +10,11 @@ router.get('/inbox', function(req, res) {
 			if(error) res.status(500).json({ error: "Not Authenticated" });
 			if((!mails)||(mails.length < 1)) mails = [];
 			
-			var filteredMails = _.pick(mails,['sender','receiver','to','stamp','subject','text','html','read']);
+			var filteredMails = [];
+			_(mails).forEach(function(mail) {
+				filteredMails.push(_.pick(mail,['sender','receiver','to','stamp','subject','text','html','read'])); 
+			});
+			
 			res.json({ mails: filteredMails, request: { time: new Date() } });
 		});
 	});
