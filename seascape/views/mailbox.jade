@@ -6,4 +6,4 @@ block content
 	each email in mails
 		li
 			h2= email.subject
-			p= email.html
+			p!= email.html
