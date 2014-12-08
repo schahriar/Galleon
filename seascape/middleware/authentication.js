@@ -10,11 +10,13 @@ exports = module.exports = function(urls){
 			if((!cookie)||(cookie == '')){ // :O No cookie!
 				return res.redirect(urls.login);
 			} else {
-				req.getCredentials = function(callback){	
+				req.getCredentials = function(callback){
+					if(!cookie.sessionID) return res.redirect(urls.login);
 					//
 					/// Do a ton of cool security stuff here
 					//
 					req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
+						if(!session.email) return res.redirect(urls.login);
 						callback(error, { email: session.email });
 					});
 				}
