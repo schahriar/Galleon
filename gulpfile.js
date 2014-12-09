@@ -10,7 +10,7 @@ gulp.task('watch', function() {
   // Optionally, you can apply transforms
   // and other configuration options on the
   // bundler just as you would with browserify
-  bundler.transform('brfs');
+  // bundler.transform('brfs');
 
   bundler.on('update', rebundle);
 
@@ -18,7 +18,7 @@ gulp.task('watch', function() {
     return bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source('./seascape/public/dist/bundle.js'))
+      .pipe(source('bundle.js'))
       .pipe(gulp.dest('./seascape/public/dist'));
   }
 
