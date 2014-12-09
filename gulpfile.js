@@ -5,7 +5,7 @@ var watchify = require('watchify');
 var browserify = require('browserify');
 
 gulp.task('watch', function() {
-  var bundler = watchify(browserify('./public/scripts/master.js', watchify.args));
+  var bundler = watchify(browserify('./seascape/public/scripts/master.js', watchify.args));
 
   // Optionally, you can apply transforms
   // and other configuration options on the
@@ -18,8 +18,8 @@ gulp.task('watch', function() {
     return bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source('./public/dist/bundle.js'))
-      .pipe(gulp.dest('./public/dist'));
+      .pipe(source('./seascape/public/dist/bundle.js'))
+      .pipe(gulp.dest('./seascape/public/dist'));
   }
 
   return rebundle();
