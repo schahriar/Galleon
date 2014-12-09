@@ -34,5 +34,12 @@
   "main": "Galleon.js",
   "license": "MIT",
   "engine": "node 0.11.x",
-  "version": "0.1.3"
+  "version": "0.1.3",
+  "devDependencies": {
+    "browserify": "^7.0.0",
+    "gulp": "^3.8.10",
+    "gulp-util": "^3.0.1",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.1.1"
+  }
 }
