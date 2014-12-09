@@ -3,6 +3,7 @@ var gutil = require('gulp-util');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var browserify = require('browserify');
+var uglify = require('gulp-uglify');
 
 gulp.task('watch', function() {
   var bundler = watchify(browserify('./seascape/public/scripts/master.js', watchify.args));
@@ -19,6 +20,7 @@ gulp.task('watch', function() {
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source('bundle.js'))
+	  .pipe(uglify())
       .pipe(gulp.dest('./seascape/public/dist'));
   }
 
