@@ -10,6 +10,13 @@ module.exports = {
 	},
 	
 	attributes: {
+		eID: {
+			type: 'string',
+			required: false, // Automatically created
+			maxLength: 48,
+			unique: true,
+		},
+		
 		sender: {
 			type: 'string',
 			required: true,
@@ -71,5 +78,12 @@ module.exports = {
 			type: 'string',
 			enum: ['pending', 'approved', 'denied']
 		}
+	},
+	
+	beforeCreate: function(attributes, callback) {
+		// Should round up about 14 + 2 + 32 = 48 characters at max
+		// Hashsum enables content checking using a MD5 checksum
+		attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
+		callback();
 	}
 };

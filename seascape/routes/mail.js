@@ -12,7 +12,7 @@ router.get('/inbox', function(req, res) {
 			
 			var filteredMails = [];
 			_(mails).forEach(function(mail) {
-				filteredMails.push(_.pick(mail,['sender','receiver','to','stamp','subject','text','html','read'])); 
+				filteredMails.push(_.pick(mail,['eID','sender','receiver','to','stamp','subject','text','html','read'])); 
 			});
 			
 			res.json({ mails: filteredMails, request: { time: new Date() } });

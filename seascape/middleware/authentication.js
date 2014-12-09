@@ -17,7 +17,11 @@ exports = module.exports = function(urls){
 					//
 					req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
 						if((!session)||(!session.email)) return res.redirect(urls.login);
-						callback(error, { email: session.email });
+						
+						req.database.models.users.findOne({ email: session.email }).exec(function(error, user) {
+							if((!user)||(!user.email)) return res.redirect(urls.login);
+							callback(error, { email: user.email, name: user.name });
+						});
 					});
 				}
 			}
