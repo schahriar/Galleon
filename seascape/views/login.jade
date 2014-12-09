@@ -1,8 +1,16 @@
 extends layout
 
 block content
-  h1= "Please Login"
-  form(name="login", action="/login", method="post")
-      input(type="text", name="email")
-      input(type="password", name="password")
-      input(type="submit", value="login")
+	h1= "Please Login"
+	form(class="form-horizontal", role="form", name="login", action="/login", method="post")
+		div.form-group
+			label(for="loginEmailInput", class="col-sm-2 control-label")= "Email"
+			div.col-sm-10
+				input(type="email", class="form-control", id="loginEmailInput", placeholder="Email", name="email")
+		div.form-group
+			label(for="loginEmailPassword", class="col-sm-2 control-label")= "Password"
+			div.col-sm-10
+				input(type="password", class="form-control", id="loginEmailPassword", placeholder="Password", name="password")
+		div.form-group
+			div(class="col-sm-offset-2 col-sm-10")
+				button(class="btn btn-default", type="submit")= "Login"
