@@ -19,10 +19,7 @@ gulp.task('less', function () {
 gulp.task('watch', function() {
   var bundler = watchify(browserify('./seascape/public/scripts/master.js', watchify.args));
 
-  // Optionally, you can apply transforms
-  // and other configuration options on the
-  // bundler just as you would with browserify
-  // bundler.transform('brfs');
+  var less = gulp.watch('./seascape/public/stylesheets/*.less',['less']);
 
   bundler.on('update', rebundle);
 
