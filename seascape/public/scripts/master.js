@@ -61,7 +61,7 @@ client.build = function(){
 		}
 	});
 
-	var MailList = Backbone.View.extend({
+	var Item = Backbone.View.extend({
 		el: 'section#list',
 		tagName:  "article",
 
@@ -86,7 +86,7 @@ client.build = function(){
 	
 	this.Model = Model;
 	this.Mail = new Collection;
-	this.View = new MailList;
+	this.Item = Item;
 }
 
 $(function(){ window.API = new client.build(); })
