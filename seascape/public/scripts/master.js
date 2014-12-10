@@ -34,6 +34,7 @@ client.build = function(){
 	});
 	
 	var Collection = Backbone.Collection.extend({
+		url: '/api',
 
 		// Reference to this collection's model.
 		model: Model,
