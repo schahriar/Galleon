@@ -68,7 +68,7 @@ client.build = function(){
 		el: 'section#list',
 		tagName:  "article",
 
-		template: _.template($('#mail-item-template').html()),
+		template: _.template('<article class="item"><header><%- subject %></header></article>'),
 
 		// The DOM events specific to an item.
 		events: {
