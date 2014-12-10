@@ -2,6 +2,9 @@ var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
 
+// Initialize jQuery in BackBone
+Backbone.$ = $;
+
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
 
 var client = new Object;
