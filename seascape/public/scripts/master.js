@@ -50,9 +50,9 @@ client.build = function(){
 		model: Model,
 		
 		initialize: function(){
-			this.model.on('sync', this.onSync);
-			this.model.on('error', this.onError);
-			this.model.on('destroy', this.onDestroy);
+			//this.model.on('sync', this.onSync);
+			//this.model.on('error', this.onError);
+			//this.model.on('destroy', this.onDestroy);
 		},
 
 		// Filter down the list of all unread emails.
@@ -76,7 +76,7 @@ client.build = function(){
 		},
 
 		initialize: function() {
-			this.listenTo(this.model, 'change', this.render);
+			//this.listenTo(this.model, 'change', this.render);
 			//this.listenTo(this.model, 'destroy', this.remove);
 		},
 
