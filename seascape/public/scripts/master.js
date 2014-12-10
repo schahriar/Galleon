@@ -31,7 +31,7 @@ client.build = function(){
 	var Collection = Backbone.Collection.extend({
 
 		// Reference to this collection's model.
-		model: Mail,
+		model: Model,
 
 		// Filter down the list of all unread emails.
 		unread: function() {
