@@ -60,9 +60,6 @@ client.build = function(){
 			return this.model.setRead();
 		}
 	});
-	
-	this.Model = Model;
-	this.Mail = new Collection;
 
 	var MailList = Backbone.View.extend({
 		el: 'section#list',
@@ -86,6 +83,10 @@ client.build = function(){
 		}
 
 	});
+	
+	this.Model = Model;
+	this.Mail = new Collection;
+	this.View = new MailList;
 }
 
 $(function(){ window.API = new client.build(); })
