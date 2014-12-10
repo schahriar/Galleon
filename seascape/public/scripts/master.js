@@ -17,11 +17,15 @@ client.build = function(){
 		// Default attributes
 		defaults: function() {
 			return {
+				eID: undefined,
 				from: { name:unknown, email:unknown },
 				to: new Array,
 				subject: unknown,
+				
 				text: empty,
-				html: unknown
+				html: unknown,
+				
+				stamp: undefined
 			};
 		},
 
@@ -31,6 +35,10 @@ client.build = function(){
 
 		store: function() {
 			this.save();
+		},
+		
+		setRead: function() {
+			this.set('read', true);
 		}
 
 	});
@@ -40,18 +48,24 @@ client.build = function(){
 
 		// Reference to this collection's model.
 		model: Model,
+		
+		initialize: function(){
+			this.model.on('sync', this.onSync);
+			this.model.on('error', this.onError);
+			this.model.on('destroy', this.onDestroy);
+		},
 
 		// Filter down the list of all unread emails.
-		unread: function() {
-			return this.filter(function(email){ return !email.get('read'); });
+		read: function(eID) {
+			return this.model.setRead();
 		}
 	});
 	
 	this.Model = Model;
 	this.Mail = new Collection;
 
-	/*var MailList = Backbone.View.extend({
-		
+	var MailList = Backbone.View.extend({
+		el: 'section#list',
 		tagName:  "article",
 
 		template: _.template($('#mail-item-template').html()),
@@ -67,10 +81,11 @@ client.build = function(){
 		},
 
 		render: function() {
+			this.$el.append(this.template(this.model.toJSON()));
 			return this;
 		}
 
-	});*/
+	});
 }
 
 $(function(){ window.API = new client.build(); })

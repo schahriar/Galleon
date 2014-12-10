@@ -23,9 +23,6 @@ router.route('/')
 			res.json(filteredMails);
 		});
 	})
-	.put(function(credentials, req, res, next) {
-		res.json(req.body);
-	})
 	.post(function(credentials, req, res, next) {
 		res.json(req.body);
 	})
@@ -35,5 +32,9 @@ router.route('/')
 	.post(function(credentials, req, res) {
 		res.json(req.body);
 	})
+
+router.route('/:eID').put(function(credentials, req, res, next) {
+	res.json(req.param('eID'),req.body);
+})
 
 module.exports = router;
