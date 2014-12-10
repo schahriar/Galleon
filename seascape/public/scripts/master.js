@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var Backbone = require('backbone');
 
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
@@ -42,7 +43,7 @@ client.build = function(){
 	this.Model = Model;
 	this.Mail = new Collection;
 
-	var MailList = Backbone.View.extend({
+	/*var MailList = Backbone.View.extend({
 		
 		tagName:  "article",
 
@@ -62,7 +63,7 @@ client.build = function(){
 			return this;
 		}
 
-	});
+	});*/
 }
 
 $(function(){ var Connection = new client.build(); console.log(Connection); })
