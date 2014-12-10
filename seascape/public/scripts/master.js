@@ -12,6 +12,8 @@ var client = new Object;
 client.build = function(){
 	var Model = Backbone.Model.extend({
 		urlRoot: '/api',
+		idAttribute: 'eID',
+		
 		// Default attributes
 		defaults: function() {
 			return {
