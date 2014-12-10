@@ -14,7 +14,7 @@ block content
 			input(type="password", id="loginEmailPassword", placeholder="Password", name="password")
 
 			// "Remember me" - Not yet implemented
-			label(for="loginIsPersistent")
-				input(type="checkbox", id="loginIsPersistent", name="isPersistent", value="Stay signed in?")
+			label(for="loginIsPersistent")= "Stay signed in?"
+				input(type="checkbox", id="loginIsPersistent", name="isPersistent")
 
 			button(type="submit", class="pure-button pure-button-primary")= "Sign In"

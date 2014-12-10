@@ -15,6 +15,8 @@ var users = require('./routes/users');
 var mail = require('./routes/mail');
 var mailbox = require('./routes/mailbox');
 
+var API = require('./routes/api');
+
 var app = express();
 
 // view engine setup
@@ -44,6 +46,8 @@ app.use('/login', login);
 app.use('/users', users);
 app.use('/mail', mail);
 app.use('/mailbox', mailbox);
+
+app.use('/api', API);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
