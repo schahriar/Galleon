@@ -62,7 +62,6 @@ client.build = function(){
 	});
 
 	var Item = Backbone.View.extend({
-		el: 'section#list',
 		tagName:  "article",
 
 		template: _.template('<article class="item"><header><%- subject %></header></article>'),
@@ -78,7 +77,7 @@ client.build = function(){
 		},
 
 		render: function() {
-			this.$(el).append(this.template(this.model.toJSON()));
+			this.$el.html(this.template(this.model.toJSON()));
 			return this;
 		}
 
