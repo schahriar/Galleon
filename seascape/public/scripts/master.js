@@ -64,3 +64,5 @@ client.build = function(){
 
 	});
 }
+
+$(function(){ var Connection = new client.build(); console.log(Connection); })
