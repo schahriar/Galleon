@@ -7,10 +7,10 @@ router.route('/')
 		// runs for all HTTP verbs first
 		req.getCredentials(function(error, credentials){
 			if(error) res.status(500).json({ error: "Not Authenticated" });
-			else next();
+			else next(credentials);
 		});
 	})
-	.get(function(req, res, next) {
+	.get(function(credentials, req, res, next) {
 		req.database.models.mail.find().where({ receiver: credentials.email, spamScore: { '<=': 5 } /* Spam filter */ }).exec(function(error, mails){
 			if(error) res.status(500).json({ error: "Not Authenticated" });
 			if((!mails)||(mails.length < 1)) mails = [];
@@ -23,16 +23,16 @@ router.route('/')
 			res.json(filteredMails);
 		});
 	})
-	.put(function(req, res, next) {
+	.put(function(credentials, req, res, next) {
 		res.json(req.body);
 	})
-	.post(function(req, res, next) {
+	.post(function(credentials, req, res, next) {
 		res.json(req.body);
 	})
-	.delete(function(req, res, next) {
+	.delete(function(credentials, req, res, next) {
 		res.json(req.body);
 	})
-	.post(function(req, res) {
+	.post(function(credentials, req, res) {
 		res.json(req.body);
 	})
 
