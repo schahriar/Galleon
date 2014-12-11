@@ -101,8 +101,10 @@ client.build = function(){
 		},
 		
 		addOne: function(mail) {
-		  var view = new ItemView({model: mail});
-		  $(this.el).append(view.render().el);
+			var el = $(this.el);
+			var view = new ItemView({model: mail});
+			if(!el.find('#' + el.get('eID')).length)
+				el.append(view.render().el);
 		},
 		
 		addAll: function() {
