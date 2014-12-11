@@ -61,7 +61,7 @@ client.build = function(){
 		}
 	});
 
-	var Item = Backbone.View.extend({
+	var ItemView = Backbone.View.extend({
 		tagName:  "article",
 
 		template: _.template('<header><%- subject %></header>'),
@@ -90,7 +90,7 @@ client.build = function(){
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
-		tagName:  "section#list",
+		el: $("section#list"),
 
 		template: _.template('<header><%- subject %></header>'),
 
@@ -107,8 +107,8 @@ client.build = function(){
 		},
 		
 		addOne: function(mail) {
-		  var view = new Item({model: mail});
-		  this.$(this.tagName).append(view.render().el);
+		  var view = new ItemView({model: mail});
+		  this.el.append(view.render().el);
 		},
 		
 		addAll: function() {
@@ -123,8 +123,8 @@ client.build = function(){
 	
 	this.Model = Model;
 	this.Mail = Mail;
-	this.Item = Item;
-	this.View = View;
+	this.ItemView = ItemView;
+	this.View = new View;
 }
 
 $(function(){ window.API = new client.build(); })
