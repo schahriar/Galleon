@@ -104,7 +104,7 @@ client.build = function(){
 			var el = $(this.el);
 			var view = new ItemView({model: mail});
 
-			if(!el.find('[data-eID="' + mail.get('eID')' + "]').length){
+			if(!el.find('[data-eID="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
 				el.append(newElement);
 				newElement.data('eID',mail.get('eID'));
