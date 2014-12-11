@@ -104,7 +104,7 @@ client.build = function(){
 			var el = $(this.el);
 			var view = new ItemView({model: mail});
 			if(!el.find('#' + el.get('eID')).length)
-				el.append(view.render().el);
+				el.append(view.render().el).prop('id',el.get('eID'));
 		},
 		
 		addAll: function() {
