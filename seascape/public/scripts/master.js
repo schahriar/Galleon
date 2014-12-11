@@ -64,11 +64,11 @@ client.build = function(){
 	var Item = Backbone.View.extend({
 		tagName:  "article",
 
-		template: _.template('<article class="item"><header><%- subject %></header></article>'),
+		template: _.template('<header><%- subject %></header>'),
 
 		// The DOM events specific to an item.
 		events: {
-			"click .item"   : "toggleDone"
+			"click .header"   : "clicked"
 		},
 
 		initialize: function() {
@@ -79,13 +79,52 @@ client.build = function(){
 		render: function() {
 			this.$el.html(this.template(this.model.toJSON()));
 			return this;
+		},
+		
+		clicked: function() {
+			console.log("Just letting you know someone clicked on something");
+		}
+
+	});
+	
+	var Mail = new Collection;
+	
+	var View = Backbone.View.extend({
+		tagName:  "section#list",
+
+		template: _.template('<header><%- subject %></header>'),
+
+		// The DOM events specific to an item.
+		events: {
+			"click .header"   : "clicked"
+		},
+
+		initialize: function() {
+			//this.listenTo(this.model, 'change', this.render);
+			//this.listenTo(this.model, 'destroy', this.remove);
+			
+			Mail.fetch();
+		},
+		
+		addOne: function(mail) {
+		  var view = new Item({model: mail});
+		  this.$(this.tagName).append(view.render().el);
+		},
+		
+		addAll: function() {
+		  Mail.each(this.addOne, this);
+		},
+
+		render: function() {
+			return this;
 		}
 
 	});
 	
 	this.Model = Model;
-	this.Mail = new Collection;
+	this.Mail = Mail;
 	this.Item = Item;
+	this.View = View;
 }
 
 $(function(){ window.API = new client.build(); })
