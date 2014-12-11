@@ -106,8 +106,8 @@ client.build = function(){
 
 			if(!el.find('[data-eID="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
-				el.append(newElement);
 				newElement.data('eID',mail.get('eID'));
+				el.append(newElement);
 			}
 		},
 		
