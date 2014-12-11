@@ -103,7 +103,7 @@ client.build = function(){
 		addOne: function(mail) {
 			var el = $(this.el);
 			var view = new ItemView({model: mail});
-			console.log(el.get('eID'),);
+			console.log(el.get('eID'));
 			if(!el.find('#' + el.get('eID')).length){
 				var newElement = $(view.render().el);
 				el.append(newElement);
