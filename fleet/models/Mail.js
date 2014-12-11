@@ -88,15 +88,5 @@ module.exports = {
 		// Hashsum enables content checking using a MD5 checksum
 		attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
 		callback();
-	},
-	
-	beforeValidate: function(attributes, callback) {
-		// Should round up about 14 + 2 + 32 = 48 characters at max
-		// Hashsum enables content checking using a MD5 checksum
-		
-		// Checks if eID exists
-		if((!attributes.eID)||(attributes.eID.length < 1))
-			attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
-		callback();
-	},
+	}
 };
