@@ -95,7 +95,7 @@ client.build = function(){
 		template: _.template('<header><div class="from"><%- from.email %></div><div class="subject"><%- subject %></div></header>'),
 
 		initialize: function() {
-			this.listenTo(Collection, 'all', this.render);
+			this.listenTo(Mail, 'all', this.render);
 			
 			Mail.fetch();
 		},
@@ -111,7 +111,6 @@ client.build = function(){
 
 		render: function() {
 			this.addAll();
-			return this;
 		}
 
 	});
