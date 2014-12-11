@@ -95,8 +95,7 @@ client.build = function(){
 		template: _.template('<header><div class="from"><%- from.email %></div><div class="subject"><%- subject %></div></header>'),
 
 		initialize: function() {
-			this.listenTo(this.model, 'change', this.render);
-			//this.listenTo(this.model, 'destroy', this.remove);
+			this.listenTo(Collection, 'all', this.render);
 			
 			Mail.fetch();
 		},
