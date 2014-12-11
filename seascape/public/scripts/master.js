@@ -108,7 +108,7 @@ client.build = function(){
 		
 		addOne: function(mail) {
 		  var view = new ItemView({model: mail});
-		  this.el.append(view.render().el);
+		  $(this.el).append(view.render().el);
 		},
 		
 		addAll: function() {
