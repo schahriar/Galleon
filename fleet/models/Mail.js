@@ -1,3 +1,6 @@
+var crypto = require('crypto');
+var shortId = require('shortid');
+
 module.exports = {
 	// Idenitity is a unique name for this model
   	identity: 'mail',
