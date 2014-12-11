@@ -87,7 +87,7 @@ module.exports = {
 		callback();
 	},
 	
-	beforeValidate: function(attributes, callback) 
+	beforeValidate: function(attributes, callback) {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables content checking using a MD5 checksum
 		
