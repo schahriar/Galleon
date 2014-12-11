@@ -90,7 +90,7 @@ client.build = function(){
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
-		el: $("section#list"),
+		el: "section#list",
 
 		template: _.template('<header><%- subject %></header>'),
 
