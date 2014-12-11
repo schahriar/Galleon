@@ -103,8 +103,12 @@ client.build = function(){
 		addOne: function(mail) {
 			var el = $(this.el);
 			var view = new ItemView({model: mail});
-			if(!el.find('#' + el.get('eID')).length)
-				el.append(view.render().el).prop('id',el.get('eID'));
+			console.log(el.get('eID'),);
+			if(!el.find('#' + el.get('eID')).length){
+				var newElement = $(view.render().el);
+				el.append(newElement);
+				newElement.prop('id',el.get('eID'));
+			}
 		},
 		
 		addAll: function() {
