@@ -1,17 +1,44 @@
-@base: #5493c1;
+@base: #F2F2F2;
+@secondary: #4EAEFF;
+
+@import "./lesshat";
 
 * { font-family: 'Lato', sans-serif; }
 
 body {
-	width: 80%;
-	margin: 0 auto;
-	
+	margin: 0 80px;
 	padding: 50px 0 0;
 }
 
-.container {
-	width: 920px;
-	margin: 50px auto;
+label.title {
+	font-size: 2em;
+	opacity: 0.2;
 }
 
+ul {
+	list-style: none;
+	padding: 0;
+}
+
+ul > li {
+	margin: 18px 0;
+	padding: 0px 10px;
+	width: 100%;
+	border-left: 2px solid @base;
+	opacity: 0.7;
+	.transition(padding 0.3s ease, opacity 0.3s ease);
+}
+
+ul > li:hover {
+	opacity: 1;
+	cursor: pointer;
+	padding: 0 12px;
+}
+
+ul > li.active, ul > li:active {
+	border-color: @secondary;
+	opacity: 0.9;
+}
+
+@import "./mail";
 @import "./forms";
