@@ -64,7 +64,7 @@ client.build = function(){
 	var ItemView = Backbone.View.extend({
 		tagName:  "article",
 
-		template: _.template('<header><%- subject %></header>'),
+		template: _.template('<header><div class="from"><%- sender %></div><div class="subject"><%- subject %></div><div class="date"><%- stamp.sent %></div></header><section class="html"></section>'),
 
 		// The DOM events specific to an item.
 		events: {
@@ -92,8 +92,6 @@ client.build = function(){
 	var View = Backbone.View.extend({
 		el: "section#list",
 
-		template: _.template('<header><div class="from"><%- from.email %></div><div class="subject"><%- subject %></div></header>'),
-
 		initialize: function() {
 			this.listenTo(Mail, 'all', this.render);
 			
@@ -107,7 +105,6 @@ client.build = function(){
 			if(!el.find('[data-eid="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
 				newElement.attr('data-eid',mail.get('eID'));
-				console.log(newElement, mail.get('eID'));
 				
 				el.append(newElement);
 			}
