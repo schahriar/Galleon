@@ -7,9 +7,6 @@ var moment = require('moment');
 // Initialize jQuery in BackBone
 Backbone.$ = $;
 
-// Make jQuery Global
-window.$ = $;
-
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
 
 var client = new Object;
@@ -114,7 +111,7 @@ client.build = function(){
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
-		el: $("section#list"),
+		el: Backbone.$("section#list"),
 
 		initialize: function() {
 			this.listenTo(Mail, 'all', this.render);
