@@ -22,10 +22,12 @@ gulp.task('watch', function() {
   var less = gulp.watch('./seascape/public/stylesheets/*.less',['less']);
 
   bundler.on('update', rebundle);
+  bundler.on('time', function(time){
+	gutil.log(gutil.colors.cyan('Browserify took: '),time,gutil.colors.red('ms'));
+  });
 
-  function rebundle() {
+  function rebundle() { 
     return bundler.bundle()
-      // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source('./seascape/public/dist/bundle.js'))
       .pipe(streamify(uglify()))
