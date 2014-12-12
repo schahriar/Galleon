@@ -72,6 +72,7 @@ client.build = function(){
 				+'<div class="email"><%- sender %></div>'
 				+'<div class="subject"><%- subject %></div>'
 				+'<div class="date"></div>'
+				+'<div class="excerpt"><%- text %></div>'
 			+'</header>'
 			+'<section class="mail" data-eid="<%- sender %>">'
 				+'<div class="content"></div>'
@@ -116,7 +117,9 @@ client.build = function(){
 			if(!el.find('[data-eid="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
 				newElement.attr('data-eid',mail.get('eID'));
-				newElement.find('.date').text(moment(mail.get('stamp').sent).format("MMM Do"));
+				
+				// Add better date parsing
+				newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
 				
 				el.append(newElement);
 			}
