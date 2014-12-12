@@ -25,6 +25,7 @@ client.build = function(){
 				subject: unknown,
 				
 				text: empty,
+				excerpt: empty,
 				html: unknown,
 				
 				stamp: undefined
@@ -32,7 +33,7 @@ client.build = function(){
 		},
 
 		initialize: function() {
-			
+			this.createExcerpt();
 		},
 
 		store: function() {
