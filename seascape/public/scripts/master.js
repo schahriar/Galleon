@@ -45,7 +45,11 @@ client.build = function(){
 		},
 		
 		createExcerpt: function() {
-			this.set('excerpt', this.get('text').substring(0,200) + '...');
+			var text = this.get('text');
+			var excerpt = text.substring(0, 200);
+			
+			if(text!=excerpt) excerpt += "...";
+			this.set('excerpt', excerpt);
 		}
 
 	});
@@ -85,7 +89,7 @@ client.build = function(){
 
 		// The DOM events specific to an item.
 		events: {
-			"click .header"   : "clicked"
+			"click"   : "clicked"
 		},
 
 		initialize: function() {
