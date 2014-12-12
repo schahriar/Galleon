@@ -41,6 +41,10 @@ client.build = function(){
 		
 		setRead: function() {
 			this.set('read', true);
+		},
+		
+		createExcerpt: function() {
+			this.set('excerpt', this.get('text').substring(0,200) + '...');
 		}
 
 	});
@@ -72,7 +76,7 @@ client.build = function(){
 				+'<div class="email"><%- sender %></div>'
 				+'<div class="subject"><%- subject %></div>'
 				+'<div class="date"></div>'
-				+'<div class="excerpt"><%- text %></div>'
+				+'<div class="excerpt"><%- excerpt %></div>'
 			+'</header>'
 			+'<section class="mail" data-eid="<%- sender %>">'
 				+'<div class="content"></div>'
