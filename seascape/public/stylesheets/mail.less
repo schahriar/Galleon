@@ -1,7 +1,7 @@
 article {
 	width: 100%;
 	margin: 3px 0;
-	padding: 7px 14px;
+	padding: 20px;
 	height: 80px;
 	background-color: #FFFFFF;
 	border-left: 3px solid #F2F2F2;
@@ -15,4 +15,27 @@ article:hover {
 
 article:nth-child(2n) {
 	background-color: #FAFAFA;
+}
+
+article header {
+	position: relative;
+}
+
+article header > .image {
+	border-radius: 50%;
+}
+
+article header > div {
+	display: inline-block;
+	float: left;
+}
+
+article header > .date {
+	position: absolute;
+	top: 0;
+	right: 10px;
+}
+
+article header > .subject {
+	display: block;
 }

@@ -66,7 +66,16 @@ client.build = function(){
 	var ItemView = Backbone.View.extend({
 		tagName:  "article",
 
-		template: _.template('<header><div class="from"><img class="image" src="http://placehold.it/64x64"/><%- sender %></div><div class="subject"><%- subject %></div><div class="date"></div></header><section class="mail" data-eid="<%- sender %>"><div class="content"></div></section>'),
+		template: _.template(
+			'<header>'
+				+'<img class="image" src="http://placehold.it/64x64"/>'
+				+'<div class="email"><%- sender %></div>'
+				+'<div class="subject"><%- subject %></div>'
+				+'<div class="date"></div>'
+			+'</header>'
+			+'<section class="mail" data-eid="<%- sender %>">
+				+'<div class="content"></div>'
+			+'</section>'),
 
 		// The DOM events specific to an item.
 		events: {
