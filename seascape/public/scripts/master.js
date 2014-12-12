@@ -2,6 +2,8 @@ var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
 
+var moment = require('moment');
+
 // Initialize jQuery in BackBone
 Backbone.$ = $;
 
@@ -64,7 +66,7 @@ client.build = function(){
 	var ItemView = Backbone.View.extend({
 		tagName:  "article",
 
-		template: _.template('<header><div class="from"><%- sender %></div><div class="subject"><%- subject %></div><div class="date"><%- stamp.sent %></div></header><section class="html"></section>'),
+		template: _.template('<header><div class="from"><img class="image" src="http://placehold.it/64x64"/><%- sender %></div><div class="subject"><%- subject %></div><div class="date"></div></header><section class="mail" data-eid="<%- sender %>"><div class="content"></div></section>'),
 
 		// The DOM events specific to an item.
 		events: {
@@ -105,6 +107,7 @@ client.build = function(){
 			if(!el.find('[data-eid="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
 				newElement.attr('data-eid',mail.get('eID'));
+				newElement.find('.date').text(moment(mail.get('stamp').sent).format("MMM Do"));
 				
 				el.append(newElement);
 			}
