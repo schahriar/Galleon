@@ -111,7 +111,7 @@ client.build = function(){
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
-		el: Backbone.$("section#list"),
+		el: $("section#list"),
 
 		initialize: function() {
 			this.listenTo(Mail, 'all', this.render);
@@ -120,17 +120,17 @@ client.build = function(){
 		},
 		
 		addOne: function(mail) {
-			var el = this.el;
+			this.el = $("section#list");
 			var view = new ItemView({model: mail});
 
-			if(!el.find('[data-eid="' + mail.get('eID') + '"]').length){
+			if(!this.el.find('[data-eid="' + mail.get('eID') + '"]').length){
 				var newElement = $(view.render().el);
 				newElement.attr('data-eid',mail.get('eID'));
 				
 				// Add better date parsing
 				newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
 				
-				el.append(newElement);
+				this.el.append(newElement);
 			}
 		},
 		
