@@ -7,6 +7,9 @@ var moment = require('moment');
 // Initialize jQuery in BackBone
 Backbone.$ = $;
 
+// Make jQuery Global
+window.$ = $;
+
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
 
 var client = new Object;
