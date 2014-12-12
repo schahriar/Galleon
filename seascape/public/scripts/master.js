@@ -111,7 +111,7 @@ client.build = function(){
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
-		el: "section#list",
+		el: $("section#list"),
 
 		initialize: function() {
 			this.listenTo(Mail, 'all', this.render);
@@ -120,7 +120,7 @@ client.build = function(){
 		},
 		
 		addOne: function(mail) {
-			var el = $(this.el);
+			var el = this.el;
 			var view = new ItemView({model: mail});
 
 			if(!el.find('[data-eid="' + mail.get('eID') + '"]').length){
