@@ -73,7 +73,7 @@ client.build = function(){
 				+'<div class="subject"><%- subject %></div>'
 				+'<div class="date"></div>'
 			+'</header>'
-			+'<section class="mail" data-eid="<%- sender %>">
+			+'<section class="mail" data-eid="<%- sender %>">'
 				+'<div class="content"></div>'
 			+'</section>'),
 
