@@ -78,14 +78,12 @@ client.build = function(){
 		template: _.template(
 			'<header>'
 				+'<img class="image" src="http://placehold.it/64x64"/>'
-				+'<div class="pure-g">'
-					+'<div class="pure-u-1-5 info">'
+				+'<div class="pure-g inline">'
+					+'<div class="pure-u-7-24 sender">'
 						+'<div class="email"><%- sender %></div>'
-						+'<div class="subject"><%- subject %></div>'
 					+'</div>'
-					+'<div class="pure-u-3-5 short">'
-						+'<div class="excerpt"><%- excerpt %></div>'
-					+'</div>'
+					+'<div class="pure-u-7-24 subject"><%- subject %></div>'
+					+'<div class="pure-u-1 excerpt"><%- excerpt %></div>'
 				+'</div>'
 				+'<div class="date"></div>'
 			+'</header>'),
@@ -213,15 +211,9 @@ client.build = function(){
 			if(toggle) {
 				$('#plist').removeClass('pure-u-8-24').addClass('pure-u-20-24');
 				$('#view').removeClass('pure-u-12-24').addClass('pure-u-0-24');
-				
-				$('#plist .info').removeClass('pure-u-4-5').addClass('pure-u-1-5');
-				$('#plist .short').removeClass('pure-u-0-24').addClass('pure-u-3-5');
 			}else{
 				$('#plist').removeClass('pure-u-20-24').addClass('pure-u-8-24');
 				$('#view').removeClass('pure-u-0-24').addClass('pure-u-12-24');
-				
-				$('#plist .info').removeClass('pure-u-1-5').addClass('pure-u-4-5');
-				$('#plist .short').removeClass('pure-u-3-5').addClass('pure-u-0-24');
 			}
 		},
 		

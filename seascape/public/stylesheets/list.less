@@ -4,6 +4,7 @@ article {
 	position: relative;
 	overflow: hidden;
 	
+	height: 64px;
 	margin: 3px 0;
 	padding: 0 3px;
 	background-color: #FFFFFF;
@@ -47,26 +48,15 @@ article header > div {
 	vertical-align: middle;
 }
 
-article header .info > .email {
-	margin-top: 10px;
-}
-
-article header .info > .subject {
+article header > .inline > div {
 	white-space: nowrap;
-	font-size: 0.9em;
-	display: block;
-	color: #0084F4;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 0.9em;
 }
 
-article header .short > .excerpt {
-	text-align: justify;
-	
-	color: #777;
-	line-height: 1.6;
-	overflow: hidden;
-}
+article header .excerpt { color: #777 }
+article header .subject { color: #0084F4 }
 
 article header .date {
 	position: absolute;
