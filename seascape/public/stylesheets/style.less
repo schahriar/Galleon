@@ -1,6 +1,8 @@
 @base: #F2F2F2;
 @secondary: #4EAEFF;
 
+@import (reference) "./mixins"
+
 * { font-family: 'Lato', sans-serif; }
 
 // Set App height to window height - requires JS fallback
@@ -33,11 +35,7 @@ ul > li {
 	border-left: 2px solid @base;
 	opacity: 0.7;
 	
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
-	transition: all 0.3s ease;
+	.transition (all 0.3s ease);
 }
 
 ul > li:hover {
@@ -51,6 +49,6 @@ ul > li.active, ul > li:active {
 	opacity: 0.9;
 }
 
-@import "./list";
-@import "./mail";
-@import "./forms";
+@import "./list"
+@import "./mail"
+@import "./forms"
