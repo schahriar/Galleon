@@ -165,6 +165,13 @@ client.build = function(){
 			this.view = $("#view");
 			
 			var element = $(e.currentTarget);
+			
+			/* -- Switch active element -- */
+			
+			element.parent().find('.active').removeClass('active');
+			element.addClass('active');
+			
+			/* -- --------------------- -- */
 
 			var mail = Mail.findWhere({ 'eID': element.attr('data-eid') });
 			
