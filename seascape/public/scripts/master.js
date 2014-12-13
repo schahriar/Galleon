@@ -82,15 +82,7 @@ client.build = function(){
 				+'<div class="subject"><%- subject %></div>'
 				+'<div class="date"></div>'
 				+'<div class="excerpt"><%- excerpt %></div>'
-			+'</header>'
-			+'<section class="mail" data-eid="<%- sender %>">'
-				+'<div class="content"></div>'
-			+'</section>'),
-
-		// The DOM events specific to an item.
-		events: {
-			"click"   : "clicked"
-		},
+			+'</header>'),
 
 		initialize: function() {
 			//this.listenTo(this.model, 'change', this.render);
@@ -100,18 +92,44 @@ client.build = function(){
 		render: function() {
 			this.$el.html(this.template(this.model.toJSON()));
 			return this;
-		},
-		
-		clicked: function() {
-			console.log("Just letting you know someone clicked on something");
 		}
+	});
+	
+	var MailView = Backbone.View.extend({
+		tagName:  "section",
 
+		template: _.template(
+			'<header class="pure-g">'
+				+'<h2><%- subject %></h2>'
+				+'<div class="pure-u-4-5">From <%- sender %> to <span>You</span></div>'
+				+'<div class="pure-u-1-5 date"></div>'
+			+'</header>'
+			+'<section>'
+				+'<div class="html"></div>'
+				+'<div class="reply></div>'
+			+'</section>'),
+
+		initialize: function() {
+			//this.listenTo(this.model, 'change', this.render);
+			//this.listenTo(this.model, 'destroy', this.remove);
+		},
+
+		render: function() {
+			//class="mail" data-eid="<%- sender %>">
+			this.$el.html(this.template(this.model.toJSON()));
+			return this;
+		}
 	});
 	
 	var Mail = new Collection;
 	
 	var View = Backbone.View.extend({
 		el: $("section#list"),
+		
+		// The DOM events specific to an item.
+		events: {
+			"click article"   : "load"
+		},
 
 		initialize: function() {
 			this.listenTo(Mail, 'all', this.render);
@@ -120,7 +138,9 @@ client.build = function(){
 		},
 		
 		addOne: function(mail) {
+			// Refresh element
 			this.el = $("section#list");
+			
 			var view = new ItemView({model: mail});
 
 			if(!this.el.find('[data-eid="' + mail.get('eID') + '"]').length){
@@ -136,6 +156,10 @@ client.build = function(){
 		
 		addAll: function() {
 		  Mail.each(this.addOne, this);
+		},
+		
+		load: function() {
+			console.log(this);
 		},
 
 		render: function() {
