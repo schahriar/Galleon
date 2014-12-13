@@ -200,8 +200,8 @@ client.build = function(){
 		},
 		
 		toggleMailView: function(toggle){
-			$('#plist').toggleClass('pure-u-20-24', toggle).toggleClass('pure-u-8-24', toggle);
-			$('#view').toggleClass('pure-u-0-24', toggle).toggleClass('pure-u-12-24', toggle);
+			$('#plist').toggleClass('pure-u-20-24', toggle).toggleClass('pure-u-8-24', !toggle);
+			$('#view').toggleClass('pure-u-0-24', toggle).toggleClass('pure-u-12-24', !toggle);
 		},
 		
 		/* Credits go to CodePlayer at http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design */
