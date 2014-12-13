@@ -125,6 +125,7 @@ client.build = function(){
 	
 	var View = Backbone.View.extend({
 		el: $("section#list"),
+		view: $("#view"),
 		
 		// The DOM events specific to an item.
 		events: {
@@ -159,8 +160,22 @@ client.build = function(){
 		},
 		
 		load: function(e) {
+			// Refresh elements
+			this.el = $("section#list");
+			this.view = $("#view");
+			
 			var element = $(e.currentTarget);
-			console.log(element);
+			var mail = Mail.find({ 'eID': element.attr('data-eid') });
+			
+			var view = new MailView({model: mail});
+			
+			var newElement = $(view.render().el);
+			newElement.attr('data-eid',mail.get('eID'));
+
+			// Add better date parsing
+			newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
+
+			this.view.appendTo(newElement);
 		},
 
 		render: function() {
