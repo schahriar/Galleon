@@ -203,9 +203,6 @@ client.build = function(){
 				// Add better date parsing
 				newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
 
-				// ADD XSS Protection
-				newElement.find('.html').html(mail.get('html'));
-
 				this.view.html(newElement);
 				
 				// Timeout for css3 animation
@@ -213,7 +210,8 @@ client.build = function(){
 					// Refresh element
 					this.view = $("#view");
 					
-					console.log(this.view.width(), this.view.find('.html'), this.view.find('.html *'));
+					// ADD XSS Protection
+					this.view.find('.html').html(mail.get('html'));
 
 					// Fix for html emails with wide content
 					this.view.find('.html *').css({ maxWidth: this.view.width() });
