@@ -165,10 +165,10 @@ client.build = function(){
 			this.view = $("#view");
 			
 			var element = $(e.currentTarget);
+
+			var mail = Mail.findWhere({ 'eID': element.attr('data-eid') });
 			
-			return console.log(element.attr('data-eid'), element, element.prop('data-eid'));
-			var mail = Mail.find({ 'eID': element.attr('data-eid') });
-			
+			if(!mail) console.warn("No EMAIL found!");
 			var view = new MailView({model: mail});
 			
 			var newElement = $(view.render().el);
