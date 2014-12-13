@@ -179,8 +179,10 @@ client.build = function(){
 			
 			/* -- Switch active element -- */
 			
-			element.parent().find('.active').removeClass('active');
-			element.addClass('active');
+			if(!isActive){
+				element.parent().find('.active').removeClass('active');
+				element.addClass('active');
+			}
 			
 			/* -- --------------------- -- */
 
