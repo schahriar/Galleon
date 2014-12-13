@@ -13,6 +13,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [ path.join(__dirname, 'less', 'includes') ]
     }))
+    .on('error', gutil.log.bind(gutil, 'Less Error'))
     .pipe(gulp.dest('./seascape/public/stylesheets/'));
 });
 
