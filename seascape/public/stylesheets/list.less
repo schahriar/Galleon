@@ -26,7 +26,7 @@ article:active, article.active {
 	border-left-color: #0084F4;
 }
 
-article.active .excerpt { color: #888 }
+article.active .short > .excerpt { color: #888 }
 
 article:nth-child(2n) {
 	background-color: #FAFAFA;
@@ -47,11 +47,11 @@ article header > div {
 	vertical-align: middle;
 }
 
-article header > .email {
+article header > .info > .email {
 	margin-top: 10px;
 }
 
-article header > .date {
+article header > .info > .date {
 	position: absolute;
 	top: 0;
 	right: 10px;
@@ -64,11 +64,9 @@ article header > .subject {
 	color: #0084F4;
 }
 
-article header > .excerpt {
-	display: block;
-	float: left;
-	width: 100%;
-	padding: 10px 0 5px;
+article header > .short > .excerpt {
+	text-align: justify;
+	
 	color: #777;
 	line-height: 1.6;
 	overflow: hidden;
