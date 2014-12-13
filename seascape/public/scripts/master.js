@@ -200,8 +200,13 @@ client.build = function(){
 		},
 		
 		toggleMailView: function(toggle){
-			$('#plist').toggleClass('pure-u-20-24', toggle).toggleClass('pure-u-8-24', !toggle);
-			$('#view').toggleClass('pure-u-0-24', toggle).toggleClass('pure-u-12-24', !toggle);
+			if(toggle) {
+				$('#plist').removeClass('pure-u-8-24').addClass('pure-u-20-24');
+				$('#view').removeClass('pure-u-12-24').addClass('pure-u-0-24');
+			}else{
+				$('#plist').removeClass('pure-u-20-24').addClass('pure-u-8-24');
+				$('#view').removeClass('pure-u-0-24').addClass('pure-u-12-24');
+			}
 		},
 		
 		/* Credits go to CodePlayer at http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design */
