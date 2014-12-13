@@ -165,6 +165,8 @@ client.build = function(){
 			this.view = $("#view");
 			
 			var element = $(e.currentTarget);
+			
+			return console.log(element.attr('data-eid'), element, element.prop('data-eid'));
 			var mail = Mail.find({ 'eID': element.attr('data-eid') });
 			
 			var view = new MailView({model: mail});
