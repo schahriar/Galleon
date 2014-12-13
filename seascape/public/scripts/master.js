@@ -208,13 +208,16 @@ client.build = function(){
 
 				this.view.html(newElement);
 				
-				// Refresh element
-				this.view = $("#view");
-				
-				console.log(this.view.width(), this.view.find('.html'), this.view.find('.html *'));
-				
-				// Fix for html emails with wide content
-				this.view.find('.html *').css({ maxWidth: this.view.width() });
+				// Timeout for css3 animation
+				setTimeout(function(){
+					// Refresh element
+					this.view = $("#view");
+					
+					console.log(this.view.width(), this.view.find('.html'), this.view.find('.html *'));
+
+					// Fix for html emails with wide content
+					this.view.find('.html *').css({ maxWidth: this.view.width() });
+				},300);
 			}else{
 				this.view.find('.html').html('...');
 			}
