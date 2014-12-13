@@ -6,6 +6,8 @@ var moment = require('moment');
 
 // Initialize jQuery in BackBone
 Backbone.$ = $;
+// Globalize jQuery
+window.$ = $;
 
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
 
@@ -208,7 +210,6 @@ client.build = function(){
 		},
 		
 		toggleMailView: function(toggle){
-			console.log($('.html'), $('.html').find('*'));
 			if(toggle) {
 				// Fix for performance lag when MailView pane is closed
 				$('.html').html('...');
