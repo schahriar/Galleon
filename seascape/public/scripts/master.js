@@ -169,6 +169,12 @@ client.build = function(){
 			
 			var element = $(e.currentTarget);
 			
+			/* -- Toggle MailView Pane -- */
+			
+			this.toggleMailView(element.is('.active'));
+			
+			/* -- -------------------- -- */
+			
 			/* -- Switch active element -- */
 			
 			element.parent().find('.active').removeClass('active');
@@ -191,6 +197,11 @@ client.build = function(){
 			newElement.find('.html').html(mail.get('html'));
 
 			this.view.html(newElement);
+		},
+		
+		toggleMailView: function(toggle){
+			$('#plist').toggleClass('pure-u-20-24', toggle).toggleClass('pure-u-8-24', toggle);
+			$('#view').toggleClass('pure-u-0-24', toggle).toggleClass('pure-u-12-24', toggle);
 		},
 		
 		/* Credits go to CodePlayer at http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design */
