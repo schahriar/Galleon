@@ -151,7 +151,7 @@ client.build = function(){
 				// Add better date parsing
 				newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
 				
-				this.el.append(newElement);
+				this.el.prepend(newElement);
 			}
 		},
 		
