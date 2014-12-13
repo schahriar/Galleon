@@ -158,8 +158,9 @@ client.build = function(){
 		  Mail.each(this.addOne, this);
 		},
 		
-		load: function() {
-			console.log(this);
+		load: function(e) {
+			var element = $(e.currentTarget);
+			console.log(element);
 		},
 
 		render: function() {
