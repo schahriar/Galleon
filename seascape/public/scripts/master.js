@@ -171,7 +171,9 @@ client.build = function(){
 			
 			/* -- Toggle MailView Pane -- */
 			
-			this.toggleMailView(element.is('.active'));
+			var isActive = element.is('.active');
+			this.toggleMailView(isActive);
+			if(isActive) element.removeClass('active');
 			
 			/* -- -------------------- -- */
 			
