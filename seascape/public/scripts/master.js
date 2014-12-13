@@ -78,10 +78,16 @@ client.build = function(){
 		template: _.template(
 			'<header>'
 				+'<img class="image" src="http://placehold.it/64x64"/>'
-				+'<div class="email"><%- sender %></div>'
-				+'<div class="subject"><%- subject %></div>'
+				+'<div class="pure-g">'
+					+'<div class="pure-u-1-5">'
+						+'<div class="email"><%- sender %></div>'
+						+'<div class="subject"><%- subject %></div>'
+					+'</div>'
+					+'<div class="pure-u-4-5">'
+						+'<div class="excerpt"><%- excerpt %></div>'
+					+'</div>'
+				+'</div>'
 				+'<div class="date"></div>'
-				+'<div class="excerpt"><%- excerpt %></div>'
 			+'</header>'),
 
 		initialize: function() {

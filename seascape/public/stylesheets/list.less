@@ -5,8 +5,7 @@ article {
 	overflow: hidden;
 	
 	margin: 3px 0;
-	padding: 20px;
-	min-height: 80px;
+	padding: 10px 20px;
 	background-color: #FFFFFF;
 	border-left: 3px solid #F2F2F2;
 	
@@ -23,11 +22,11 @@ article:hover {
 
 article:active, article.active {
 	opacity: 1;
-	background-color: #ECF4FC!important;
-	
 	border-left-width: 6px;
 	border-left-color: #0084F4;
 }
+
+article.active .excerpt { color: #888 }
 
 article:nth-child(2n) {
 	background-color: #FAFAFA;
@@ -39,9 +38,8 @@ article header {
 }
 
 article header > .image {
-	border-radius: 50%;
 	float: left;
-	margin: 0 10px 0 0;
+	margin: 0 18px 0 0;
 }
 
 article header > div {
@@ -70,9 +68,8 @@ article header > .excerpt {
 	display: block;
 	float: left;
 	width: 100%;
-	padding: 20px 0 10px;
-	color: #444;
-	text-indent: 16px;
+	padding: 10px 0 5px;
+	color: #777;
 	line-height: 1.6;
 	overflow: hidden;
 }
