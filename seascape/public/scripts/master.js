@@ -6,8 +6,6 @@ var moment = require('moment');
 
 // Initialize jQuery in BackBone
 Backbone.$ = $;
-// Globalize jQuery
-window.$ = $;
 
 var unknown = "unknown", fail = no = false, pass = yes = true, empty = "";
 
@@ -191,35 +189,37 @@ client.build = function(){
 			}
 			
 			/* -- --------------------- -- */
-
-			var mail = Mail.findWhere({ 'eID': element.attr('data-eid') });
 			
-			if(!mail) console.warn("No EMAIL found!");
-			var view = new MailView({model: mail});
-			
-			var newElement = $(view.render().el);
-			newElement.attr('data-eid',mail.get('eID'));
+			if(!isActive){
 
-			// Add better date parsing
-			newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
-			
-			// ADD XSS Protection
-			newElement.find('.html').html(mail.get('html'));
+				var mail = Mail.findWhere({ 'eID': element.attr('data-eid') });
 
-			this.view.html(newElement);
+				if(!mail) console.warn("No EMAIL found!");
+				var view = new MailView({model: mail});
+
+				var newElement = $(view.render().el);
+				newElement.attr('data-eid',mail.get('eID'));
+
+				// Add better date parsing
+				newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
+
+				// ADD XSS Protection
+				newElement.find('.html').html(mail.get('html'));
+
+				this.view.html(newElement);
+				
+				// Fix for html emails with wide content
+				this.view.find('.html *').css({ maxWidth: this.view.width() });
+			}else{
+				this.view.find('.html').html('...');
+			}
 		},
 		
 		toggleMailView: function(toggle){
 			if(toggle) {
-				// Fix for performance lag when MailView pane is closed
-				$('.html').html('...');
-				
 				$('#plist').removeClass('pure-u-8-24').addClass('pure-u-20-24');
 				$('#view').removeClass('pure-u-12-24').addClass('pure-u-0-24');
 			}else{
-				// Fix for html emails with wide content
-				$('.html').find('*').css({ maxWidth: $('#view').width() });
-				
 				$('#plist').removeClass('pure-u-20-24').addClass('pure-u-8-24');
 				$('#view').removeClass('pure-u-0-24').addClass('pure-u-12-24');
 			}
