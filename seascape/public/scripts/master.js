@@ -101,7 +101,7 @@ client.build = function(){
 		template: _.template(
 			'<header class="pure-g">'
 				+'<h2><%- subject %></h2>'
-				+'<div class="pure-u-4-5">From <%- sender %> to <span>You</span></div>'
+				+'<div class="pure-u-4-5 details">From <%- sender %> to <span>You</span></div>'
 				+'<div class="pure-u-1-5 date"></div>'
 			+'</header>'
 			+'<section>'
@@ -176,6 +176,9 @@ client.build = function(){
 
 			// Add better date parsing
 			newElement.find('.date').text(moment(mail.get('stamp').sent).startOf('day').fromNow());
+			
+			// ADD XSS Protection
+			newElement.find('.html').html(mail.get('html'));
 
 			this.view.html(newElement);
 		},

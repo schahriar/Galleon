@@ -3,9 +3,18 @@
 
 * { font-family: 'Lato', sans-serif; }
 
+// Set App height to window height - requires JS fallback
+html, body, .pure-g { height: 100%; width: 100%; }
+
 body {
 	margin: 0 80px;
 	padding: 50px 0 0;
+}
+
+body > .pure-g > div {
+	height: 100%;
+	overflow: hidden;
+	overflow-y: auto;
 }
 
 label.title {
@@ -43,5 +52,6 @@ ul > li.active, ul > li:active {
 	opacity: 0.9;
 }
 
+@import "./list";
 @import "./mail";
 @import "./forms";

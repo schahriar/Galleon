@@ -1,0 +1,72 @@
+article {
+	margin: 3px 0;
+	padding: 20px;
+	min-height: 80px;
+	background-color: #FFFFFF;
+	border-left: 3px solid #F2F2F2;
+	
+	opacity: 0.7;
+	
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+article:hover {
+	opacity: 0.9;
+	cursor: pointer;
+}
+
+article:active {
+	opacity: 1;
+}
+
+article:nth-child(2n) {
+	background-color: #FAFAFA;
+}
+
+article header {
+	position: relative;
+	overflow: hidden;
+}
+
+article header > .image {
+	border-radius: 50%;
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+article header > div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+article header > .email {
+	margin-top: 10px;
+}
+
+article header > .date {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	color: #0084F4;
+	font-size: 0.7em;
+}
+
+article header > .subject {
+	display: block;
+	color: #0084F4;
+}
+
+article header > .excerpt {
+	display: block;
+	float: left;
+	width: 100%;
+	padding: 20px 0 10px;
+	color: #444;
+	text-indent: 16px;
+	line-height: 1.6;
+	overflow: hidden;
+}
