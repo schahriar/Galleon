@@ -79,11 +79,10 @@ client.build = function(){
 			'<header>'
 				+'<img class="image" src="http://placehold.it/64x64"/>'
 				+'<div class="pure-g inline">'
-					+'<div class="pure-u-7-24 sender">'
+					+'<div class="pure-u-6-24 sender">'
 						+'<div class="email"><%- sender %></div>'
 					+'</div>'
-					+'<div class="pure-u-7-24 subject"><%- subject %></div>'
-					+'<div class="pure-u-1 excerpt"><%- excerpt %></div>'
+					+'<div class="pure-u-16-24 subject"><%- subject %> - <%- excerpt %></div>'
 				+'</div>'
 				+'<div class="date"></div>'
 			+'</header>'),
