@@ -50,6 +50,22 @@ ul > li.active, ul > li:active {
 	opacity: 0.9;
 }
 
+/* Inspired by CodePlayer at http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design */
+.ink {
+	display: block;
+	position: absolute;
+	background: @secondary;
+	border-radius: 100%;
+	.transform(scale(0));
+}
+
+.ink.animate {animation: ripple 0.65s linear;}
+@-webkit-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
+@-moz-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
+@-o-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
+@-ms-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
+@keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
+
 @import "./list"
 @import "./mail"
 @import "./forms"
