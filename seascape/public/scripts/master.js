@@ -210,13 +210,13 @@ client.build = function(){
 		toggleMailView: function(toggle){
 			if(toggle) {
 				// Fix for performance lag when MailView pane is closed
-				$('#view>.html').html('...');
+				$('#view .html').html('...');
 				
 				$('#plist').removeClass('pure-u-8-24').addClass('pure-u-20-24');
 				$('#view').removeClass('pure-u-12-24').addClass('pure-u-0-24');
 			}else{
 				// Fix for html emails with wide content
-				$('#view>.html *').css({ maxWidth: $('#view').width() });
+				$('#view .html *').css({ maxWidth: $('#view').width() });
 				
 				$('#plist').removeClass('pure-u-20-24').addClass('pure-u-8-24');
 				$('#view').removeClass('pure-u-0-24').addClass('pure-u-12-24');
