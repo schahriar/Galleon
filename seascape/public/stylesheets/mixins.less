@@ -1,9 +1,12 @@
-.transition (@transition, @transition2, @transition3) {
-	-webkit-transition: @transition, @transition2, @transition3;  
-	-moz-transition:    @transition, @transition2, @transition3;
-	-ms-transition:     @transition, @transition2, @transition3; 
-	-o-transition:      @transition, @transition2, @transition3;
-	transition: 		@transition, @transition2, @transition3;
+.transition (@transition, ...) {
+	// Thanks to http://www.toekneestuck.com/blog/2012/05/15/less-css-arguments-variable/
+	@transitions: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+	
+	-webkit-transition: @transitions;  
+	-moz-transition:    @transitions;
+	-ms-transition:     @transitions; 
+	-o-transition:      @transitions;
+	transition: 		@transitions;
 }
 
 .transform (@transform) {
