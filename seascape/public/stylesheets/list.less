@@ -5,7 +5,7 @@ article {
 	overflow: hidden;
 	
 	margin: 3px 0;
-	padding: 10px 20px;
+	padding: 0 3px;
 	background-color: #FFFFFF;
 	border-left: 3px solid #F2F2F2;
 	
@@ -52,8 +52,12 @@ article header .info > .email {
 }
 
 article header .info > .subject {
+	white-space: nowrap;
+	font-size: 0.9em;
 	display: block;
 	color: #0084F4;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 article header .short > .excerpt {
@@ -66,7 +70,7 @@ article header .short > .excerpt {
 
 article header .date {
 	position: absolute;
-	top: 0;
+	top: 6px;
 	right: 10px;
 	color: #0084F4;
 	font-size: 0.7em;
