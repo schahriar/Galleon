@@ -27,7 +27,7 @@ article:active, article.active {
 	border-left-color: #0084F4;
 }
 
-article.active .short > .excerpt { color: #888 }
+article:active header .short > .excerpt, article.active header .short > .excerpt { opacity: 0 }
 
 article:nth-child(2n) {
 	background-color: #FAFAFA;
@@ -36,6 +36,10 @@ article:nth-child(2n) {
 article header {
 	position: relative;
 	overflow: hidden;
+}
+
+article header *, article header * > * {
+	.transition (all 0.3s ease);
 }
 
 article header > .image {
@@ -48,7 +52,7 @@ article header > div {
 	vertical-align: middle;
 }
 
-article header > .inline > div {
+article header > .inline > div, article header > .inline > div > div  {
 	white-space: nowrap;
 	
 	overflow: hidden;
@@ -58,8 +62,8 @@ article header > .inline > div {
 	line-height: 64px;
 }
 
-article header .excerpt { color: #777 }
-article header .subject > span { color: #0084F4; font-weight: 800 }
+article header .short > .excerpt { color: #777; font-family: 'Lato'; }
+article header .short > .subject { color: #0084F4; font-weight: 800; font-family: 'Lato'; }
 
 article header .date {
 	position: absolute;
