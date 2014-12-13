@@ -211,6 +211,8 @@ client.build = function(){
 				// Refresh element
 				this.view = $("#view");
 				
+				console.log(this.view.width(), this.view.find('.html'), this.view.find('.html *'));
+				
 				// Fix for html emails with wide content
 				this.view.find('.html *').css({ maxWidth: this.view.width() });
 			}else{
