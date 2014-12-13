@@ -11,7 +11,7 @@ article {
 	
 	opacity: 0.7;
 	
-	.transition (all 0.3s ease, border 0.3s .3s ease);
+	.transition (all 0.3s ease, border 0.2s .3s ease-out);
 	.user-select(none);
 }
 
@@ -24,12 +24,6 @@ article:active, article.active {
 	opacity: 1;
 	border-left-width: 6px;
 	border-left-color: #0084F4;
-}
-
-article.active { min-height: 0 }
-
-article.active .excerpt {
-	display: none;
 }
 
 article:nth-child(2n) {

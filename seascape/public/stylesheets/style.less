@@ -54,12 +54,18 @@ ul > li.active, ul > li:active {
 .ink {
 	display: block;
 	position: absolute;
-	background: @secondary;
+	background: rgba(78, 174, 255, 0.52);
 	border-radius: 100%;
 	.transform(scale(0));
 }
 
-.ink.animate {animation: ripple 0.65s linear;}
+.ink.animate {
+	-webkit-animation: ripple 0.65s linear;
+	-moz-animation: ripple 0.65s linear;
+	-o-animation: ripple 0.65s linear;
+	-ms-animation: ripple 0.65s linear;
+	animation: ripple 0.65s linear;
+}
 @-webkit-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
 @-moz-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
 @-o-keyframes ripple { 100% {opacity: 0; transform: scale(2.5);} }
