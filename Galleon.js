@@ -11,6 +11,9 @@ var outgoing = require('./fleet/outgoing/outgoing');
 
 var outbound = require('./fleet/outgoing/outbound');
 
+var Server = require('./seascape/server');
+var Database = require('./fleet/connection');
+
 // Essential
 var eventEmmiter = require('events').EventEmitter;
 
@@ -18,19 +21,6 @@ var eventEmmiter = require('events').EventEmitter;
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
 var Spamc = require('spamc');
-
-/// Database
-	// Waterline
-	var Waterline = require('waterline');
-	var Database = require('./fleet/bootstrap');
-	// -------------------------------------------
-	// Adapters
-	var mongodb = require('sails-mongo');
-	// ----------------------------------
-	// Connection
-	var connections = require('./connections');
-	// ---------------------------------------------
-///
 /* -- ------- -- */
 
 var handlers = {};
@@ -109,6 +99,20 @@ module.exports = {
 				callback(error,response,transporter);
 			})
 		});
+	},
+	
+	server: function(options, callback, requirements) {
+		var self = module.exports.server;
+
+		// Defaults
+		//
+		if(!options) options = new Object;
+		if(!requirements) requirements = new Object;
+		
+		// Require Database connection
+		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
+		
+		Server(options.port, requirements.databaseConnection);
 	}
 }
 
@@ -118,22 +122,14 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
-		Database({
-			adapters: {
-				'mongodb': mongodb
-			},
-			collections: {
-				mail: require('./fleet/models/Mail')
-			},
-			connections: connections
-		}, function waterlineReady (err, ontology) {
-			if (err) throw err;
+		Database(function(error, connection){
+			if(error) throw error;
 			
 			console.log("Database connection established".success);
 			// Otherwise return the database connection
-			requirements.databaseConnection = ontology;
+			requirements.databaseConnection = connection;
 			handlers.needs.fulfill(call, args, requirements);
-		});
+		})
 	},
 	
 	portCheck: function(call, port, args, requirements){

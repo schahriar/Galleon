@@ -4,18 +4,23 @@
 
 process.title = 'galleon';
 
-var nopt = require("nopt")
-  , Stream = require("stream").Stream
-  , path = require("path")
-  , knownOpts = { "port" : [Number]
-                , "attachments" : path
-                , "mode" : [ "development", "production", "private" ]
-                , "server" : Boolean
-                }
-  , shortHands = { "p" : ["--port"]
-                 , "a" : ["--attachments"]
-                 , "m" : ["--mode"]
-                 , "s" : ["--server"]
-                 }
-  , parsed = nopt(knownOpts, shortHands, process.argv, 2);
-console.log(parsed)
+var nopt = require("nopt");
+var Stream = require("stream").Stream;
+var path = require("path");
+
+var Galleon = require("../Galleon");
+
+var options = { "port" : [Number]
+	, "attachments" : path
+	, "mode" : [ "development", "production", "private" ]
+	, "server" : Boolean
+}
+var short = { "p" : ["--port"]
+	, "a" : ["--attachments"]
+	, "m" : ["--mode"]
+	, "s" : ["--server"]
+}
+
+var parsed = nopt(knownOpts, shortHands, process.argv, 2);
+
+Galleon.server({ port: parsed.port });

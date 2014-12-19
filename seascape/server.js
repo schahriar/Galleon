@@ -82,9 +82,11 @@ app.use(function(err, req, res, next) {
 
 // Make Database connection
 // & Start the server
-Database(function(connection){
+module.exports = function(port, connection){
+	if(!port) port = 3000; // Default port;
+	
 	app.models = connection.collections;
 	app.connections = connection.connections;
-	
-	app.listen(3000);
-});
+
+	app.listen(port);
+}

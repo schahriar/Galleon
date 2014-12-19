@@ -24,8 +24,6 @@ module.exports = function(callback){
 		},
 		connections: connections
 	}, function waterlineReady (error, ontology) {
-		if (error) throw error;
-		// Otherwise return the database connection
-		callback(ontology);
+		callback(error, ontology);
 	});
 }
