@@ -26,7 +26,7 @@ colors.setTheme({
 pm2.connect(function(err) {
 
 	// Start a script on the current folder
-	pm2.start('galleon.js', { name: 'galleon-server', nodeArgs: process.argv }, function(err, proc) {
+	pm2.start('galleon.js', { name: 'galleon-server', scriptArgs: process.argv }, function(err, proc) {
 		if (err) throw err;
 
 		// Get all processes running
