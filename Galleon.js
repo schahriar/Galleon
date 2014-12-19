@@ -113,6 +113,8 @@ module.exports = {
 		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
 		
 		Server(options.port, requirements.databaseConnection);
+		
+		callback(undefined, true);
 	}
 }
 
