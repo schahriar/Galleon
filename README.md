@@ -37,6 +37,12 @@ npm install Galleon
 ----------
 Well, **Galleon** is your solution. All you need is a server a domain name and a basic setup to get a complete mail server up which can serve a ton of other domains and users but guess what? We'll cover all the steps in this same repository. The goal is to make it easy and secure for all developers to have their own private domain running.
 
+# Command line server
+You can easily run a Galleon server by installing the package globally and using the following command:
+```javascript
+galleon -p <port>
+```
+
 # Application Programming Interface (API)
 **Note:** The Alpha version will not include automation tools and web/user interfaces. This is to build a useful API to be integrated into porjects. This API will later be moved to a different repo or branch for developer access.
 
@@ -85,8 +91,7 @@ Make sure you read the license and don't participate in any form of abuse (Spam,
 
 --------
 ![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
-![version](http://img.shields.io/badge/Version-0.1.3%20(Working Class Hero)-2ecc71.svg?style=flat-square)
+![version](http://img.shields.io/badge/Version-0.1.4%20(Semi-Handsome Captain)-2ecc71.svg?style=flat-square)
 
 ## What's next?
 1. **XSS Filtering**
-2. **CLI**
