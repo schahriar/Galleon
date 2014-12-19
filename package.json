@@ -24,6 +24,7 @@
     "validator": "^3.22.1",
     "waterline": "^0.10.14"
   },
+  "preferGlobal": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/schahriar/Galleon.git"

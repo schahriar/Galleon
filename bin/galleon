@@ -17,5 +17,5 @@ var nopt = require("nopt")
                  , "m" : ["--mode"]
                  , "s" : ["--server"]
                  }
-  , parsed = nopt(knownOpts, shortHands, process.argv, 2)
+  , parsed = nopt(knownOpts, shortHands, process.argv, 2);
 console.log(parsed)
