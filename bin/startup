@@ -10,7 +10,7 @@ var pm2 = require('pm2');
 pm2.connect(function(err) {
 
   // Start a script on the current folder
-  pm2.start('galleon', { name: 'galleon-server', nodeArgs: process.argv }, function(err, proc) {
+  pm2.start('galleon.js', { name: 'galleon-server', nodeArgs: process.argv }, function(err, proc) {
     if (err) throw new Error('err');
 
     // Get all processes running

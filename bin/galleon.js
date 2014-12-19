@@ -1,9 +1,3 @@
-#!/usr/bin/env node
-
-'use strict';
-
-process.title = 'galleon';
-
 var nopt = require("nopt");
 var Stream = require("stream").Stream;
 var path = require("path");
