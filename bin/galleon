@@ -21,6 +21,6 @@ var short = { "p" : ["--port"]
 	, "s" : ["--server"]
 }
 
-var parsed = nopt(knownOpts, shortHands, process.argv, 2);
+var parsed = nopt(options, short, process.argv, 2);
 
 Galleon.server({ port: parsed.port });
