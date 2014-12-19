@@ -5,20 +5,37 @@
 process.title = 'galleon';
 
 var pm2 = require('pm2');
+var colors = require('colors'); // Better looking error handling
+
+colors.setTheme({
+	silly: 'rainbow',
+	input: 'grey',
+	verbose: 'cyan',
+	prompt: 'grey',
+	success: 'green',
+	data: 'grey',
+	help: 'cyan',
+	warn: 'yellow',
+	debug: 'grey',
+	bgWhite: 'bgWhite',
+	bold: 'bold',
+	error: 'red'
+});
 
 // Connect or launch PM2
 pm2.connect(function(err) {
 
-  // Start a script on the current folder
-  pm2.start('galleon.js', { name: 'galleon-server', nodeArgs: process.argv }, function(err, proc) {
-    if (err) throw new Error('err');
+	// Start a script on the current folder
+	pm2.start('galleon.js', { name: 'galleon-server', nodeArgs: process.argv }, function(err, proc) {
+		if (err) throw err;
 
-    // Get all processes running
-    pm2.list(function(err, process_list) {
-      console.log(process_list);
+		// Get all processes running
+		pm2.list(function(err, process_list) {
+			console.log("_Process Started_".verbose);
+			console.log("Type".help + "pm2 ls".bold + "to list all current processes".help);
 
-      // Disconnect to PM2
-      pm2.disconnect(function() { process.exit(0) });
-    });
-  });
+			// Disconnect to PM2
+			pm2.disconnect(function() { process.exit(0) });
+		});
+	});
 })
