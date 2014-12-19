@@ -212,10 +212,11 @@ client.build = function(){
 					
 					// ADD XSS Protection
 					this.view.find('.html').html(mail.get('html'));
-
+					
+					// Add some smoothness here B) 
 					// Fix for html emails with wide content
-					this.view.find('.html *').css({ maxWidth: this.view.width() });
-				},300);
+					this.view.find('.html *').css({ maxWidth: this.view.find('section').width() });
+				},400);
 			}else{
 				this.view.find('.html').html('...');
 			}

@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+'use strict';
+
+process.title = 'galleon';
+
+var nopt = require("nopt")
+  , Stream = require("stream").Stream
+  , path = require("path")
+  , knownOpts = { "port" : [Number]
+                , "attachments" : path
+                , "mode" : [ "development", "production", "private" ]
+                , "server" : Boolean
+                }
+  , shortHands = { "p" : ["--port"]
+                 , "a" : ["--attachments"]
+                 , "m" : ["--mode"]
+                 , "s" : ["--server"]
+                 }
+  , parsed = nopt(knownOpts, shortHands, process.argv, 2)
+console.log(parsed)
