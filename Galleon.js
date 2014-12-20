@@ -141,12 +141,15 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
+		if(handlers.needs.filled.databaseConnection)
+			return handlers.needs.fulfill(call, args, requirements);
+		
 		Database(function(error, connection){
 			if(error) throw error;
 			
 			console.log("Database connection established".success);
 			// Otherwise return the database connection
-			requirements.databaseConnection = connection;
+			handlers.needs.filled.databaseConnection = requirements.databaseConnection = connection;
 			handlers.needs.fulfill(call, args, requirements);
 		})
 	},
@@ -179,7 +182,9 @@ handlers.needs = {
 		
 		args.push(requirements);
 		call.apply(null,args);
-	}
+	},
+	
+	filled: {}
 }
 
 //
