@@ -67,7 +67,7 @@ Queue.prototype.start = function(databaseConnection) {
 	outbox.count({state:'transit'}).exec(function (err, count){
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
-		  outbox.find().where({ or[{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
+		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
 			  _.forEach(models, function(mail) {
 					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
