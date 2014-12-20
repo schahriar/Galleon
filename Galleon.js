@@ -149,8 +149,7 @@ handlers.needs = {
 			console.log("Database connection established".success);
 			// Otherwise return the database connection
 			requirements.databaseConnection = connection;
-			this.unique.database = connection;
-
+			
 			handlers.needs.fulfill(call, args, requirements);
 		})
 	},
@@ -183,10 +182,6 @@ handlers.needs = {
 		
 		args.push(requirements);
 		call.apply(null,args);
-	},
-	
-	unique: {
-		database: false
 	}
 }
 
