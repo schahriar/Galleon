@@ -68,12 +68,12 @@ Queue.prototype.start = function(databaseConnection) {
 	var maxConcurrent = 10;
 	var outbox = databaseConnection.collections.outbox;
 	
-	outbox.count({state:'transit'}).exec(function (err, count){
+	databaseConnection.collections.outbox.count({state:'transit'}).exec(function (err, count){
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
-		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
+		  databaseConnection.collections.outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
 			  _.forEach(models, function(mail) {
-					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
+					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
 						var OUTBOUND = new outbound();
@@ -82,11 +82,11 @@ Queue.prototype.start = function(databaseConnection) {
 
 							OUTBOUND.send(mail, function(error, response){
 								if(error){
-									outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
+									databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
 										if(!error) console.log("Message ".error + mail.subject + " denied".error);
 									});
 								}else{
-									outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
+									databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
 										if(!error) console.log("Message ".success + mail.subject + " sent".success);
 									});
 								}
