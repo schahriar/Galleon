@@ -143,8 +143,8 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
-		if(!!handlers.needs.filled.databaseConnection){
-			requirements.databaseConnection = handlers.needs.filled.databaseConnection;
+		if(this.unique.database != false){
+			requirements.databaseConnection = this.unique.database;
 			handlers.needs.fulfill(call, args, requirements);
 		}else{
 			Database(function(error, connection){
@@ -152,7 +152,9 @@ handlers.needs = {
 
 				console.log("Database connection established".success);
 				// Otherwise return the database connection
-				handlers.needs.filled.databaseConnection = requirements.databaseConnection = connection;
+				requirements.databaseConnection = connection;
+				this.unique.database = connection;
+				
 				handlers.needs.fulfill(call, args, requirements);
 			})
 		}
@@ -188,7 +190,9 @@ handlers.needs = {
 		call.apply(null,args);
 	},
 	
-	filled: {}
+	unique: {
+		database: false
+	}
 }
 
 //
