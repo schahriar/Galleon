@@ -31,7 +31,7 @@ pm2.connect(function(err) {
 
 		// Get all processes running
 		pm2.list(function(err, process_list) {
-			console.log(" _Process Started_ ".bgWhite);
+			console.log(" _Process Started_ ".prompt);
 			console.log("Type".help + " pm2 ls ".bold + "to list all current processes".help);
 
 			// Disconnect to PM2

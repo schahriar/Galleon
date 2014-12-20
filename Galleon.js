@@ -10,6 +10,7 @@ var incoming = require('./fleet/incoming/incoming');
 var outgoing = require('./fleet/outgoing/outgoing');
 
 var outbound = require('./fleet/outgoing/outbound');
+var queue = require('./fleet/outgoing/queue');
 
 var Server = require('./seascape/server');
 var Database = require('./fleet/connection');
@@ -69,12 +70,27 @@ module.exports = {
 		callback(undefined, INCOMING);
 	},
 	
-	dispatch: function(mail, options, transporter, callback, requirements){
+	dispatch: function(mail, options, callback, requirements){
+		var self = module.exports.dispatch;
+
+		// Defaults
+		//
+		if(!options) options = new Object;
+		if(!requirements) requirements = new Object;
+		
+		// Require Database connection
+		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
+		
+		var QUEUE = new queue();
+		QUEUE.add(requirements.databaseConnection, mail, options, callback);
+	},
+	
+	directDispatch: function(mail, options, transporter, callback, requirements){
 		/*
 			This function should be improved to dispatch
 			multiple emails.
 		*/
-		var self = module.exports.dispatch;
+		var self = module.exports.directDispatch;
 		
 		// Humane programming
 		if((!options)&&(!callback)&&(transporter.constructor !== Function)){
@@ -95,7 +111,8 @@ module.exports = {
 		OUTBOUND.createTransporter(transporter, function(error, transporter){
 			if(!!error) handlers.error.fatal('#OUTBOUND-Transporter-New-Failed',error);
 			
-			OUTBOUND.send(transporter, mail, options, function(error, response){
+			options.transporter = transporter;
+			OUTBOUND.send(mail, options, function(error, response){
 				callback(error,response,transporter);
 			})
 		});

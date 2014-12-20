@@ -19,6 +19,8 @@ module.exports = function(callback){
 		},
 		collections: {
 			mail: require('./models/Mail'),
+			queue: require('./models/Queue'),
+			
 			users: require('./models/Users'),
 			sessions: require('./models/Sessions')
 		},

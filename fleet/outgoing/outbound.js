@@ -68,11 +68,13 @@ Outbound.prototype.createTransporter = function(transporter, callback){
 
 // Currently only sends to individual emails
 // #Revisit - Should add an array option to pass multiple senders and receivers
-Outbound.prototype.send = function (transporter, mail, options, callback) {
+Outbound.prototype.send = function (mail, options, callback) {
 	var _this = this;
 	
 	// Humane programming
-	if((options.constructor !== Object)&&(!callback)) callback = options;
+	if(!options.transporter) transporter = nodemailer.createTransport();
+		else transporter = options.transporter;
+	if((options.constructor !== Object)&&(!callback)) { callback = options; options = {} }
 	
 	// Improve error handling here
 	if(!mail) return fail;
