@@ -141,8 +141,10 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
-		if(handlers.needs.filled.databaseConnection)
+		if(!!handlers.needs.filled.databaseConnection){
+			requirements.databaseConnection = handlers.needs.filled.databaseConnection;
 			return handlers.needs.fulfill(call, args, requirements);
+		}
 		
 		Database(function(error, connection){
 			if(error) throw error;
