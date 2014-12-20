@@ -82,9 +82,9 @@ module.exports = {
 		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
 		
 		var QUEUE = new queue();
-		QUEUE.add(requirements.databaseConnection, mail, options, function(error){
-			callback(error, true);
-		});
+		QUEUE.add(requirements.databaseConnection, mail, options);
+		
+		callback(error, QUEUE, requirements.databaseConnection);
 	},
 	
 	directDispatch: function(mail, options, transporter, callback, requirements){
@@ -145,17 +145,17 @@ handlers.needs = {
 	databaseConnection: function(call, options, args, requirements){
 		if(!!handlers.needs.filled.databaseConnection){
 			requirements.databaseConnection = handlers.needs.filled.databaseConnection;
-			return handlers.needs.fulfill(call, args, requirements);
-		}
-		
-		Database(function(error, connection){
-			if(error) throw error;
-			
-			console.log("Database connection established".success);
-			// Otherwise return the database connection
-			handlers.needs.filled.databaseConnection = requirements.databaseConnection = connection;
 			handlers.needs.fulfill(call, args, requirements);
-		})
+		}else{
+			Database(function(error, connection){
+				if(error) throw error;
+
+				console.log("Database connection established".success);
+				// Otherwise return the database connection
+				handlers.needs.filled.databaseConnection = requirements.databaseConnection = connection;
+				handlers.needs.fulfill(call, args, requirements);
+			})
+		}
 	},
 	
 	portCheck: function(call, port, args, requirements){
