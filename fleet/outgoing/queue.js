@@ -29,12 +29,14 @@ colors.setTheme({
 
 /* Initiate outbound queue. */
 var Queue = function(port, callback){
+	console.log("Queue created".success);
 	eventEmmiter.call(this);
 }
 
 util.inherits(Queue, eventEmmiter);
 
 Queue.prototype.add = function (databaseConnection, mail, options, callback) {
+	console.log("Queue added".success);
 	var _this = this;
 	
 	// Humane programming
@@ -61,6 +63,8 @@ Queue.prototype.add = function (databaseConnection, mail, options, callback) {
 };
 
 Queue.prototype.start = function(databaseConnection) {
+	console.log("Queue started".success);
+	
 	var maxConcurrent = 10;
 	var outbox = databaseConnection.collections.outbox;
 	

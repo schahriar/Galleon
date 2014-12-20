@@ -82,7 +82,9 @@ module.exports = {
 		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
 		
 		var QUEUE = new queue();
-		QUEUE.add(requirements.databaseConnection, mail, options, callback);
+		QUEUE.add(requirements.databaseConnection, mail, options, function(error){
+			callback(error, true);
+		});
 	},
 	
 	directDispatch: function(mail, options, transporter, callback, requirements){
