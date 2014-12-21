@@ -48,7 +48,7 @@ var queueStart = function (databaseConnection) {
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
 		  console.log(colors.success("Starting lookup"));
-		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(error, models){
+		  outbox.find().where({ or: [{ state: 'pending' }, { state: 'denied' }] }).limit(10).exec(function(error, models){
 			  if(error) return console.log(colors.error(error));
 			  
 			  console.log(colors.info(models.length + " mails found"));
