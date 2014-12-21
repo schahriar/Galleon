@@ -66,13 +66,13 @@ Queue.prototype.start = function(databaseConnection) {
 	console.log("Queue started".success);
 	
 	var maxConcurrent = 10;
-	var outbox = databaseConnection.collections.outbox;
 	
 	databaseConnection.collections.outbox.count({state:'transit'}).exec(function (err, count){
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
 		  databaseConnection.collections.outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
-			  _.forEach(models, function(mail) {
+			  console.log(models.success);
+			  /*_.forEach(models, function(mail) {
 					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
@@ -93,7 +93,7 @@ Queue.prototype.start = function(databaseConnection) {
 							})
 						});
 					});
-			  });
+			  });*/
 		  });
 	  }
 	});
