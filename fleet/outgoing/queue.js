@@ -57,7 +57,7 @@ var queueStart = function (databaseConnection) {
 						if(error) console.log(error.error);
 						
 						var OUTBOUND = new outbound();
-						OUTBOUND.createTransporter(transporter, function(error, transporter){
+						OUTBOUND.createTransporter(undefined, function(error, transporter){
 							if(error) console.log(error.error);
 
 							OUTBOUND.send(mail, function(error, response){
