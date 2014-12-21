@@ -144,6 +144,7 @@ handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
 		Database(function(error, connection){
+			console.log("Connection attempted".warn);
 			if(error) throw error;
 
 			console.log("Database connection established".success);
