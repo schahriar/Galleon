@@ -20,7 +20,7 @@ colors.setTheme({
 	prompt: 'grey',
 	success: 'green',
 	data: 'grey',
-	help: 'cyan',
+	info: 'cyan',
 	warn: 'yellow',
 	debug: 'grey',
 	bgWhite: 'bgWhite',
@@ -43,6 +43,7 @@ var queueStart = function (databaseConnection) {
 	var outbox = databaseConnection.collections.queue;
 	
 	databaseConnection.collections.queue.count({state:'transit'}).exec(function (err, count){
+		if(error) return console.log(error.error);
 		console.log(count.info);
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
@@ -94,6 +95,7 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 	}, function(error, model){
 		if(error) console.log(error.error);
 		
+		console.log(model.info);
 		// Start queue
 		queueStart(databaseConnection);
 		
