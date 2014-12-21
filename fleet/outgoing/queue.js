@@ -35,34 +35,7 @@ var Queue = function(port, callback){
 
 util.inherits(Queue, eventEmmiter);
 
-Queue.prototype.add = function (databaseConnection, mail, options, callback) {
-	console.log("Queue added".success);
-	var _this = this;
-	
-	// Humane programming
-	if((options.constructor !== Object)&&(!callback)) callback = options;
-	
-	databaseConnection.collections.queue.create({
-		sender: mail.from,
-		to: mail.to,
-		schedule: { attempted: moment() , scheduled: moment() },
-		attemtps: 0,
-		subject: mail.subject,
-		text: mail.text,
-		html: mail.html,
-
-		// STRING ENUM: ['pending', 'transit', 'sent', 'denied']
-		state: 'pending'
-	}, function(error, model){
-		// Start queue
-		Queue.prototype.start(databaseConnection);
-		
-		_this.emit('queued', error, model, databaseConnection);
-		callback(error, model);
-	});
-};
-
-Queue.prototype.start = function (databaseConnection) {
+var queueStart = function (databaseConnection) {
 	console.log("Queue started".success);
 	
 	var maxConcurrent = 10;
@@ -72,7 +45,6 @@ Queue.prototype.start = function (databaseConnection) {
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
 		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
-			  console.log(models.success);
 			  _.forEach(models, function(mail) {
 					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
@@ -99,5 +71,35 @@ Queue.prototype.start = function (databaseConnection) {
 	  }
 	});
 }
+
+var queueAdd = function (databaseConnection, mail, options, callback) {
+	console.log("Queue added".success);
+	var _this = this;
+	
+	// Humane programming
+	if((options.constructor !== Object)&&(!callback)) callback = options;
+	
+	databaseConnection.collections.queue.create({
+		sender: mail.from,
+		to: mail.to,
+		schedule: { attempted: moment() , scheduled: moment() },
+		attemtps: 0,
+		subject: mail.subject,
+		text: mail.text,
+		html: mail.html,
+
+		// STRING ENUM: ['pending', 'transit', 'sent', 'denied']
+		state: 'pending'
+	}, function(error, model){
+		// Start queue
+		queueStart(databaseConnection);
+		
+		_this.emit('queued', error, model, databaseConnection);
+		callback(error, model);
+	});
+};
+
+Queue.prototype.start = queueStart;
+Queue.prototype.add = queueAdd;
 
 module.exports = Queue;
