@@ -95,7 +95,7 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 		queueStart(databaseConnection);
 		
 		_this.emit('queued', error, model, databaseConnection);
-		callback(error, model);
+		if(callback) callback(error, model);
 	});
 };
 
