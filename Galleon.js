@@ -85,8 +85,6 @@ module.exports = {
 		
 		var QUEUE = new queue();
 		QUEUE.add(requirements.databaseConnection, mail, config);
-		
-		callback(error, QUEUE, requirements.databaseConnection);
 	},
 	
 	directDispatch: function(mail, options, transporter, callback, requirements){
