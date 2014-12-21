@@ -7,7 +7,7 @@ module.exports = {
 	connection: 'storage',
 	
 	types: {
-		stamp: function(time){
+		schedule: function(time){
 			return time.attempted && time.scheduled
 		}
 	},
@@ -33,10 +33,10 @@ module.exports = {
 		
 		schedule: {
 		  type: 'json',
-		  stamp: true
+		  required: true
 		},
 		
-		attemtps: {
+		attempts: {
 		  type: 'integer',
 		  required: true
 		},

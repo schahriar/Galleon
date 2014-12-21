@@ -84,8 +84,8 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 	databaseConnection.collections.queue.create({
 		sender: mail.from,
 		to: mail.to,
-		schedule: { attempted: moment().toISOString() , scheduled: moment().toISOString() },
-		attemtps: 0,
+		schedule: { attempted: moment().toISOString(), scheduled: moment().toISOString() },
+		attempts: 0,
 		subject: mail.subject,
 		text: mail.text,
 		html: mail.html,
