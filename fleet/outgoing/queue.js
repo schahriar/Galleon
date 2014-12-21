@@ -53,7 +53,7 @@ var queueStart = function (databaseConnection) {
 			  
 			  console.log(colors.info(models.length + " mails found"));
 			  _.forEach(models, function(mail) {
-					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
+					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
 						var OUTBOUND = new outbound();
@@ -62,11 +62,11 @@ var queueStart = function (databaseConnection) {
 
 							OUTBOUND.send(mail, function(error, response){
 								if(error){
-									databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
+									outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
 										if(!error) console.log("Message ".error + mail.subject + " denied".error);
 									});
 								}else{
-									databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
+									outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
 										if(!error) console.log("Message ".success + mail.subject + " sent".success);
 									});
 								}
