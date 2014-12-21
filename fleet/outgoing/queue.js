@@ -42,7 +42,7 @@ Queue.prototype.add = function (databaseConnection, mail, options, callback) {
 	// Humane programming
 	if((options.constructor !== Object)&&(!callback)) callback = options;
 	
-	databaseConnection.collections.outbox.create({
+	databaseConnection.collections.queue.create({
 		sender: mail.from,
 		to: mail.to,
 		schedule: { attempted: moment() , scheduled: moment() },
@@ -66,13 +66,14 @@ Queue.prototype.start = function(databaseConnection) {
 	console.log("Queue started".success);
 	
 	var maxConcurrent = 10;
+	var outbox = databaseConnection.collections.queue;
 	
-	databaseConnection.collections.outbox.count({state:'transit'}).exec(function (err, count){
+	outbox.count({state:'transit'}).exec(function (err, count){
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
-		  databaseConnection.collections.outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
+		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
 			  console.log(models.success);
-			  /*_.forEach(models, function(mail) {
+			  _.forEach(models, function(mail) {
 					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
@@ -93,7 +94,7 @@ Queue.prototype.start = function(databaseConnection) {
 							})
 						});
 					});
-			  });*/
+			  });
 		  });
 	  }
 	});
