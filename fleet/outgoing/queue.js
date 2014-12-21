@@ -10,6 +10,7 @@ var outbound = require('./outbound');
 var schedule = require('node-schedule');
 var colors = require('colors'); // Better looking error handling
 var moment = require('moment');
+var _ = require('lodash');
 /* -- ------- -- */
 
 colors.setTheme({
