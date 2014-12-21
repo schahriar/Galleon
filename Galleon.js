@@ -72,11 +72,8 @@ module.exports = {
 	
 	dispatch: function(mail, options, callback, requirements){
 		var self = module.exports.dispatch;
-
-		// Defaults
-		//
-		if(!options) options = new Object;
-		if(!requirements) requirements = new Object;
+		
+		console.log(requirements);
 		
 		// Require Database connection
 		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
