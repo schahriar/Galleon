@@ -95,7 +95,7 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 	}, function(error, model){
 		if(error) console.log(error.error);
 		
-		console.log(model.info);
+		console.log(colors.info(model));
 		// Start queue
 		queueStart(databaseConnection);
 		
