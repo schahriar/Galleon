@@ -67,6 +67,7 @@ var queueStart = function (databaseConnection) {
 						var OUTBOUND = new outbound();
 						OUTBOUND.send(parsedMail, function(error, response){
 							if(error){
+								console.log(colors.error(error));
 								outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
 									if(!error) console.log("Message ".error + mail.subject + " denied".error);
 								});
