@@ -84,7 +84,7 @@ module.exports = {
 		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, config, [mail, config, callback], requirements);
 		
 		var QUEUE = new queue();
-		QUEUE.add(requirements.databaseConnection, mail, options);
+		QUEUE.add(requirements.databaseConnection, mail, config);
 		
 		callback(error, QUEUE, requirements.databaseConnection);
 	},
