@@ -55,14 +55,14 @@ Queue.prototype.add = function (databaseConnection, mail, options, callback) {
 		state: 'pending'
 	}, function(error, model){
 		// Start queue
-		Queue.start(databaseConnection);
+		Queue.prototype.start(databaseConnection);
 		
 		_this.emit('queued', error, model, databaseConnection);
 		callback(error, model);
 	});
 };
 
-Queue.prototype.start = function(databaseConnection) {
+Queue.prototype.start = function (databaseConnection) {
 	console.log("Queue started".success);
 	
 	var maxConcurrent = 10;
