@@ -42,7 +42,8 @@ var queueStart = function (databaseConnection) {
 	var maxConcurrent = 10;
 	var outbox = databaseConnection.collections.queue;
 	
-	outbox.count({state:'transit'}).exec(function (err, count){
+	databaseConnection.collections.queue.count({state:'transit'}).exec(function (err, count){
+		console.log(count.info);
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
 		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(err, models){
@@ -74,7 +75,6 @@ var queueStart = function (databaseConnection) {
 }
 
 var queueAdd = function (databaseConnection, mail, options, callback) {
-	console.log("Queue added".success);
 	var _this = this;
 	
 	// Humane programming

@@ -73,7 +73,6 @@ module.exports = {
 	dispatch: function(mail, config, callback, requirements){
 		var self = module.exports.dispatch;
 		
-		console.log(requirements);
 		// Defaults
 		//
 		if(!config) config = new Object;
