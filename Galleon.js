@@ -70,13 +70,18 @@ module.exports = {
 		callback(undefined, INCOMING);
 	},
 	
-	dispatch: function(mail, options, callback, requirements){
+	dispatch: function(mail, config, callback, requirements){
 		var self = module.exports.dispatch;
 		
 		console.log(requirements);
+		// Defaults
+		//
+		if(!config) config = new Object;
+		if(!requirements) requirements = new Object;
+		//
 		
 		// Require Database connection
-		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, options, [options, callback], requirements);
+		if(!requirements.databaseConnection) return handlers.needs.databaseConnection(self, config, [config, callback], requirements);
 		
 		var QUEUE = new queue();
 		QUEUE.add(requirements.databaseConnection, mail, options);
