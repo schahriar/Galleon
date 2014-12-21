@@ -56,7 +56,7 @@ var queueStart = function (databaseConnection) {
 					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
-						console.log(colors.warn(mail));
+						console.log(mail);
 						
 						var parsedMail = {
 							from: mail.sender,
