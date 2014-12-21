@@ -65,21 +65,17 @@ var queueStart = function (databaseConnection) {
 						}
 						
 						var OUTBOUND = new outbound();
-						OUTBOUND.createTransporter(undefined, function(error, transporter){
-							if(error) console.log(colors.error(error));
-
-							OUTBOUND.send(parsedMail, {}, function(error, response){
-								if(error){
-									outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
-										if(!error) console.log("Message ".error + mail.subject + " denied".error);
-									});
-								}else{
-									outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
-										if(!error) console.log("Message ".success + mail.subject + " sent".success);
-									});
-								}
-							})
-						});
+						OUTBOUND.send(parsedMail, {}, function(error, response){
+							if(error){
+								outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
+									if(!error) console.log("Message ".error + mail.subject + " denied".error);
+								});
+							}else{
+								outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
+									if(!error) console.log("Message ".success + mail.subject + " sent".success);
+								});
+							}
+						})
 					});
 			  });
 		  });
