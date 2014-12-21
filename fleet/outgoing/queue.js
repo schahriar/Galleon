@@ -92,6 +92,8 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 		// STRING ENUM: ['pending', 'transit', 'sent', 'denied']
 		state: 'pending'
 	}, function(error, model){
+		if(error) console.log(error.error);
+		
 		// Start queue
 		queueStart(databaseConnection);
 		
