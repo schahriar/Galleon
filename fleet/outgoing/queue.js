@@ -57,7 +57,7 @@ var queueStart = function (databaseConnection) {
 						if(error) console.log(error.error);
 						
 						var parsedMail = {
-							from: mail.from,
+							from: mail.sender,
 							to: mail.to,
 							subject: mail.subject,
 							text: mail.text,
