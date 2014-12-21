@@ -33,8 +33,7 @@ module.exports = {
 		
 		schedule: {
 		  type: 'json',
-		  stamp: true,
-		  required: true
+		  stamp: true
 		},
 		
 		attemtps: {
