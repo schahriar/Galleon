@@ -46,7 +46,7 @@ var queueStart = function (databaseConnection) {
 		if(error) return console.log(colors.error(error));
 		console.log(colors.info(count));
 	  // Bit of a callback hell here
-	  if((count <= maxConcurrent)&&(count >= 1)){
+	  if(count <= maxConcurrent){
 		  outbox.find().where({ or: [{ status: 'pending' }, { status: 'denied' }] }).limit(10).exec(function(error, models){
 			  _.forEach(models, function(mail) {
 					databaseConnection.collections.outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
