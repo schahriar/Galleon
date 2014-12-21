@@ -56,11 +56,19 @@ var queueStart = function (databaseConnection) {
 					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
 						
+						var parsedMail = {
+							from: { address: mail.from },
+							to: { address: mail.to },
+							subject: mail.subject,
+							text: mail.text,
+							html: mail.html
+						}
+						
 						var OUTBOUND = new outbound();
 						OUTBOUND.createTransporter(undefined, function(error, transporter){
 							if(error) console.log(error.error);
 
-							OUTBOUND.send(mail, function(error, response){
+							OUTBOUND.send(parsedMail, function(error, response){
 								if(error){
 									outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
 										if(!error) console.log("Message ".error + mail.subject + " denied".error);
