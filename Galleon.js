@@ -17,6 +17,7 @@ var Database = require('./fleet/connection');
 
 // Essential
 var eventEmmiter = require('events').EventEmitter;
+var util         = require("util");
 
 // Utilities
 var portscanner  = require('portscanner');
@@ -42,9 +43,21 @@ colors.setTheme({
 	error: 'red'
 });
 
-module.exports = {
+var Galleon = function(config){
+	eventEmmiter.call(this);
+	
+	var _this = this;
+	
+	handlers.needs.databaseConnection(function(config, requirements){
+		_this.emit("database", requirements.databaseConnection);
+	}, config, [config], requirements);
+}
+
+util.inherits(Galleon, eventEmmiter);
+
+Galleon.prototype = {
 	dock: function(config, callback, requirements){
-		var self = module.exports.dock;
+		var self = Galleon.prototype.dock;
 
 		// Defaults
 		//
@@ -71,7 +84,7 @@ module.exports = {
 	},
 	
 	dispatch: function(mail, config, callback, requirements){
-		var self = module.exports.dispatch;
+		var self = Galleon.prototype.dispatch;
 		
 		// Defaults
 		//
@@ -86,41 +99,8 @@ module.exports = {
 		QUEUE.add(requirements.databaseConnection, mail, config);
 	},
 	
-	directDispatch: function(mail, options, transporter, callback, requirements){
-		/*
-			This function should be improved to dispatch
-			multiple emails.
-		*/
-		var self = module.exports.directDispatch;
-		
-		// Humane programming
-		if((!options)&&(!callback)&&(transporter.constructor !== Function)){
-			// Assign callback to options if transporter or callback are not defined
-			callback = options;
-			// Set transporter to undefined - Outbound automatically creates a new one
-			transporter = undefined;
-			// Set options to an empty object
-			options = new Object;
-		}else if((transporter.constructor === Function)&&(!callback)){
-			// Assign callback to transporter if no transporter is defined
-			callback = transporter;
-			// Set transporter to undefined - Outbound automatically creates a new one
-			transporter = undefined;
-		}
-		
-		var OUTBOUND = new outbound();
-		OUTBOUND.createTransporter(transporter, function(error, transporter){
-			if(!!error) handlers.error.fatal('#OUTBOUND-Transporter-New-Failed',error);
-			
-			options.transporter = transporter;
-			OUTBOUND.send(mail, options, function(error, response){
-				callback(error,response,transporter);
-			})
-		});
-	},
-	
 	server: function(options, callback, requirements) {
-		var self = module.exports.server;
+		var self = Galleon.prototype.server;
 
 		// Defaults
 		//
@@ -223,3 +203,5 @@ handlers.error = {
 		
 	}
 }
+
+module.exports = Galleon;
