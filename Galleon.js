@@ -159,14 +159,15 @@ var InternalMethods = {
 		portscanner.checkPortStatus(port, '127.0.0.1', function(error, status) {
 			if(error) console.error(error);
 			
-			// Status is 'open' if currently in use or 'closed' if available
-			if(status == 'open') callback(null, fail);
-			else if (status == 'closed') callback(null, pass);
-			
 			if(finalCallback){
 				if(status == 'open') finalCallback(fail);
 				else finalCallback(check);
+			}else{
+				// Status is 'open' if currently in use or 'closed' if available
+				if(status == 'open') callback(null, fail);
+				else if (status == 'closed') callback(null, pass);
 			}
+			
 		})
 	}
 }
