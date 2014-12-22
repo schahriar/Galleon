@@ -142,16 +142,25 @@ module.exports = {
 handlers.needs = {
 	
 	databaseConnection: function(call, options, args, requirements){
-		Database(function(error, connection){
-			console.log("Connection attempted".warn);
-			if(error) throw error;
-
-			console.log("Database connection established".success);
-			// Otherwise return the database connection
+		if(handlers.needs.unique.databaseConnection){
+			// Unique connection exists
+			// Fulfill with the existing connection
 			requirements.databaseConnection = connection;
-			
 			handlers.needs.fulfill(call, args, requirements);
-		})
+		}else{
+			Database(function(error, connection){
+				console.log("Connection attempted".warn);
+				if(error) throw error;
+
+				console.log("Database connection established".success);
+				// Otherwise return the database connection
+				requirements.databaseConnection = connection;
+				// Make connection unique
+				handlers.needs.unique.databaseConnection = connection;
+
+				handlers.needs.fulfill(call, args, requirements);
+			})
+		}
 	},
 	
 	portCheck: function(call, port, args, requirements){
@@ -182,6 +191,10 @@ handlers.needs = {
 		
 		args.push(requirements);
 		call.apply(null,args);
+	},
+	
+	unique: {
+		databaseConnection: undefined
 	}
 }
 
