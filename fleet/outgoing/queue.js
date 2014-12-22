@@ -58,8 +58,6 @@ var queueStart = function (databaseConnection) {
 						
 						var mail = mail[0]; // Update returns and Array
 						
-						console.log(mail);
-						
 						var parsedMail = {
 							from: mail.sender,
 							to: mail.to,
@@ -71,7 +69,6 @@ var queueStart = function (databaseConnection) {
 						var OUTBOUND = new outbound();
 						OUTBOUND.send(parsedMail, function(error, response){
 							if(error){
-								console.log(response, parsedMail);
 								console.log(colors.error(error));
 								outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
 									if(!error) console.log("Message ".error + parsedMail.subject + " denied".error);
@@ -108,8 +105,7 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 		state: 'pending'
 	}, function(error, model){
 		if(error) console.log(colors.error(error));
-		
-		console.log(colors.info(model));
+
 		// Start queue
 		queueStart(databaseConnection);
 		
