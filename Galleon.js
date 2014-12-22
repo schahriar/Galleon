@@ -50,7 +50,7 @@ var Galleon = function(config, requirements){
 	if(!requirements) requirements = new Object;
 	
 	handlers.needs.databaseConnection(function(config, _this, requirements){
-		console.log("test");
+		_this.emit('ready', true, null);
 	}, config, [config, this], requirements);
 	
 	eventEmmiter.call(this);
