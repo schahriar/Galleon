@@ -20,6 +20,7 @@ var eventEmmiter = require('events').EventEmitter;
 var util         = require("util");
 
 // Utilities
+var async = require("async");
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
 var _ = require('lodash');
@@ -140,26 +141,32 @@ var InternalMethods = {
 		var check = pass;
 		
 		// forEach is sync
-		ports.forEach(function(port){
+		ports.forEach(function(port, index, array){
+			var finalCallback = undefined;
+			
+			if(array.length-1 >= index) finalCallback = callback;
 			InternalMethods.checkPort(port, function(test) {
 				if(test == fail) {
 					check = fail;
 					// Log failure
 					console.warn("Port " + port + " is occupied");
 				}
-			});
+			}, check, finalCallback);
 		});
-		
-		callback(check);
 	},
 					  
-	checkPort: function(port, callback) {
+	checkPort: function(port, callback, check, finalCallback) {
 		portscanner.checkPortStatus(port, '127.0.0.1', function(error, status) {
 			if(error) console.error(error);
 			
 			// Status is 'open' if currently in use or 'closed' if available
-			if(status == 'open') return callback(fail);
-			else if (status == 'closed') return callback(pass);
+			if(status == 'open') callback(null, fail);
+			else if (status == 'closed') callback(null, pass);
+			
+			if(finalCallback){
+				if(status == 'open') finalCallback(fail);
+				else finalCallback(check);
+			}
 		})
 	}
 }
