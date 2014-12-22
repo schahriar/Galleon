@@ -20,10 +20,9 @@ var eventEmmiter = require('events').EventEmitter;
 var util         = require("util");
 
 // Utilities
-var async = require("async");
+var _ = require('lodash');
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
-var _ = require('lodash');
 var Spamc = require('spamc');
 /* -- ------- -- */
 
@@ -140,7 +139,7 @@ var InternalMethods = {
 	checkPorts: function(ports, callback){
 		var check = pass;
 		
-		// forEach is sync
+		// There should be a better way to do this
 		ports.forEach(function(port, index, array){
 			var finalCallback = undefined;
 			
