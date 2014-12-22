@@ -57,6 +57,8 @@ var Galleon = function(config, callback){
 	// Defaults
 	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
 	//
+	
+	// Internal
 	var _this = this;
 	if(!config) callback = config;
 	if(!callback) callback = function(){};
@@ -91,8 +93,9 @@ util.inherits(Galleon, eventEmmiter);
 
 var Methods = {
 	dock: function(callback){
-		// Require a port check
-		if(!requirements.portCheck) return handlers.needs.portCheck(self, config.port, [config, callback], requirements);
+		
+		// Internal
+		if(!callback) callback = function(){};
 
 		var INCOMING = new incoming();
 		INCOMING.listen(Defaults.ports.incoming, Globals.databaseConnection, new Spamc()); // Start SMTP Incoming Server
@@ -110,6 +113,10 @@ var Methods = {
 	},
 	
 	server: function(callback) {
+		
+		// Internal
+		if(!callback) callback = function(){};
+		
 		Server(Defaults.ports.server, Globals.databaseConnection);
 		callback(undefined, true);
 	}
