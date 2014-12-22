@@ -46,6 +46,7 @@ colors.setTheme({
 var Galleon = function(config, callback){
 	// Defaults
 	//
+	var _this = this;
 	if(!config) callback = config;
 	
 	Database(function(error, connection){
