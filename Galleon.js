@@ -43,25 +43,36 @@ colors.setTheme({
 	error: 'red'
 });
 
-var Galleon = function(config, requirements){
+var Galleon = function(config, callback){
 	// Defaults
 	//
-	if(!config) config = new Object;
-	if(!requirements) requirements = new Object;
+	if(!config) callback = config;
 	
-	handlers.needs.databaseConnection(function(config, _this, requirements){
-		_this.emit('ready', true, null);
-	}, config, [config, this], requirements);
+	Database(function(error, connection){
+		console.log("Connection attempted".warn);
+		if(error) {
+			console.error("Connection error!".error);
+			callback(error);
+			throw error;
+		}
+
+		console.log("Database connection established".success);
+		// Globalize database connection
+		Galleon.globals.databaseConnection = connection;
+		
+		// Emit -ready- event
+		_this.emit('ready');
+		callback(error, connection);
+	})
 	
 	eventEmmiter.call(this);
 }
 
 util.inherits(Galleon, eventEmmiter);
 
+Galleon.globals = {};
+
 Galleon.methods = {
-	ready: function(){
-		this.emit('ready', true, null);
-	},
 	dock: function(config, callback, requirements){
 		var self = Galleon.prototype.dock;
 
