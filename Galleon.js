@@ -144,7 +144,7 @@ var InternalMethods = {
 		ports.forEach(function(port, index, array){
 			var finalCallback = undefined;
 			
-			if(array.length-1 >= index) finalCallback = callback;
+			if(array.length-1 <= index) finalCallback = callback;
 			InternalMethods.checkPort(port, function(test) {
 				if(test == fail) {
 					check = fail;
