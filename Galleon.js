@@ -43,13 +43,18 @@ colors.setTheme({
 	error: 'red'
 });
 
-var Galleon = function(config){
+var Galleon = function(config, requirements){
 	eventEmmiter.call(this);
+	
+	// Defaults
+	//
+	if(!config) config = new Object;
+	if(!requirements) requirements = new Object;
 	
 	var _this = this;
 	
 	handlers.needs.databaseConnection(function(config, requirements){
-		_this.emit("database", requirements.databaseConnection);
+		_this.emit("ready", requirements.databaseConnection);
 	}, config, [config], requirements);
 }
 
