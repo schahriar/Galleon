@@ -45,16 +45,21 @@ colors.setTheme({
 
 var Galleon = function(config, requirements){
 	eventEmmiter.call(this);
-	util.inherits(Galleon, eventEmmiter);
+	
 	// Defaults
 	//
 	if(!config) config = new Object;
 	if(!requirements) requirements = new Object;
 	
-	this.emit('ready', true, null);
+	Galleon.methods.ready();
 }
 
-Galleon.prototype = {
+util.inherits(Galleon, eventEmmiter);
+
+Galleon.methods = {
+	ready: function(){
+		this.emit('ready', true, null);
+	},
 	dock: function(config, callback, requirements){
 		var self = Galleon.prototype.dock;
 
@@ -202,5 +207,9 @@ handlers.error = {
 		
 	}
 }
+
+Galleon.prototype.dock = Galleon.methods.dock;
+Galleon.prototype.dispatch = Galleon.methods.dispatch;
+Galleon.prototype.server = Galleon.methods.server;
 
 module.exports = Galleon;
