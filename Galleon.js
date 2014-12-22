@@ -121,7 +121,7 @@ var InternalMethods = {
 		
 		// forEach is sync
 		ports.forEach(function(port){
-			this.checkPort(port, function(test) {
+			InternalMethods.checkPort(port, function(test) {
 				if(test == fail) {
 					check = fail;
 					// Log failure
