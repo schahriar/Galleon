@@ -46,19 +46,20 @@ colors.setTheme({
 var Galleon = function(config, requirements){
 	eventEmmiter.call(this);
 	
-	var _this = this;
-	
 	// Defaults
 	//
 	if(!config) config = new Object;
 	if(!requirements) requirements = new Object;
 	
-	_this.emit('ready', true, null);
+	Galleon.prototype.ready();
 }
 
 util.inherits(Galleon, eventEmmiter);
 
 Galleon.prototype = {
+	ready: function(){
+		this.emit('ready', true, null);
+	},
 	dock: function(config, callback, requirements){
 		var self = Galleon.prototype.dock;
 
