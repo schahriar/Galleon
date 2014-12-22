@@ -53,9 +53,7 @@ var Galleon = function(config, requirements){
 	if(!config) config = new Object;
 	if(!requirements) requirements = new Object;
 	
-	handlers.needs.databaseConnection(function(config, _this, requirements){
-		_this.emit('ready', requirements.databaseConnection);
-	}, config, [config, _this], requirements);
+	_this.emit('ready', true, null);
 }
 
 util.inherits(Galleon, eventEmmiter);
