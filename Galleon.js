@@ -51,13 +51,10 @@ var Galleon = function(config, requirements){
 	if(!config) config = new Object;
 	if(!requirements) requirements = new Object;
 	
-	Galleon.prototype.ready();
+	this.emit('ready', true, null);
 }
 
 Galleon.prototype = {
-	ready: function(){
-		this.emit('ready', true, null);
-	},
 	dock: function(config, callback, requirements){
 		var self = Galleon.prototype.dock;
 
