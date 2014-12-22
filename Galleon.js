@@ -22,6 +22,7 @@ var util         = require("util");
 // Utilities
 var portscanner  = require('portscanner');
 var colors = require('colors'); // Better looking error handling
+var _ = require('lodash');
 var Spamc = require('spamc');
 /* -- ------- -- */
 
