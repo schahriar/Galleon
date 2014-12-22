@@ -51,15 +51,12 @@ var Galleon = function(config, requirements){
 	if(!config) config = new Object;
 	if(!requirements) requirements = new Object;
 	
-	Galleon.methods.ready();
+	this.emit('ready', true, null);
 }
 
 util.inherits(Galleon, eventEmmiter);
 
 Galleon.methods = {
-	ready: function(){
-		this.emit('ready', true, null);
-	},
 	dock: function(config, callback, requirements){
 		var self = Galleon.prototype.dock;
 
