@@ -69,13 +69,14 @@ var queueStart = function (databaseConnection) {
 						var OUTBOUND = new outbound();
 						OUTBOUND.send(parsedMail, function(error, response){
 							if(error){
+								console.log(response, parsedMail);
 								console.log(colors.error(error));
 								outbox.update({ eID: mail.eID }, { state: 'denied' }).exec(function(error, mail) {
-									if(!error) console.log("Message ".error + mail.subject + " denied".error);
+									if(!error) console.log("Message ".error + parsedMail.subject + " denied".error);
 								});
 							}else{
 								outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
-									if(!error) console.log("Message ".success + mail.subject + " sent".success);
+									if(!error) console.log("Message ".success + parsedMail.subject + " sent".success);
 								});
 							}
 						})
