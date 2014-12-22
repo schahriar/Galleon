@@ -56,16 +56,17 @@ var Defaults = {
 };
 
 var Galleon = function(config, callback){
-	// Defaults
-	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
-		_.defaults(config, Defaults);
-		Defaults = config;
-	//
 	
 	// Internal
 	var _this = this;
 	if(!config) callback = config;
 	if(!callback) callback = function(){};
+	
+	// Defaults
+	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
+		_.defaults(config, Defaults);
+		Defaults = config;
+	//
 	
 	
 	Database(function(error, connection){
