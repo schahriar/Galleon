@@ -71,7 +71,9 @@ var Galleon = function(config, callback){
 		}
 		
 		var ports = Defaults.ports;
-		InternalMethods.checkPorts(ports.incoming, ports.server);
+		InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
+			console.log(colors.success(check));
+		});
 
 		console.log("Database connection established".success);
 		// Globalize database connection
