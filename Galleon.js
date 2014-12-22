@@ -50,12 +50,15 @@ var Defaults = {
 		incoming: 25,
 		outgoing: 587,
 		server: 3000
-	}
+	},
+	dock: false
 };
 
 var Galleon = function(config, callback){
 	// Defaults
 	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
+		_.defaults(config, Defaults);
+		Defaults = config;
 	//
 	
 	// Internal
@@ -72,18 +75,26 @@ var Galleon = function(config, callback){
 			throw error;
 		}
 		
+		console.log("Database connection established".success);
+		
 		var ports = Defaults.ports;
 		InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
-			console.log(colors.success(check));
+			if(check) console.log("All requested ports are free");
+			
+			// Globalize database connection
+			Globals.databaseConnection = connection;
+			
+			if(Defaults.dock) {
+				Methods.dock(function(error, incoming) {
+					_this.emit('ready', error, incoming);
+					callback(error, incoming, connection);
+				});
+			}else{
+				// Emit -ready- event
+				_this.emit('ready');
+				callback(error, connection);
+			}
 		});
-
-		console.log("Database connection established".success);
-		// Globalize database connection
-		Globals.databaseConnection = connection;
-		
-		// Emit -ready- event
-		_this.emit('ready');
-		callback(error, connection);
 	})
 	
 	eventEmmiter.call(this);
