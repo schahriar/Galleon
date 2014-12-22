@@ -45,7 +45,7 @@ colors.setTheme({
 
 var Galleon = function(config, requirements){
 	eventEmmiter.call(this);
-	
+	util.inherits(Galleon, eventEmmiter);
 	// Defaults
 	//
 	if(!config) config = new Object;
@@ -53,8 +53,6 @@ var Galleon = function(config, requirements){
 	
 	Galleon.prototype.ready();
 }
-
-util.inherits(Galleon, eventEmmiter);
 
 Galleon.prototype = {
 	ready: function(){
