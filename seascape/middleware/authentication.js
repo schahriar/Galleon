@@ -1,9 +1,10 @@
 var moment = require('moment');
 var bcrypt = require('bcryptjs');
+var herb =   require('herb');
 
 exports = module.exports = function(urls){
 	return function authenticator(req, res, next){
-		
+
 		if(req.path != urls.login){
 			/// Basic cookie based authentication
 			var cookie = req.signedCookies.authentication;
@@ -17,7 +18,7 @@ exports = module.exports = function(urls){
 					//
 					req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function(error, session) {
 						if((!session)||(!session.email)) return res.redirect(urls.login);
-						
+
 						req.database.models.users.findOne({ email: session.email }).exec(function(error, user) {
 							if((!user)||(!user.email)) return res.redirect(urls.login);
 							callback(error, { email: user.email, name: user.name });
@@ -27,16 +28,18 @@ exports = module.exports = function(urls){
 			}
 			///
 		}
-		
+
 		req.signIn = function(req, res, callback){
 			var opened = moment();
 			var expires = opened.add(7, 'days');
+
+			herb.marker({ color: 'green' }).log('Login').log('requested for ').marker({ color: 'magenta'}).log(req.param('email'));
 			
 			req.database.models.users.findOne({ email: req.param('email') }).exec(function(error, user) {
 				if(error) return callback(error);
 				if(!user) return callback('User not found.');
 				if(!user.id) return callback('Email does not match a record');
-				
+
 				bcrypt.compare(req.param('password'), user.password, function(error, result) {
 					if(error) return callback(error);
 					if(result){
@@ -60,7 +63,7 @@ exports = module.exports = function(urls){
 				});
 			})
 		},
-			
+
 		req.signOut = function(req, res, callback){
 			req.database.models.sessions.destroy({ sessionID: req.signedCookies.authentication.sessionID}, function(error){
 				// Should do better logging here
@@ -73,7 +76,7 @@ exports = module.exports = function(urls){
 				return callback(undefined);
 			});
 		}
-		
+
 		next();
 	}
 }
