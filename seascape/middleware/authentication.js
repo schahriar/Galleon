@@ -33,8 +33,8 @@ exports = module.exports = function(urls){
 			var opened = moment();
 			var expires = opened.add(7, 'days');
 
-			herb.marker({ color: 'green' }).log('Login').log('requested for ').marker({ color: 'magenta'}).log(req.param('email'));
-			
+			herb.log('Login requested for', req.param('email'));
+
 			req.database.models.users.findOne({ email: req.param('email') }).exec(function(error, user) {
 				if(error) return callback(error);
 				if(!user) return callback('User not found.');
