@@ -77,6 +77,9 @@ VERSION: 0.2 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580))
 - Raw Import & Deletion
 - Encryption & SSL support
 
+## NOTICE
+**GALLEON & SEASCAPE** are both in beta stages and may/will have critical bugs. These bugs will be fixed as we get closer to a release version. You can [report any issues with this repository here](https://github.com/schahriar/galleon/issues/new).
+
 ## License
 Who doesn't love a [MIT license](https://raw.githubusercontent.com/schahriar/Galleon/master/LICENSE)?
 Make sure you read the license and don't participate in any form of abuse (Spam, etc.) using any parts of this project.
