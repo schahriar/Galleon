@@ -67,7 +67,7 @@ And use it on your port 2095
 - Built-in user management
 - & many more ...
 --------
-VERSION: 0.2.0 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580)) -> Beta 1
+VERSION: 0.2 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580)) -> Beta 1
 
 ## What's next?
 - DoS protection
