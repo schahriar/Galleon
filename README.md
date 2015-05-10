@@ -7,18 +7,18 @@ A badass SMTP mail server built on Node to make your life simpler.
 
 Get ready to sail into a new world featuring:
 - ~~***Michael Bay explosions***~~ *fixed*
-- Web based user interface (Available in beta release)
-- Spam protection by default (Almost fully implemented)
-- Simple Mail Transfer Protocol on your preferred ports (Listen, Process, Send)
-- Connection control (ratelimiting, bandwith limiting and other terms that makes me sound professional)
+- Web based user interface [SEASCAPE](https://github.com/schahriar/Seascape)
+- Spam protection by default [(Follow the tutorial here!)](https://github.com/schahriar/Galleon/blob/master/tutorials/SPAMASSASIN.md)
+- Simple Mail Transfer Protocol **SMTP** (Listen, Process, Send)
+- ~~Connection control (ratelimiting, bandwith limiting and other terms that makes me sound professional)~~ *soon*
 - Did I mention super fast? (Blame it on Node)
 
 [**\*Galleon**](http://en.wikipedia.org/wiki/Galleon) is named after multi-deck armed merchant ships dating back to 16th century.
 
 # Installation
-[Installation](tutorials/INSTALLATION.md) can be as simple as this:
+[Installation](tutorials/INSTALLATION.md) can be as simple as this (but follow the [directions](tutorials/INSTALLATION.md)):
 ```javascript
-npm install Galleon
+npm install -g galleon
 ```
 [Visit the tutorial for more info.](tutorials/INSTALLATION.md)
 
@@ -37,61 +37,46 @@ npm install Galleon
 ----------
 Well, **Galleon** is your solution. All you need is a server a domain name and a basic setup to get a complete mail server up which can serve a ton of other domains and users but guess what? We'll cover all the steps in this same repository. The goal is to make it easy and secure for all developers to have their own private domain running.
 
-# Command line server
+# Launch An API Server
 You can easily run a Galleon server by installing the package globally and using the following command:
 ```javascript
-galleon -p <port>
+galleon start
 ```
-
-# Application Programming Interface (API)
-**Note:** The Alpha version will not include automation tools and web/user interfaces. This is to build a useful API to be integrated into porjects. This API will later be moved to a different repo or branch for developer access.
-
-### Get email by docking Galleon
-```javascript
-var Galleon = require('Galleon');
-
-Galleon.dock({port:25}, function(error, incoming){
-	if(error) return console.log(error);
-	else console.log("Connection Established.");
-	
-	incoming.on('mail', function(connection, mail){
-		console.log(mail.from);
-		console.log(mail.subject);
-		console.log(mail.text);
-	});
-});
+**BUT**, to get a complete solution running you'll need to follow a few steps. The best part is that the following command does most of the work:
 ```
-### Send email by dispatching
-```javascript
-var Galleon = require('Galleon');
-
-Galleon.dispatch({
-		from:    'john.smith@example.com',
-		to:      'john.doe@example.com',
-		subject: 'We have Galleon running!',
-		text:    'We now have a mail server running!',
-		html:    '<h2>We now have a mail server running!</h2><hr>This is amazing<br><br><br><hr><b>John Smith</b>'
-		
-	}, function(error, response){
-		if(error) return console.log(error);
-		
-		console.log("Email Sent.");
-		console.log("Receiving Server responded\n" + response);
-	}
-});
+galleon setup
 ```
-# License
-Who doesn't love a [MIT license](https://raw.githubusercontent.com/schahriar/Galleon/master/LICENSE)?
-Make sure you read the license and don't participate in any form of abuse (Spam, etc.) using any parts of this project.
+You can install [Seascape](https://github.com/schahriar/Seascape) as your Webmail front-end *module* ... like this:
+```
+galleon install seascape
+galleon restart
+```
+And use it on your port 2095
 
-## Status
+## Features
+
+- Database and Raw storage
+- API (port 3080)
+- Outbound Support (Send Emails)
+- Daemon Manager ([PM2][https://github.com/Unitech/pm2])
+- Spam detection/reporting/learning etc. with **SPAMASSASIN**
+- Multiple Association
+- SPF & DKIM validation
+- CLI Automation
+- Session based auth with bcrypt
+- Built-in user management
+- & many more ...
 --------
-
-`Beta version (0.2.x)` will eliminate most if not all the limitations of the current memory based system by implementing a database control system.
-
---------
-![status](http://img.shields.io/badge/Production%20ready-nope%20(coming soon)-red.svg?style=flat-square)
-![version](http://img.shields.io/badge/Version-0.1.4%20(Semi-Handsome Captain)-2ecc71.svg?style=flat-square)
+VERSION: 0.2.0 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580)) -> Beta 1
 
 ## What's next?
-1. **XSS Filtering**
+- DoS protection
+- DKIM support for outbound mail
+- XSS protection
+- Full module support
+- Raw Import & Deletion
+- Encryption & SSL support
+
+## License
+Who doesn't love a [MIT license](https://raw.githubusercontent.com/schahriar/Galleon/master/LICENSE)?
+Make sure you read the license and don't participate in any form of abuse (Spam, etc.) using any parts of this project.

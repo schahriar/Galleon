@@ -1,54 +1,47 @@
 # Installation
 ### Basic Requirements
-1. A domain name (*Fully qualified but we'll get to that)
+1. A domain name (\*Fully qualified but we'll get to that)
 2. A server running Node.JS
-3. A document storage database (**Galleon** will be running only on MongoDB for the Alpha & Beta releases)
+3. A local database (**Galleon** supports most [Waterline](https://github.com/balderdashy/waterline) modules)
 
-**Note:** For now you'll have to run a few commands by yourself but soon Galleon will include a simple installation interface.
-### Install [MongoDB](http://docs.mongodb.org/manual/installation/)
+**Note:** Only NodeJS and Authbind is required for Galleon to function in a non-production environment. You should use a database and enable SpamAssasin by following the below directions to create a solid environment.
+### OPTIONAL -> Install [MongoDB](http://docs.mongodb.org/manual/installation/)
 ```
 sudo apt-get install -y mongodb-org
 sudo service mongod start
 ```
-### Install [NodeJS](http://nodejs.org/download/)
+### REQUIRED -> Install [NodeJS](http://nodejs.org/download/)
 ```
 sudo apt-get update
 sudo apt-get install nodejs npm
 ```
-### Install [SpamAssasin](http://spamassassin.apache.org/downloads.cgi?update=201402111327)
+### OPTIONAL -> Install [SpamAssasin](http://spamassassin.apache.org/downloads.cgi?update=201402111327)
+Note that Spam detection is automatically available once the SpamAssassin Daemon **SPAMD** is online (after installation). For automatic training and reporting [Refer to the tutorial here!](https://github.com/schahriar/Galleon/blob/master/tutorials/SPAMASSASIN.md)
 ```
 sudo apt-get install spamassassin spamc
 ```
 ### Install [Galleon](https://github.com/schahriar/Galleon)
+Make sure to include the *-g* flag in order to enable CLI functions.
 ```javascript
-npm install Galleon
+npm install -g Galleon
 ```
 
 -------
-## Important
-Galleon requires bind access to two ports (SMTP: 25, SMTPS: 587) and you will not be able to bind to ports lower than 1024 without root access. While it would be possible to run Galleon as root it is highly not recommeneded to run any node application via root but a module called **authbind** provides this functionality for Galleon.
+## Setup
+Run the following command to setup local directories and database connection:
+```
+galleon setup
+```
 
-*Setting up authbind on most linux distribution would look like this:*
-```
-sudo apt-get install authbind
-```
-Once you have installed authbind run the following to configure port 25 (remember to replace <user> with current OS user's username):
-```
-sudo touch /etc/authbind/byport/25
-sudo chown <user> /etc/authbind/byport/25
-sudo chmod 755 /etc/authbind/byport/25
-```
-Run the same commands but replace port 587 with 25 to enable SMTPS access.
+-------
+## Authbind
+You'll need to setup **authbind** before running Galleon. [Check out the tutorial here!](https://github.com/schahriar/Galleon/blob/master/tutorials/AUTHBIND.md)
 
-**Now** you can run Galleo (wait for a startup script in the Beta release) or your own startup script using:
+**After setting up Authbind** you can run Galleon using:
 ```
-authbind node <script.js>
+authbind --deep galleon start
 ```
-Or to run it indefinitely install **Forever**:
-```
-npm install forever
-```
-& run:
-```
-authbind --deep forever <script.js>
-```
+
+-------
+## Front-end interface
+Galleon no longer packages a front-end interface but rather provides an API. You can install [**Seascape** from NPM](https://npm.com/schahriar/galleon-seascape) and serve as a front-facing interface.

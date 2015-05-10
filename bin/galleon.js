@@ -1,6 +1,5 @@
-var nopt = require("nopt");
+var argv = require('yargs').argv;
 var Stream = require("stream").Stream;
-var path = require("path");
 var colors = require('colors'); // Better looking error handling
 
 colors.setTheme({
@@ -20,20 +19,10 @@ colors.setTheme({
 
 var Galleon = require("../Galleon");
 
-var options = { "port" : [Number]
-	, "attachments" : path
-	, "mode" : [ "development", "production", "private" ]
-	, "server" : Boolean
-}
-var short = { "p" : ["--port"]
-	, "a" : ["--attachments"]
-	, "m" : ["--mode"]
-	, "s" : ["--server"]
-}
-
-var parsed = nopt(options, short, process.argv, 2);
-
-Galleon.server({ port: parsed.port }, function(error, hasStarted){
-	if(error) console.log(error.error);
-	if(hasStarted) console.log("Server started...".help);
-});
+var g = new Galleon({ port: argv.port || argv.p, dock: true });
+g.on('ready', function(){
+	g.server(function(error, hasStarted){
+		if(error) console.log(error.error);
+		if(hasStarted) console.log("Server started...".help);
+	});
+})

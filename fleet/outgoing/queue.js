@@ -38,26 +38,25 @@ util.inherits(Queue, eventEmmiter);
 
 var queueStart = function (databaseConnection) {
 	console.log("Queue started".success);
-	
+
 	var maxConcurrent = 10;
 	var outbox = databaseConnection.collections.queue;
-	
+
 	databaseConnection.collections.queue.count({state:'transit'}).exec(function (error, count){
 		if(error) return console.log(colors.error(error));
 		console.log(colors.info(count + " mails in transit"));
 	  // Bit of a callback hell here
 	  if(count <= maxConcurrent){
-		  console.log(colors.success("Starting lookup"));
 		  outbox.find().where({ or: [{ state: 'pending' }, { state: 'denied' }] }).limit(10).exec(function(error, models){
 			  if(error) return console.log(colors.error(error));
-			  
-			  console.log(colors.info(models.length + " mails found"));
+
+			  console.log(colors.info(models.length + " mails found in queue"));
 			  _.forEach(models, function(mail) {
 					outbox.update({ eID: mail.eID }, { state: 'transit' }).exec(function(error, mail) {
 						if(error) console.log(error.error);
-						
+
 						var mail = mail[0]; // Update returns and Array
-						
+
 						var parsedMail = {
 							from: mail.sender,
 							to: mail.to,
@@ -65,7 +64,7 @@ var queueStart = function (databaseConnection) {
 							text: mail.text,
 							html: mail.html
 						}
-						
+
 						var OUTBOUND = new outbound();
 						OUTBOUND.send(parsedMail, function(error, response){
 							if(error){
@@ -74,8 +73,31 @@ var queueStart = function (databaseConnection) {
 									if(!error) console.log("Message ".error + parsedMail.subject + " denied".error);
 								});
 							}else{
-								outbox.update({ eID: mail.eID }, { state: 'sent' }).exec(function(error, mail) {
-									if(!error) console.log("Message ".success + parsedMail.subject + " sent".success);
+								outbox.findOne({ eID: mail.eID }).exec(function(error, mail) {
+									// Move from Queue to Mailbox
+									databaseConnection.collections.mail.create({
+										association: /(?:"?([^"]*)"?\s)?(?:<?(.+@[^>]+)>?)/.exec(mail.sender)[2],
+										sender: mail.sender,
+										receiver: mail.to,
+										to: mail.to,
+										stamp: { sent: new Date(), received: new Date() },
+										subject: mail.subject,
+										text: mail.text,
+										html: mail.html,
+
+										read: false,
+										trash: false,
+										sent: true,
+
+										spam: false,
+										spamScore: 0,
+
+										// STRING ENUM: ['pending', 'approved', 'denied']
+										state: 'approved'
+									}, function(error, model){
+										if(error) console.log(error);
+										if(!error) console.log("Message ".success + parsedMail.subject + " sent".success);
+									})
 								});
 							}
 						})
@@ -88,18 +110,18 @@ var queueStart = function (databaseConnection) {
 
 var queueAdd = function (databaseConnection, mail, options, callback) {
 	var _this = this;
-	
+
 	// Humane programming
 	if((options.constructor !== Object)&&(!callback)) callback = options;
-	
+
 	databaseConnection.collections.queue.create({
 		sender: mail.from,
 		to: mail.to,
 		schedule: { attempted: moment().toISOString(), scheduled: moment().toISOString() },
 		attempts: 0,
 		subject: mail.subject,
-		text: mail.text,
-		html: mail.html,
+		text: mail.text || "",
+		html: mail.html || "",
 
 		// STRING ENUM: ['pending', 'transit', 'sent', 'denied']
 		state: 'pending'
@@ -108,7 +130,7 @@ var queueAdd = function (databaseConnection, mail, options, callback) {
 
 		// Start queue
 		queueStart(databaseConnection);
-		
+
 		_this.emit('queued', error, model, databaseConnection);
 		if(callback) callback(error, model);
 	});

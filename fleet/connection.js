@@ -6,21 +6,18 @@
 	// Adapters
 	var mongodb = require('sails-mongo');
 	// ----------------------------------
-	// Connection
-	var connections = require('../connections');
-	// ---------------------------------------------
 ///
 /* -- ------- -- */
 
-module.exports = function(callback){
+module.exports = function(connections, callback){
 	Database({
 		adapters: {
-			'mongodb': mongodb
+			'sails-mongo': mongodb
 		},
 		collections: {
 			mail: require('./models/Mail'),
 			queue: require('./models/Queue'),
-			
+
 			users: require('./models/Users'),
 			sessions: require('./models/Sessions')
 		},
