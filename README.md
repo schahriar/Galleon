@@ -58,7 +58,7 @@ And use it on your port 2095
 - Database and Raw storage
 - API (port 3080)
 - Outbound Support (Send Emails)
-- Daemon Manager ([PM2][https://github.com/Unitech/pm2])
+- Daemon Manager [PM2][https://github.com/Unitech/pm2]
 - Spam detection/reporting/learning etc. with **SPAMASSASIN**
 - Multiple Association
 - SPF & DKIM validation

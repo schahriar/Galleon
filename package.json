@@ -43,7 +43,8 @@
     "url": "git://github.com/schahriar/Galleon.git"
   },
   "bin": {
-    "Galleon": "bin/startup"
+    "Galleon": "bin/startup",
+    "galleon": "bin/startup"
   },
   "scripts": {
     "start": "node ./seascape/server.js"
@@ -51,5 +52,5 @@
   "main": "Galleon.js",
   "license": "MIT",
   "engine": "node 0.11.x",
-  "version": "0.2.1"
+  "version": "0.2.2"
 }
