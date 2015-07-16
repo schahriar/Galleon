@@ -52,5 +52,5 @@
   "main": "Galleon.js",
   "license": "MIT",
   "engine": "node 0.11.x",
-  "version": "0.2.2"
+  "version": "0.2.3"
 }

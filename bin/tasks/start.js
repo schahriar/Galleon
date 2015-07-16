@@ -1,5 +1,6 @@
 var pm2 = require('pm2');
 var _ = require('lodash');
+var path = require('path');
 
 // Thanks to https://gist.github.com/timoxley/1689041
 var isPortTaken = function(port, fn) {
@@ -35,7 +36,7 @@ module.exports = function() {
     			}
 
     			// Start a script on the current folder
-    			pm2.start('./galleon.js', { name: 'galleon-instance', force : true, scriptArgs: process.argv, nodeArgs: "--max_old_space_size=300" }, function(err, proc) {
+    			pm2.start(path.resolve(__dirname, 'galleon.js'), { name: 'galleon-instance', force : true, scriptArgs: process.argv, nodeArgs: "--max_old_space_size=300" }, function(err, proc) {
     				if(err) return new Error(err);
 
     				// Get all processes running
