@@ -27,7 +27,7 @@ module.exports = function() {
             if(_.findWhere(list, { name: 'galleon-instance'} )) {
                 console.error("Instance already exists!".red, "\nTRY", "galleon restart".magenta);
                 process.exit(0);
-            }
+            } 
 
     		isPortTaken(25,function (error, available) {
     			if(error || !available) {
@@ -36,7 +36,8 @@ module.exports = function() {
     			}
 
     			// Start a script on the current folder
-    			pm2.start(path.resolve(__dirname, 'galleon.js'), { name: 'galleon-instance', force : true, scriptArgs: process.argv, nodeArgs: "--max_old_space_size=300" }, function(err, proc) {
+                /* BADPATCH -- There are significant issues with providing PM2 with a local script (https://github.com/schahriar/Galleon/issues/2). Start.JS should implement fallback methods and use a launch script inside the .galleon folder by default.  */
+    			pm2.start(path.resolve(__dirname, '../galleon.js'), { name: 'galleon-instance', force : true, scriptArgs: process.argv, nodeArgs: "--max_old_space_size=300" }, function(err, proc) {
     				if(err) return new Error(err);
 
     				// Get all processes running
