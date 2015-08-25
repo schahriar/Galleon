@@ -69,13 +69,21 @@ And use it on your port 2095
 --------
 VERSION: 0.2 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580)) -> Beta 1
 
+## Upcoming (October 2015)
+These features are currently being tested and will be released in October 2015:
+- Full module support
+- Full attachment support (multipart upload, checksums etc.)
+- Tutorials and Documentation for creating modules and front-end interfaces
+- Automatic file/email/raw deletion based on email status on the database
+- Tons of bug fixes and improvements
+
 ## What's next?
 - DoS protection
 - DKIM support for outbound mail
 - XSS protection
-- Full module support
 - Raw Import & Deletion
 - Encryption & SSL support
+- Admin interface
 
 ## NOTICE
 **GALLEON & SEASCAPE** are both in beta stages and may/will have critical bugs. These bugs will be fixed as we get closer to a release version. You can [report any issues with this repository here](https://github.com/schahriar/galleon/issues/new).
