@@ -117,13 +117,12 @@ module.exports = {
 		},
 
         attachments: {
-            type: 'array',
-            required: false
+            type: 'array'
         },
 
 		state: {
 			type: 'string',
-			enum: ['pending', 'approved', 'denied', 'trashed']
+			enum: ['draft', 'pending', 'approved', 'denied', 'trashed']
 		}
 	},
 
