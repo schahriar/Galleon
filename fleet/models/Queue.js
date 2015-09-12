@@ -19,6 +19,12 @@ module.exports = {
 			maxLength: 48,
 			unique: true,
 		},
+		
+		association: {
+			type: 'array',
+			required: true,
+			index: true,
+		},
 
 		sender: {
 			type: 'string',
@@ -54,12 +60,16 @@ module.exports = {
 
 		html: {
 			type: 'string',
-			required: true // Convert text to HTML if !HTML
+			required: false // Not required to allow for drafting
 		},
+		
+		attachments: {
+            type: 'array'
+        },
 
 		state: {
 			type: 'string',
-			enum: ['pending', 'transit', 'sent', 'denied'],
+			enum: ['draft', 'pending', 'transit', 'sent', 'denied', 'failed'],
 			required: true
 		}
 	},
