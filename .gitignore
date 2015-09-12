@@ -47,3 +47,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Ignore Visual Studio Code settings
+.settings
+.vscode
