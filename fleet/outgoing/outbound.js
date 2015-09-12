@@ -2,10 +2,15 @@
 // Essential
 var eventEmmiter = require('events').EventEmitter;
 var util         = require("util");
+var fs			 = require("fs");
 
 // Foundations
 var nodemailer = require('nodemailer');
 var validator = require('validator');
+
+// Utils
+var _ = require('lodash');
+
 /* -- ------- -- */
 
 //
@@ -51,7 +56,8 @@ var validator = require('validator');
 */
 
 /* Initiate an outbound transporter. */
-var Outbound = function(port, callback){
+var Outbound = function(environment, callback){
+	this.environment = environment;
 	eventEmmiter.call(this);
 }
 
@@ -77,34 +83,44 @@ Outbound.prototype.send = function (mail, options, callback) {
 		else transporter = options.transporter;
 	
 	// Improve error handling here
-	if(!mail) return fail;
+	if(!mail) return _this.emit('failed', { error: "Mail Object is undefined!" });
 	
 	/* -------------------------------------------------------------- */
 	
-    transporter.sendMail({
-	  from: mail.from,
-	  to: mail.to,
-	  subject: mail.subject,
-	  text: mail.text,
-	  html: mail.html
-	}, function(error, response){
-		/* Works both event based and callback based
-			since the incoming module would be event
-			based & a callback can be more specific 
-			in this situation or however it would
-			make sense.
-
-			because 2 is better than 1
-		*/
-		if(!!error){
-			// Use only callback to verify sent messages!
-			callback(error, response);
-			_this.emit('failed', error, response);
-		}else{
-			callback(error, response);
-			_this.emit('sent', response);
-		}
-	}); 
+	// Load outbound modules
+	_this.environment.modulator.launch(_this.environment.modules['outbound'], mail, function(error, _mail){
+		
+		if(_mail !== undefined) mail = _mail;
+		
+		/* Better ways to do this | Rough setup for testing */
+		_.each(mail.attachments, function(attachment, index) {
+			// Rename a few things to match nodemailer
+			attachment.filename = attachment.fileName;
+			attachment.encoding = attachment.transferEncoding;
+			/* Bad practice, shouldn't trust database path -> Use environment instead */
+			/* Must test against checksum */
+			attachment.content = fs.createReadStream(attachment.path);
+			attachment = _.omit(attachment, ["fileName", "path", "id", "checksum", "length"]);
+			mail.attachments[index] = attachment;
+		})
+		
+	    transporter.sendMail({
+		  from: mail.from,
+		  to: mail.to,
+		  subject: mail.subject,
+		  text: mail.text,
+		  html: mail.html,
+		  attachments: mail.attachments
+		}, function(error, response){
+			if(!!error){
+				callback(error, response);
+				_this.emit('failed', error, response);
+			}else{
+				callback(error, response);
+				_this.emit('sent', response);
+			}
+		}); 
+	})
 };
 
 module.exports = Outbound;

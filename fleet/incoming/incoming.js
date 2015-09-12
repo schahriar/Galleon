@@ -81,7 +81,19 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		We'll later use this file to extend Mailin functionality without a need to fork the entire repository
 	*/
 	mailin.on('startMessage', function(connection){
-		_this.emit('connection', connection);
+		console.log(connection.toString())
+		// Load connection modules
+		_this.environment.modulator.launch(_this.environment.modules['connection'], connection, function(error, _connection, _block){
+			console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+			
+			if(_.isObject(_connection)) connection = _connection;
+        
+        	// Ignore email if requested
+        	if(_block === true) {
+				_this.emit('blocked', connection);
+				connection.end();
+			}else _this.emit('connection', connection);
+		});
 	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
 
 	mailin.on('data', function(connection, chunk){ _this.emit('stream', connection, chunk) }); // Event emmited when data chunk is sent - Useful for Galleon's internal functions such as ratelimiting and bandwidth limiting

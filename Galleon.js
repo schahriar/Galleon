@@ -13,7 +13,7 @@ var outbound = require('./fleet/outgoing/outbound');
 var queue = require('./fleet/outgoing/queue');
 
 var Database = require('./fleet/connection');
-var env = require('./bin/modulator/master');
+var modulator = require('./bin/modulator/master');
 // -------------------------------------------
 
 // Query
@@ -21,7 +21,9 @@ var GalleonQuery = {
 	delete: 	require('./query/delete'),
 	mark:   	require('./query/mark'),
 	get:    	require('./query/get'),
-	attachment: require('./query/attachment')
+	getattachment: require('./query/get.attachment'),
+	linkattachment: require('./query/link.attachment'),
+	unlinkattachment: require('./query/unlink.attachment'),
 }
 
 // Essential
@@ -75,8 +77,10 @@ var Galleon = function(config, callback){
 	// Attach environment to Galleon Object
 	_this.environment = environment = config.environment;
 
+	// Assign module environment
+	_this.environment.modulator = modulator;
 	// Assign modules
-	_this.modules = env.load(environment.modules);
+	_this.environment.modules = _this.environment.modulator.load(environment.modules);
 
 	Database(environment.connections, function(error, connection){
 		if(Defaults.verbose) console.log("Connection attempted".yellow);
@@ -110,7 +114,7 @@ var Galleon = function(config, callback){
 	})
 
 	// Load front-end modules
-	env.launch(_this.modules['frontend'], osenv.tmpdir(), function(){
+	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
 		console.log("FRONTEND MODULES LAUNCHED".green, arguments)
 	})
 
@@ -185,8 +189,8 @@ Galleon.prototype.server = function(callback) {
 /* - DISPATCH METHOD - */
 Galleon.prototype.dispatch = function(mail, callback, connection){
 	connection = connection || this.connection;
-	var QUEUE = new queue();
-	QUEUE.add(connection, mail, Defaults);
+	var QUEUE = new queue(environment);
+	QUEUE.add(connection, mail, Defaults, callback);
 }
 /* - ---------------- - */
 
@@ -290,6 +294,7 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 /* - EMAIL MANAGEMENT - */
 Galleon.prototype.query = function(method, query, callback) {
 	// Check if a corresponding Function is available
+	if(!GalleonQuery[method.toLowerCase()]) return callback("Method not found!");
 	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback("Method not found!");
 
 	// Log Query
