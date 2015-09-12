@@ -110,8 +110,7 @@ if (
 	    })
 		herb.groupEnd();
 	})
-
-    //console.log("---------------------------------".gray);
+    
 } else {
     console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help'.magenta, 'for more info.'.cyan);
 }
