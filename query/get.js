@@ -4,7 +4,7 @@ module.exports = function(Galleon, query, callback) {
     var folder = build(query.email, query.page)[query.folder.toUpperCase()];
     if (!folder) return callback('Folder not found!');
 
-    Galleon.connection.collections.mail.find()
+    Galleon.connection.collections[folder.collection].find()
         .where(folder.where)
         .sort(folder.sort)
         .paginate(folder.paginate)
