@@ -1,13 +1,16 @@
 // Functions
 var store = require("./store");
+// Essentials
+var fs = require('fs');
+var path = require('path');
 
-module.exports = function(_this, database, connection, parsed, raw, labResults){
+module.exports = function(_this, database, session, parsed, raw, labResults){
     if(!labResults) labResults = new Object;
 
     // Tiny bit of arranging //
 
     // Formats from to -> Name <email>
-    if(parsed.from.constructor === Array)
+    if(typeof(parsed.from) === 'object')
         parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
     else
         parsed.from = parsed.from.name + ' <' + parsed.from.address + '>';
@@ -45,7 +48,7 @@ module.exports = function(_this, database, connection, parsed, raw, labResults){
 		console.log("INCOMING MODULES LAUNCHED".green, arguments);
         
         // Ignore email if requested
-        if(_ignore === true) return _this.emit('ignored', connection, parsed, raw, database);
+        if(_ignore === true) return _this.emit('ignored', session, parsed, raw, database);
         
         // Assign modified ~email~ object if provided
         if(!_email) _email = email;
@@ -55,17 +58,31 @@ module.exports = function(_this, database, connection, parsed, raw, labResults){
             if(error){
                 console.error(error, 'error');
     
-                // Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database failure & Database object
-                _this.emit('mail', connection, parsed, raw, error, database);
+                // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database failure & Database object
+                _this.emit('mail', session, parsed, raw, error, database);
             }else{
                 // Store raw email
-                store(_this, model.eID, raw);
+                if (_this.environment.paths.raw) {
+                    fs.rename(session.path, path.resolve(path.dirname(session.path), model.eID), function(error) {
+                        if (error) {
+                            console.log("INCOMING-STORE-ERROR", error);
+                            // Rename failed remove temp file
+                            fs.unlink(session.path, function(error) {
+                                if (error) console.log("INCOMING-STORE-ERROR->RAW-UNLINK-ERROR", error);
+                            })
+                        }
+                    })
+                } else {
+                    fs.unlink(session.path, function(error) {
+                        if (error) console.log("INCOMING-STORE-UNLINK-ERROR", error);
+                    })
+                }
     
                 // Add attachments to Mail
                 _this.attach(database, model.eID, parsed.attachments);
     
-                // Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database model & Database object
-                _this.emit('mail', connection, parsed, raw, model, database);
+                // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database model & Database object
+                _this.emit('mail', session, parsed, raw, model, database);
             }
         });
     })

@@ -4,9 +4,13 @@ var eventEmmiter = require('events').EventEmitter;
 var util         = require("util");
 var fs 			 = require('fs');
 var path		 = require('path');
+var os			 = require('os');
+
+// SMTP Mail Handling
+var SMTPServer = require('smtp-server').SMTPServer;
+var MailParser = require("mailparser").MailParser;
 
 // Utilities
-var mailin  = require('mailin');
 var async   = require('async');
 var shortId = require('shortid');
 var _ 		= require('lodash');
@@ -33,11 +37,6 @@ var create = require("./create");
 	each in this module in each version but they will
 	mostly be opt-in additions rather than opt-out.
 
-	Note: SpamAssasin is currently disabled through
-		  ~mailin~ and would most probably be
-		  implemented in Galleon itself for direct
-		  access.
-
 */
 /* -------------- ------------------------ -------------- */
 //
@@ -54,7 +53,7 @@ Note: Includes parsing time
 ----------------
 */
 
-/* Start the Mailin server. */
+/* Start the SMTP server. */
 var Incoming = function(environment){
 	this.environment = environment;
 	console.log(this.environment.paths);
@@ -67,67 +66,112 @@ util.inherits(Incoming, eventEmmiter);
 Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
 	
-	var options = new Object;
-	options.banner = "Galleon MailServer <galleon.email>";
+	console.log("USING NEW SMTP SERVER #")
 	
+	/*
 	if (this.environment.ssl.use) {
-		options.secure = true;
-		options.key = fs.readFileSync(this.environment.ssl.incoming.key, 'utf8');
-		options.cert = fs.readFileSync(this.environment.ssl.incoming.cert, 'utf8');
+		options.secureConnection = true;
+		options.credentials = {
+			key: fs.readFileSync(this.environment.ssl.incoming.key, 'utf8'),
+			cert: fs.readFileSync(this.environment.ssl.incoming.cert, 'utf8')
+		}
+	}
+	*/
+	
+	var ProcessMail = function INCOMING_EMAIL_PROCESSOR(session, callback){
+		/* Find/Create a Spamc module with streaming capability */
+		// Will not use SPAMASSASIN if the process is not available
+		fs.readFile(session.path, function(error, raw) {
+			if (error) {
+				console.log("RAW-FS-ERROR", error);
+				// Send an SMTP Error Back
+				callback(new Error("FAILED TO STORE EMAIL"));
+				
+				return fs.unlink(session.path, function(error) {
+					console.log("RAW-FS-ERROR->UNLINK-ERROR", error);
+				})
+			}
+			
+			var mailparser = new MailParser({
+				showAttachmentLinks: true,
+			});
+			
+			mailparser.on("end", function(parsed){
+				/* Fix naming issues */
+				parsed.envelopeTo = session.envelope.rcptTo;
+				// Spamc currently not working
+				create(_this, databaseConnection, session, parsed, raw);
+				/*
+				try {
+					Spamc.report(raw, function (error, labResults) {
+						if(error) console.log("SMAPC-REPORT-ERROR", error);
+						create(_this, databaseConnection, session, parsed, raw, labResults);
+					});
+				}catch(error) {
+					if(error) console.log("SMAPC-NOT-FOUND", error);
+					create(_this, databaseConnection, session, parsed, raw);
+				}*/
+			});
+			
+			// Pass raw mail to the parser
+			mailparser.write(raw);
+			mailparser.end();
+			
+			// Return success to SMTP connection
+			callback();
+		})
 	}
 
-    mailin.start({
-		port: port,
-		disableWebhook: true,
-		disableSpamScore: true,
-		logLevel: 'error',
-		smtpOptions: options
-	});
-
-	_this.emit("ready", mailin);
-
-	// Bind events
-	/*
-		We'll later use this file to extend Mailin functionality without a need to fork the entire repository
-	*/
-	mailin.on('startMessage', function(connection){
-		console.log(connection.toString())
-		// Load connection modules
-		_this.environment.modulator.launch(_this.environment.modules['connection'], connection, function(error, _connection, _block){
-			console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+	var server = new SMTPServer({
+		size: 20971520, // MAX 20MB Message
+		banner: "Galleon MailServer <galleon.email>",
+		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
+		onData: function(stream, session, callback) {
+			console.log("NEW ENVELOPE", JSON.stringify(session.envelope));
+			// Create a new connection eID (INC short for incoming)
+			session.eID = 'INC' + shortId.generate();
+			session.path = undefined;
+			/* Implement modules here */
+			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
+				console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+				
+				if(_.isObject(_session)) session = _session;
 			
-			if(_.isObject(_connection)) connection = _connection;
-        
-        	// Ignore email if requested
-        	if(_block === true) {
-				_this.emit('blocked', connection);
-				connection.end();
-			}else _this.emit('connection', connection);
-		});
-	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
-
-	mailin.on('data', function(connection, chunk){ _this.emit('stream', connection, chunk) }); // Event emmited when data chunk is sent - Useful for Galleon's internal functions such as ratelimiting and bandwidth limiting
-	// Event emitted after a message was received and parsed //
-
-	mailin.on('message', function(connection, data, raw){
-		// Will not use SPAMASSASIN if the process is not available
-		try {
-			Spamc.report(raw, function (error, labResults) {
-				if(error) console.log("SMAPC", error);
-				create(_this, databaseConnection, connection, data, raw, labResults);
+				// Ignore email if requested ELSE Process Stream
+				if(_block === true) {
+					_this.emit('blocked', session);
+				}else{
+					_this.emit('connection', session);
+					/* Add FS EXISTS Check */
+					// Set Connection path
+					session.path = (_this.environment.paths.raw)
+						? path.resolve(_this.environment.paths.raw, session.eID)
+						: path.resolve(os.tmpdir(), session.eID)
+					// Create new stream
+					console.log("SAVING TO", session.path);
+					var fileStream = fs.createWriteStream(session.path);
+					// Pipe to FS Write Stream
+					stream.pipe(fileStream);
+					// Let the FileStream consume SMTP Stream
+					fileStream.on('finish', function() {
+						ProcessMail(session, callback);
+					});
+				}
 			});
-		}catch(error) {
-			if(error) console.log("SMAPC-NOT-FOUND", error);
-			create(_this, databaseConnection, connection, data, raw);
 		}
-
 	});
+	
+	server.listen(port);
+
+	_this.emit("ready", server);
 };
 
 Incoming.prototype.attach = function(databaseConnection, eID, attachments) {
+	if (!attachments) return;
+	
 	var self = this;
 	var populatedAttachments = [];
-	async.forEach(attachments, function(attachment, callback) {
+	async.forEach(attachments || [], function(attachment, callback) {
 		attachment.id   = eID + "_" + shortId.generate();
 		attachment.path = path.resolve(self.environment.paths.attachments, attachment.id);
 
