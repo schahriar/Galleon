@@ -7,7 +7,7 @@
 /* -- Modules -- */
 // Core
 var incoming = require('./fleet/incoming/incoming');
-var outgoing = require('./fleet/outgoing/outgoing');
+//var outgoing = require('./fleet/outgoing/outgoing');
 
 var outbound = require('./fleet/outgoing/outbound');
 var queue = require('./fleet/outgoing/queue');
