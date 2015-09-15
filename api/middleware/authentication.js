@@ -75,7 +75,7 @@ exports = module.exports = function(urls){
 							}, function(error, session){
 								if(error) return callback(error);
 
-								res.cookie('authentication', { sessionID: session.sessionID, opened: opened }, { signed: true, httpOnly: true });
+								res.cookie('authentication', { sessionID: session.sessionID, opened: opened }, { signed: true, httpOnly: true, secure: (req.protocol === 'https') });
 								return callback(error, session);
 							});
 						})
