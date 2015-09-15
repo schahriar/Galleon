@@ -66,12 +66,22 @@ util.inherits(Incoming, eventEmmiter);
 
 Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
+	
+	var options = new Object;
+	options.banner = "Galleon MailServer <galleon.email>";
+	
+	if (this.environment.ssl.use) {
+		options.secure = true;
+		options.key = fs.readFileSync(this.environment.ssl.incoming.key, 'utf8');
+		options.cert = fs.readFileSync(this.environment.ssl.incoming.cert, 'utf8');
+	}
 
     mailin.start({
 		port: port,
 		disableWebhook: true,
+		disableSpamScore: true,
 		logLevel: 'error',
-		disableSpamScore: true
+		smtpOptions: options
 	});
 
 	_this.emit("ready", mailin);

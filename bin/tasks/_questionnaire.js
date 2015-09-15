@@ -56,6 +56,61 @@ module.exports = {
             validate: validateDirectory
         }], callback)
     },
+    ssl: function(callback) {
+        inquirer.prompt([{
+            type: "confirm",
+            name: "shouldUseSSL",
+            message: "Do you want to setup SSL Certificates with Galleon? (You can use the same cert/key for both options | Certificates and Keys must be stored locally)",
+        }, {
+            type: "checkbox",
+            name: "sslOpt",
+            message: "Should Galleon use SSL Certificates for the following? (You can Multi-Select)",
+            when: function(answers) {
+                return answers.shouldUseSSL;
+            },
+            choices: [{
+                value: "ssl-smtp",
+                name: "SMTP Server",
+                checked: true
+            }, {
+                value: "ssl-api",
+                name: "Front-end Server & API",
+                checked: true
+            }]
+        }, {
+            type: "input",
+            name: "ssl-smtp-cert",
+            message: "Enter the location for *SSL Certificate* for (SMTP SERVER):",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateDirectory
+        }, {
+            type: "input",
+            name: "ssl-smtp-key",
+            message: "Enter the location for *SSL Key* for (SMTP SERVER):",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateDirectory
+        }, {
+            type: "input",
+            name: "ssl-api-cert",
+            message: "Enter the location for *SSL Certificate* for (API/FRONTEND SERVER):",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateDirectory
+        }, {
+            type: "input",
+            name: "ssl-api-key",
+            message: "Enter the location for *SSL Key* for (API/FRONTEND SERVER):",
+            when: function(answers) {
+                return answers.ssl && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateDirectory
+        },], callback)
+    },
     database: function(callback) {
         inquirer.prompt([{
             type: "list",

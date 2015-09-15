@@ -20,7 +20,18 @@ var config = _.defaults(environment.getSync(), {
     },
     paths: new Object,
     modules: [],
-    secret: crypto.randomBytes(20).toString('hex')
+    secret: crypto.randomBytes(20).toString('hex'),
+    ssl: {
+        use: false,
+        incoming: {
+            cert: undefined,
+            key: undefined
+        },
+        api: {
+            cert: undefined,
+            key: undefined
+        }
+    }
 });
 
 var defaultDirectory = path.resolve(osenv.home(), '.galleon/');
@@ -75,7 +86,22 @@ module.exports = function(Galleon) {
             createDirectoryIfNotFound(defaultDirectory);
             askFor.directory(function(answers) {
                 if (answers.perform.indexOf('attachments') + 1) config.paths.attachments = answers.location_attachments || createDirectoryIfNotFound(defaultDirectory, 'attachments/');
+                
                 if (answers.perform.indexOf('raw') + 1) config.paths.raw = answers.location_raw || createDirectoryIfNotFound(defaultDirectory, 'raw/');
+                
+                if (answers.ssl.shouldUseSSL) {
+                    use: true,
+                    config.ssl = {
+                        incoming: {
+                            cert: answers.ssl['ssl-smtp-cert'],
+                            key: answers.ssl['ssl-smtp-key']
+                        },
+                        api: {
+                            cert: answers.ssl['ssl-api-cert'],
+                            key: answers.ssl['ssl-api-key']
+                        }
+                    }
+                }
                 callback();
             })
         },
