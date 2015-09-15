@@ -70,7 +70,7 @@ var tasks = {
         description: "INSTALLING|INSTALLS| MODULES",
         category: "modules",
         FUNC: require("./tasks/install")
-    },
+    }
 }
 
 function verbalize(string, isVerb) {
@@ -86,6 +86,7 @@ function capitalizeFirstLetter(string) {
 }
 
 if (
+    (argv._[0]) &&
     (tasks[argv._[0].toLowerCase()] !== undefined) &&
     (argv._[0].constructor === String) &&
     (argv._[0].substring(0, 1) !== '-') &&
