@@ -66,8 +66,6 @@ util.inherits(Incoming, eventEmmiter);
 Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
 	
-	console.log("USING NEW SMTP SERVER #")
-	
 	/*
 	if (this.environment.ssl.use) {
 		options.secureConnection = true;
@@ -126,12 +124,13 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		size: 20971520, // MAX 20MB Message
 		banner: "Galleon MailServer <galleon.email>",
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
+		logger: false, // Disable Debug logs /* Add option for this in config */
 		onData: function(stream, session, callback) {
 			console.log("NEW ENVELOPE", JSON.stringify(session.envelope));
 			// Create a new connection eID (INC short for incoming)
 			session.eID = 'INC' + shortId.generate();
 			session.path = undefined;
-			/* Implement modules here */
+
 			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
 				console.log("CONNECTION MODULES LAUNCHED".green, arguments);
 				
