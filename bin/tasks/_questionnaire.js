@@ -12,6 +12,14 @@ function validateDirectory(input) {
     });
 }
 
+function validateFile(input) {
+    var done = this.async();
+    
+    fs.exists(path.resolve(input), function(exists) {
+        done(!exists ? 'NO ACCESS! FILE NOT FOUND' : true);
+    })
+}
+
 module.exports = {
     domain: function(callback) {
         inquirer.prompt([{
@@ -84,7 +92,7 @@ module.exports = {
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
             },
-            validate: validateDirectory
+            validate: validateFile
         }, {
             type: "input",
             name: "ssl-smtp-key",
@@ -92,7 +100,7 @@ module.exports = {
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
             },
-            validate: validateDirectory
+            validate: validateFile
         }, {
             type: "input",
             name: "ssl-api-cert",
@@ -100,7 +108,7 @@ module.exports = {
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
             },
-            validate: validateDirectory
+            validate: validateFile
         }, {
             type: "input",
             name: "ssl-api-key",
@@ -108,7 +116,7 @@ module.exports = {
             when: function(answers) {
                 return answers.ssl && (answers.sslOpt.indexOf('ssl-api') + 1);
             },
-            validate: validateDirectory
+            validate: validateFile
         },], callback)
     },
     database: function(callback) {
