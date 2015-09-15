@@ -52,6 +52,7 @@ function checkDatabaseConnection(callback) {
             port: answers.port,
             user: answers.user,
             password: answers.password,
+            ssl: answers.ssl,
             database: answers.database_name
         }
         config.connections.authentication = config.connections.storage;
