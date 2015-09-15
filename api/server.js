@@ -39,10 +39,10 @@ module.exports = function(environment, port, connection, instance) {
                 key: fs.readFileSync(environment.ssl.api.key, 'utf8'),
                 cert: fs.readFileSync(environment.ssl.api.cert, 'utf8')
             }
+            https.createServer(SSL_CONFIG, app).listen(port);
         }catch(e) {
             http.createServer(app).listen(port);
         }
-        https.createServer(SSL_CONFIG, app).listen(port);
     }else {
         http.createServer(app).listen(port);
     }
