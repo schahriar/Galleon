@@ -18,7 +18,6 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
     // Sets association to envelope's receiver
     parsed.associtaion = parsed.envelopeTo[0].address;
     // --------------------- //
-    console.log(parsed.associtaion);
     
     var email = {
         association: [parsed.associtaion],

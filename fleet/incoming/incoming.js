@@ -147,7 +147,6 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 						? path.resolve(_this.environment.paths.raw, session.eID)
 						: path.resolve(os.tmpdir(), session.eID)
 					// Create new stream
-					console.log("SAVING TO", session.path);
 					var fileStream = fs.createWriteStream(session.path);
 					// Pipe to FS Write Stream
 					stream.pipe(fileStream);
