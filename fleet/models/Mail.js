@@ -129,7 +129,7 @@ module.exports = {
 	beforeCreate: function(attributes, callback) {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables content checking using a MD5 checksum
-		attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
+		attributes.eID = (attributes.eID)?attributes.eID:shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
 		callback();
 	}
 };
