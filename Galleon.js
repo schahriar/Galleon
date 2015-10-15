@@ -65,8 +65,7 @@ var Galleon = function(config, callback){
 
 	// Defaults
 	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
-		_.defaults(config, Defaults);
-		Defaults = config;
+		config = _.defaults(config, Defaults);
 	//
 
 	if((!config.environment) && (!config.env)) {
@@ -87,23 +86,23 @@ var Galleon = function(config, callback){
 	_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
 
 	Database(_this.environment.connections, function(error, connection){
-		if(Defaults.verbose) console.log("Connection attempted".yellow);
+		if(config.verbose) console.log("Connection attempted".yellow);
 		if(error) {
 			console.error("Connection error!".red);
 			callback(error);
 			throw error;
 		}
 
-		if(Defaults.verbose) console.log("Database connection established".green);
+		if(config.verbose) console.log("Database connection established".green);
 		// Add database connection to `this`
 		_this.connection = connection;
 
-		if(!Defaults.noCheck) {
-			var ports = Defaults.ports;
+		if(!config.noCheck) {
+			var ports = config.ports;
 			InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
-				if(check) console.log("All requested ports are free");
+				if(check && config.verbose) console.log("All requested ports are free");
 
-				if(Defaults.dock) {
+				if(config.dock) {
 					_this.dock(function(error, incoming) {
 						_this.emit('ready', error, incoming);
 						callback(error, incoming, connection);
@@ -119,7 +118,7 @@ var Galleon = function(config, callback){
 
 	// Load front-end modules
 	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
-		console.log("FRONTEND MODULES LAUNCHED".green, arguments)
+		if(config.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
 	})
 
 	eventEmmiter.call(this);
