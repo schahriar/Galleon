@@ -2,9 +2,6 @@
 	// Waterline
 	var Waterline = require('waterline');
 	var Database = require('./bootstrap');
-	// -------------------------------------------
-	// Adapters
-	var mongodb = require('sails-mongo');
 	// ----------------------------------
 ///
 /* -- ------- -- */
@@ -12,7 +9,13 @@
 module.exports = function(connections, callback){
 	Database({
 		adapters: {
-			'sails-mongo': mongodb
+			'sails-disk': require('sails-disk'),
+			'sails-memory': require('sails-memory'),
+			'sails-mysql': require('sails-mysql'),
+			'sails-mongo': require('sails-mongo'),
+			'sails-postgresql': require('sails-postgresql'),
+			'sails-redis': require('sails-redis'),
+			'sails-sqlserver': require('sails-sqlserver'),
 		},
 		collections: {
 			mail: require('./models/Mail'),
