@@ -42,7 +42,6 @@ var colors = require('colors'); // Better looking error handling
 var Spamc = require('spamc-stream');
 /* -- ------- -- */
 
-var handlers = {};
 var pass = true, fail = false;
 
 var Defaults = {
