@@ -69,7 +69,7 @@ var Galleon = function(config, callback){
 		Defaults = config;
 	//
 
-	if(!config.environment) {
+	if((!config.environment) || (!config.env)) {
 		try {
 			config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
 		}catch(e) {
@@ -79,7 +79,7 @@ var Galleon = function(config, callback){
 	}
 
 	// Attach environment to Galleon Object
-	_this.environment = config.environment;
+	_this.environment = config.environment || config.env;
 
 	// Assign module environment
 	_this.environment.modulator = modulator;
