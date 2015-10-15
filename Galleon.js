@@ -53,7 +53,12 @@ var Defaults = {
 	},
 	dock: false,
 	noCheck: false,
-	verbose: true
+	verbose: true,
+	env: {
+		ssl: {
+			use: false
+		}
+	}
 };
 
 var Galleon = function(config, callback){
@@ -65,7 +70,7 @@ var Galleon = function(config, callback){
 
 	// Defaults
 	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
-		config = _.defaults(config, Defaults);
+		config = _.defaultsDeep(config, Defaults);
 	//
 
 	if((!config.environment) && (!config.env)) {
