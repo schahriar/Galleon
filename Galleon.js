@@ -69,8 +69,13 @@ var Galleon = function(config, callback){
 		Defaults = config;
 	//
 
-	if(!config.configFile) {
-		config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+	if(!config.environment) {
+		try {
+			config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+		}catch(e) {
+			console.trace(e);
+			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass the environment in the config object.");
+		}
 	}
 
 	// Attach environment to Galleon Object
