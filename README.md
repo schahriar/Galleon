@@ -67,7 +67,7 @@ And use it on your port 2095
 - Built-in user management
 - & many more ...
 --------
-VERSION: 0.2 [SAN MARTIN](http://en.wikipedia.org/wiki/S%C3%A3o_Martinho_(1580)) -> Beta 1
+VERSION: 0.3 [Golden Hind](https://en.wikipedia.org/wiki/Golden_Hind) -> Beta 2
 
 ## Upcoming (October 2015)
 These features are currently being tested and will be released in October 2015:
