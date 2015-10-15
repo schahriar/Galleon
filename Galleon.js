@@ -69,7 +69,7 @@ var Galleon = function(config, callback){
 		Defaults = config;
 	//
 
-	if((!config.environment) || (!config.env)) {
+	if((!config.environment) && (!config.env)) {
 		try {
 			config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
 		}catch(e) {
