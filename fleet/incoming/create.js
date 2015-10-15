@@ -1,5 +1,3 @@
-// Functions
-var store = require("./store");
 // Essentials
 var fs = require('fs');
 var path = require('path');
