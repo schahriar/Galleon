@@ -39,7 +39,7 @@ var portscanner  = require('portscanner');
 var validator = require('validator');
 var bcrypt = require('bcryptjs');
 var colors = require('colors'); // Better looking error handling
-var Spamc = require('spamc');
+var Spamc = require('spamc-stream');
 /* -- ------- -- */
 
 var handlers = {};
