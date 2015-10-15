@@ -75,14 +75,14 @@ var Galleon = function(config, callback){
 	}
 
 	// Attach environment to Galleon Object
-	_this.environment = environment = config.environment;
+	_this.environment = config.environment;
 
 	// Assign module environment
 	_this.environment.modulator = modulator;
 	// Assign modules
-	_this.environment.modules = _this.environment.modulator.load(environment.modules);
+	_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
 
-	Database(environment.connections, function(error, connection){
+	Database(_this.environment.connections, function(error, connection){
 		if(Defaults.verbose) console.log("Connection attempted".yellow);
 		if(error) {
 			console.error("Connection error!".red);
@@ -165,7 +165,7 @@ Galleon.prototype.dock = function(callback){
 	if(!callback) callback = function(){};
 
 	this.spamc = new Spamc('localhost', 783, 20);
-	var INCOMING = new incoming(environment);
+	var INCOMING = new incoming(this.environment);
 	INCOMING.listen(Defaults.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
 
 	//var OUTGOING = new outgoing();
@@ -181,7 +181,7 @@ Galleon.prototype.server = function(callback) {
 	// Internal
 	if(!callback) callback = function(){};
 
-	Server(environment, Defaults.ports.server, this.connection, this);
+	Server(this.environment, Defaults.ports.server, this.connection, this);
 	callback(undefined, true);
 }
 /* - --------------- - */
@@ -189,7 +189,7 @@ Galleon.prototype.server = function(callback) {
 /* - DISPATCH METHOD - */
 Galleon.prototype.dispatch = function(mail, callback, connection){
 	connection = connection || this.connection;
-	var QUEUE = new queue(environment);
+	var QUEUE = new queue(this.environment);
 	QUEUE.add(connection, mail, Defaults, callback);
 }
 /* - ---------------- - */
