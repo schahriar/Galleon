@@ -6,7 +6,7 @@ var crypto = require('crypto');
 module.exports = function(Galleon, query, callback) {
     if(!Galleon.connection.collections.queue) return callback(new Error('Collection Not Found!'));
     Galleon.connection.collections.queue.findOne({
-        association: { contains: query.email },
+        association: query.email,
         eID: query.eID.substring(1)
     }).exec(function(error, mail) {
         if (error) return callback(error);
@@ -32,7 +32,7 @@ module.exports = function(Galleon, query, callback) {
             ref: reference
         })
         Galleon.connection.collections.queue.update({
-            association: { contains: query.email },
+            association: query.email,
             eID: query.eID.substring(1)
         }, {
             attachments: mail.attachments

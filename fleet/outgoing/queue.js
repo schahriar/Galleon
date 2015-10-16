@@ -112,7 +112,7 @@ var OUTBOUND_TRACKER = function OUTBOUND_TRACKER(databaseConnection, outbox, mai
 			console.log("OUTBOUND_ERROR->FAILURE-NOTICE", mail.eID);
 			var notice = "The following email has been denied by the receiver.<br>Attempts have been made to deliver this email but have failed in multiple occasions. Please try again.<hr><br> Reason of denial: " + JSON.stringify(error) + "<br> Receiver: " + mail.to + "<br> Subject: " + mail.subject + "<br> Date: " + JSON.stringify(mail.stamp) + "<br><hr><br>" + mail.html;
 			databaseConnection.collections.mail.create({
-				association: [mail.sender],
+				association: mail.sender,
 				sender: mail.sender,
 				receiver: mail.to,
 				to: mail.to,

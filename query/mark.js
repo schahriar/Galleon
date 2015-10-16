@@ -5,7 +5,7 @@ module.exports = function(Galleon, query, callback) {
     if(!Galleon.connection.collections.mail) return callback(new Error('Collection Not Found!'));
     Galleon.connection.collections.mail.update({
         eID: query.eID.substring(1),
-        association: { contains: query.email }
+        association: query.email
     }, query.apply).exec(callback);
 
     // If Spam -> True/False applied

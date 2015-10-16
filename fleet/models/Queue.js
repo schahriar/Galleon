@@ -21,7 +21,7 @@ module.exports = {
 		},
 		
 		association: {
-			type: 'array',
+			type: 'string',
 			required: true,
 			index: true,
 		},

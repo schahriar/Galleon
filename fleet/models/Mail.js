@@ -21,14 +21,11 @@ module.exports = {
 		},
 
         // Should handle multiple associations
-        // in beta:
-        // http://stackoverflow.com/questions/24166253/waterline-find-array-in-array
-        /* FORMAT
-            .find({association: { contains: ["owner1","owner2", ...]}})
-        */
         // This would allow email sharing within organization and group associations
+        // Unfortunately `contains` is not consistent across waterline adapters
+		// Multiple Association is not possible at the time
         association: {
-			type: 'array',
+			type: 'string',
 			required: true,
 			index: true,
 		},

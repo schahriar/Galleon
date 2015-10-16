@@ -20,7 +20,7 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
     // --------------------- //
     
     var email = {
-        association: [parsed.associtaion],
+        association: parsed.associtaion,
         sender: parsed.from,
         receiver: parsed.headers.to || parsed.associtaion,
         to: parsed.toAll,

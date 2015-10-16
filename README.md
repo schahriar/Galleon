@@ -55,12 +55,12 @@ And use it on your port 2095
 
 ## Features
 
-- Database and Raw storage
 - API (port 3080)
+- Database and Raw storage
+- Database Adapter support for -> `MongoDB`, `Redis`, `MySQL`, `PostgreSQL`, `SQLServer`, etc.
 - Outbound Support (Send Emails)
 - Daemon Manager [PM2][https://github.com/Unitech/pm2]
 - Spam detection/reporting/learning etc. with **SPAMASSASIN**
-- Multiple Association
 - SPF & DKIM validation
 - CLI Automation
 - Session based auth with bcrypt
@@ -84,6 +84,7 @@ These features are currently being tested and will be released in October 2015:
 - DKIM support for outbound mail
 - Raw Import & Deletion
 - Admin interface
+- Multiple Association
 
 ## NOTICE
 **GALLEON & SEASCAPE** are both in beta stages and may/will have critical bugs. These bugs will be fixed as we get closer to a release version. You can [report any issues with this repository here](https://github.com/schahriar/galleon/issues/new).
