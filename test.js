@@ -14,24 +14,26 @@ var CONNECTION = {
 	adapter: 'sails-memory',
 }
 
+var OPTIONS = {
+	verbose: false,
+	ports: {
+		incoming: PORT
+	},
+	dock: true,
+	connections: {
+		storage: CONNECTION,
+		authentication: CONNECTION
+	},
+	modules: [],
+	secret: crypto.randomBytes(20).toString('hex'),
+}
+
 var expect = chai.expect;
 
 describe("Test Suite", function() {
 	this.timeout(10000);
 	it("should create a new instance of Galleon", function(done) {
-		G = new Galleon({
-			verbose: false,
-			ports: {
-				incoming: PORT
-			},
-			dock: true,
-			connections: {
-				storage: CONNECTION,
-				authentication: CONNECTION
-			},
-			modules: [],
-			secret: crypto.randomBytes(20).toString('hex'),
-		});
+		G = new Galleon(OPTIONS);
 		G.on('ready', function(){
 			G.server(function(error, hasStarted){
 				if(error) throw error;
