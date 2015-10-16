@@ -1,7 +1,7 @@
 /**
  * Runs Galleon Server.
  *
- * @param  {Config} Object
+ * @param  {Env} Object
  */
 
 /* -- Modules -- */
@@ -54,36 +54,33 @@ var Defaults = {
 	dock: false,
 	noCheck: false,
 	verbose: true,
-	env: {
-		ssl: {
-			use: false
-		}
+	ssl: {
+		use: false
 	}
 };
 
-var Galleon = function(config, callback){
+var Galleon = function(env, callback){
 
 	// Internal
 	var _this = this;
-	if(!config) callback = config;
+	if(!env) callback = env;
 	if(!callback) callback = function(){};
 
 	// Defaults
-	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
-		config = _.defaultsDeep(config, Defaults);
+		var environment = _.defaultsDeep(env, Defaults);
 	//
 
-	if((!config.environment) && (!config.env)) {
+	if(typeof(env) !== 'object') {
 		try {
-			config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+			environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
 		}catch(e) {
 			console.trace(e);
-			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass the environment in the config object.");
+			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass an environment object as the first parameter.");
 		}
 	}
 
 	// Attach environment to Galleon Object
-	_this.environment = config.environment || config.env;
+	_this.environment = environment;
 
 	// Assign module environment
 	_this.environment.modulator = modulator;
@@ -91,23 +88,23 @@ var Galleon = function(config, callback){
 	_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
 
 	Database(_this.environment.connections, function(error, connection){
-		if(config.verbose) console.log("Connection attempted".yellow);
+		if(environment.verbose) console.log("Connection attempted".yellow);
 		if(error) {
 			console.error("Connection error!".red);
 			callback(error);
 			throw error;
 		}
 
-		if(config.verbose) console.log("Database connection established".green);
+		if(environment.verbose) console.log("Database connection established".green);
 		// Add database connection to `this`
 		_this.connection = connection;
 
-		if(!config.noCheck) {
-			var ports = config.ports;
+		if(!environment.noCheck) {
+			var ports = environment.ports;
 			InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
-				if(check && config.verbose) console.log("All requested ports are free");
+				if(check && environment.verbose) console.log("All requested ports are free");
 
-				if(config.dock) {
+				if(environment.dock) {
 					_this.dock(function(error, incoming) {
 						_this.emit('ready', error, incoming);
 						callback(error, incoming, connection);
@@ -123,7 +120,7 @@ var Galleon = function(config, callback){
 
 	// Load front-end modules
 	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
-		if(config.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
+		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
 	})
 
 	eventEmmiter.call(this);
@@ -174,7 +171,7 @@ Galleon.prototype.dock = function(callback){
 
 	this.spamc = new Spamc('localhost', 783, 20);
 	var INCOMING = new incoming(this.environment);
-	INCOMING.listen(Defaults.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
+	INCOMING.listen(this.environment.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
 
 	//var OUTGOING = new outgoing();
 	//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
@@ -189,7 +186,7 @@ Galleon.prototype.server = function(callback) {
 	// Internal
 	if(!callback) callback = function(){};
 
-	Server(this.environment, Defaults.ports.server, this.connection, this);
+	Server(this.environment, this.environment.ports.server, this.connection, this);
 	callback(undefined, true);
 }
 /* - --------------- - */
@@ -198,7 +195,7 @@ Galleon.prototype.server = function(callback) {
 Galleon.prototype.dispatch = function(mail, callback, connection){
 	connection = connection || this.connection;
 	var QUEUE = new queue(this.environment);
-	QUEUE.add(connection, mail, Defaults, callback);
+	QUEUE.add(connection, mail, this.environment, callback);
 }
 /* - ---------------- - */
 
