@@ -1,17 +1,19 @@
 // Essentials
 var fs = require('fs');
 var path = require('path');
+var _ = require('lodash');
 
 module.exports = function(_this, database, session, parsed, raw, labResults){
     if(!labResults) labResults = new Object;
 
-    // Tiny bit of arranging //
-
     // Formats from to -> Name <email>
-    if(typeof(parsed.from) === 'object')
-        parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
-    else
+    if(_.isPlainObject(parsed.from))
         parsed.from = parsed.from.name + ' <' + parsed.from.address + '>';
+    else if(_.isArray(parsed.from))
+        parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
+    else {
+        return console.error("FAILED TO PARSE HEADER\nIGNORING MAIL");
+    }
 
     // Sets association to envelope's receiver
     parsed.associtaion = parsed.envelopeTo[0].address;
@@ -49,7 +51,6 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
         
         // Assign modified ~email~ object if provided
         if(!_email) _email = email;
-	
         // Create a new mail in the database
         database.collections.mail.create(_email, function(error, model){
             if(error){
