@@ -1,6 +1,7 @@
 var chai = require("chai");
 var inspect = require("util").inspect;
 var crypto = require("crypto");
+var bcrypt = require('bcryptjs');
 var SMTPConnection = require('smtp-connection');
 var PORT = 8800;
 var connection = new SMTPConnection({
@@ -53,6 +54,18 @@ describe("Test Suite", function() {
 			if(error) throw error;
 			expect(user.email).to.equal("info@example.com");
 			expect(user.name).to.equal("test");
+			done();
+		})
+	})
+	it("should hash user's password correctly", function(done) {
+		G.createUser({
+			email: "hash@example.com",
+			password: "okpassword",
+			name: "hash"
+		}, function(error, user) {
+			if(error) throw error;
+			expect(user.email).to.equal("hash@example.com");
+			expect(bcrypt.compareSync("okpassword", user.password)).to.equal(true);
 			done();
 		})
 	})
