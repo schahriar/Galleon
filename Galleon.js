@@ -241,7 +241,7 @@ Galleon.prototype.createUser = function(user, callback) {
 		return callback(new Error("Invalid password"));
 
 	bcrypt.hash(user.password, 10, function(error, hash) {
-		if(error) return res.status(500).json({ error: error });
+		if(error) return callback(error)
 
 		_this.connection.collections.users.create({
 			email: user.email,
