@@ -220,25 +220,25 @@ Galleon.prototype.createUser = function(user, callback) {
 	// * Alphanumeric
 	// * Must start with a letter
 	if(!validator.isEmail(user.email))
-		return callback("Invalid email");
+		return callback(new Error("Invalid email"));
 
 	// REGEX to match:
 	// * Between 2 to 256 characters
 	// * Special characters allowed (&)
 	// * Alpha
 	if((!validator.matches(user.name, /^([ \u00c0-\u01ffa-zA-Z-\&'\-])+$/))&&(validator.isLength(user.name,2,256)))
-		return callback("Invalid name");
+		return callback(new Error("Invalid name"));
 
 	// Check if name is provided
 	if(!user.name)
-		return callback("No name provided\nTry -> --name=\"<name>\"");
+		return callback(new Error("No name provided\nTry -> --name=\"<name>\""));
 
 	// REGEX to match:
 	// * Between 6 to 20 characters
 	// * Special characters allowed (@,$,!,%,*,?,&)
 	// * Alphanumeric
 	if(!validator.matches(user.password, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
-		return callback("Invalid password");
+		return callback(new Error("Invalid password"));
 
 	bcrypt.hash(user.password, 10, function(error, hash) {
 		if(error) return res.status(500).json({ error: error });
@@ -267,30 +267,30 @@ Galleon.prototype.removeUser = function(query, callback) {
 	if(!callback) callback = function(){};
 
 	if(query) this.connection.collections.users.destroy(query).exec(callback);
-	else callback("NO QUERY");
+	else callback(new Error("NO QUERY"));
 }
 
 Galleon.prototype.changePassword = function(user, newPassword, oldPassword, callback, forceChange) {
 	var self = this;
 	// Internal
 	if(!callback) callback = function(){};
-	if(!user) callback("User not found!");
+	if(!user) callback(new Error("User not found!"));
 
 	// REGEX to match:
 	// * Between 6 to 20 characters
 	// * Special characters allowed (@,$,!,%,*,?,&)
 	// * Alphanumeric
 	if(!validator.matches(newPassword, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
-		return callback("Invalid password - Length must be between 6 to 20 characters");
+		return callback(new Error("Invalid password - Length must be between 6 to 20 characters"));
 
 	if(!forceChange) {
 		bcrypt.compare(oldPassword, user.password, function(error, result) {
-			if(error) return callback("Current password does not match!");
+			if(error) return callback(new Error("Current password does not match!"));
 			bcrypt.hash(newPassword, 10, function(error, hash) {
 				if(hash)
 					self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
 				else
-					return callback("INCORRECT PASSWORD");
+					return callback(new Error("INCORRECT PASSWORD"));
 			})
 		})
 	}else{
@@ -298,7 +298,7 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 			if(hash)
 				self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
 			else
-				return callback("INCORRECT PASSWORD");
+				return callback(new Error("INCORRECT PASSWORD"));
 		})
 	}
 }
@@ -307,8 +307,8 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 /* - EMAIL MANAGEMENT - */
 Galleon.prototype.query = function(method, query, callback) {
 	// Check if a corresponding Function is available
-	if(!GalleonQuery[method.toLowerCase()]) return callback("Method not found!");
-	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback("Method not found!");
+	if(!GalleonQuery[method.toLowerCase()]) return callback(new Error("Method not found!"));
+	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback(new Error("Method not found!"));
 
 	// Log Query
 	console.log(colors.green(method.toUpperCase()), query);
