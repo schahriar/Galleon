@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 
 module.exports = function(Galleon, query, callback) {
+    if(!Galleon.connection.collections.mail) return callback(new Error('Collection Not Found!'));
     Galleon.connection.collections.mail.update({
         eID: query.eID.substring(1),
         association: { contains: query.email }
