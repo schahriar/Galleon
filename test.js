@@ -12,11 +12,6 @@ var G;
 
 var CONNECTION = {
 	adapter: 'sails-memory',
-	host: 'localhost',
-	port: 27017,
-	user: 'storage',
-	password: 'test',
-	database: 'mail'
 }
 
 describe("Test Suite", function() {
