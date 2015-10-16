@@ -68,7 +68,7 @@ module.exports = {
 
 		html: {
 			type: 'string',
-			required: true // Convert text to HTML if !HTML
+			required: false
 		},
 
 		// Indicates if an email has been read
@@ -129,7 +129,8 @@ module.exports = {
 	beforeCreate: function(attributes, callback) {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables content checking using a MD5 checksum
-		attributes.eID = (attributes.eID)?attributes.eID:shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
+		if(!attributes.html) attributes.html = attributes.text || "[NO_MESSAGE]";
+		attributes.eID = (attributes.eID)?attributes.eID:shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html || attributes.text || attributes.subject || "NONE").digest('hex');
 		callback();
 	}
 };
