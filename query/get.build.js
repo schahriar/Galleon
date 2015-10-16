@@ -20,7 +20,7 @@ module.exports = function(email, page) {
             createdAt: 'desc'
         },
         paginate: {
-            page: page,
+            page: page || 1,
             limit: 10
         },
         filter: function(mails) {
