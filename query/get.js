@@ -5,29 +5,39 @@ module.exports = function(Galleon, query, callback) {
     if (!folder) return callback('Folder not found!');
 
     if(!Galleon.connection.collections[folder.collection]) return callback(new Error('Collection Not Found!'));
-    
-    Galleon.connection.collections[folder.collection].find()
+    console.log(folder.where,folder.sort, folder.paginate)
+    function GALLEON_QUERY_GET_EXEC(error, mails) {
+        if (error) return callback("Not Authenticated");
+
+        if ((!mails) || (mails.length < 1)) mails = [];
+
+        // Count total
+        Galleon.connection.collections.mail.count().where(folder.where).exec(function(error, found) {
+            if (error) return callback("Not Authenticated");
+
+            callback(null,
+                ((folder.filter) && (folder.filter.constructor === Function))
+                    ? folder.filter(mails) : mails,
+                {
+                    folder: query.folder,
+                    page: query.page,
+                    total: parseInt(found),
+                    limit: parseInt(folder.paginate.limit),
+                })
+        })
+    }
+    if(Galleon.connection.collections[folder.collection].paginate) {
+        Galleon.connection.collections[folder.collection]
+        .find()
         .where(folder.where)
         .sort(folder.sort)
         .paginate(folder.paginate)
-        .exec(function(error, mails) {
-            if (error) return callback("Not Authenticated");
-
-            if ((!mails) || (mails.length < 1)) mails = [];
-
-            // Count total
-            Galleon.connection.collections.mail.count().where(folder.where).exec(function(error, found) {
-                if (error) return callback("Not Authenticated");
-
-                callback(null,
-                    ((folder.filter) && (folder.filter.constructor === Function))
-                        ? folder.filter(mails) : mails,
-                    {
-                        folder: query.folder,
-                        page: query.page,
-                        total: parseInt(found),
-                        limit: parseInt(folder.paginate.limit),
-                    })
-            })
-        })
+        .exec(GALLEON_QUERY_GET_EXEC)
+    }else{
+        Galleon.connection.collections[folder.collection]
+        .find()
+        .where(folder.where)
+        .sort(folder.sort)
+        .exec(GALLEON_QUERY_GET_EXEC)
+    }
 }
