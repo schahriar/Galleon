@@ -83,9 +83,9 @@ var Galleon = function(env, callback){
 	}
 	
 	// Defaults
-	environment = _.defaultsDeep(environment, env, Defaults);
+	environment = _.defaultsDeep(environment || {}, env);
+	environment = _.defaultsDeep(environment || {}, Defaults);
 	//
-	console.log("environment IS EQUAL", environment)
 
 	// Attach environment to Galleon Object
 	_this.environment = environment;
