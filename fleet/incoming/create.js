@@ -60,7 +60,7 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
                 _this.emit('mail', session, parsed, raw, error, database);
             }else{
                 // Store raw email
-                if (_this.environment.paths.raw) {
+                if (_.has(_this.environment, 'paths.raw')) {
                     fs.rename(session.path, path.resolve(path.dirname(session.path), model.eID), function(error) {
                         if (error) {
                             console.log("INCOMING-STORE-ERROR", error);
