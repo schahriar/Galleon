@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
-module.exports = function(_this, database, session, parsed, raw, labResults){
+module.exports = function(_this, database, session, parsed, labResults){
     if(!labResults) labResults = new Object;
 
     // Formats from to -> Name <email>
@@ -43,11 +43,11 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
     }
     
     // Load incoming modules
-	_this.environment.modulator.launch(_this.environment.modules['incoming'], parsed.associtaion, email, parsed, raw, function(error, _email, _ignore){
+	_this.environment.modulator.launch(_this.environment.modules['incoming'], parsed.associtaion, email, parsed, function(error, _email, _ignore){
 		if(_this.environment.verbose) console.log("INCOMING MODULES LAUNCHED".green, arguments);
         
         // Ignore email if requested
-        if(_ignore === true) return _this.emit('ignored', session, parsed, raw, database);
+        if(_ignore === true) return _this.emit('ignored', session, parsed, database);
         
         // Assign modified ~email~ object if provided
         if(!_email) _email = email;
@@ -57,7 +57,7 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
                 console.error(error, 'error');
     
                 // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database failure & Database object
-                _this.emit('mail', session, parsed, raw, error, database);
+                _this.emit('mail', session, parsed, error, database);
             }else{
                 // Store raw email
                 if (_.has(_this.environment, 'paths.raw')) {
@@ -80,7 +80,7 @@ module.exports = function(_this, database, session, parsed, raw, labResults){
                 _this.attach(database, model.eID, parsed.attachments);
     
                 // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database model & Database object
-                _this.emit('mail', session, parsed, raw, model, database);
+                _this.emit('mail', session, parsed, model, database);
             }
         });
     })

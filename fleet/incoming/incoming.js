@@ -75,48 +75,38 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	}
 	*/
 	
-	var ProcessMail = function INCOMING_EMAIL_PROCESSOR(session, callback){
+	var ProcessMail = function INCOMING_EMAIL_PROCESSOR(stream, session, callback){
 		/* Find/Create a Spamc module with streaming capability */
 		// Will not use SPAMASSASIN if the process is not available
-		fs.readFile(session.path, function(error, raw) {
-			if (error) {
-				console.log("RAW-FS-ERROR", error);
-				// Send an SMTP Error Back
-				callback(new Error("FAILED TO STORE EMAIL"));
-				
-				return fs.unlink(session.path, function(error) {
-					console.log("RAW-FS-ERROR->UNLINK-ERROR", error);
-				})
-			}
-			
-			var mailparser = new MailParser({
-				showAttachmentLinks: true,
-			});
-			
-			mailparser.on("end", function(parsed){
-				/* Fix naming issues */
-				parsed.envelopeTo = session.envelope.rcptTo;
-				// Spamc currently not working
-				create(_this, databaseConnection, session, parsed, raw);
-				/*
-				try {
-					Spamc.report(raw, function (error, labResults) {
-						if(error) console.log("SMAPC-REPORT-ERROR", error);
-						create(_this, databaseConnection, session, parsed, raw, labResults);
-					});
-				}catch(error) {
-					if(error) console.log("SMAPC-NOT-FOUND", error);
-					create(_this, databaseConnection, session, parsed, raw);
-				}*/
-			});
-			
-			// Pass raw mail to the parser
-			mailparser.write(raw);
-			mailparser.end();
-			
-			// Return success to SMTP connection
+		var mailparser = new MailParser({
+			showAttachmentLinks: true,
+		});
+		
+		mailparser.on("end", function(parsed){
+			/* Fix naming issues */
+			parsed.envelopeTo = session.envelope.rcptTo;
+			create(_this, databaseConnection, session, parsed);
 			callback();
+		});
+		
+		mailparser.on("error", function() {
+			console.log("PARSER-STREAM-ERROR", arguments)
+			callback(new Error("FAILED TO STORE EMAIL"));
 		})
+		
+		// Set Stream Encoding
+		stream.setEncoding('utf8');
+		// Create new FS Write stream
+		var fileStream = fs.createWriteStream(session.path);
+		// Pipe to FS Write Stream
+		stream.pipe(fileStream);
+		// Pipe to MailParser Stream
+		stream.pipe(mailparser);
+		
+		// Pipe to Spamc /* Make Spamc PassThrough
+		/*Spamc.report(stream, function(error, result) {
+			console.log("HERE", arguments)
+		})*/
 	}
 
 	var server = new SMTPServer({
@@ -144,14 +134,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 					session.path = (_.has(_this.environment, 'paths.raw'))
 						? path.resolve(_this.environment.paths.raw, session.eID)
 						: path.resolve(os.tmpdir(), session.eID)
-					// Create new stream
-					var fileStream = fs.createWriteStream(session.path);
-					// Pipe to FS Write Stream
-					stream.pipe(fileStream);
-					// Let the FileStream consume SMTP Stream
-					fileStream.on('finish', function() {
-						ProcessMail(session, callback);
-					});
+					ProcessMail(stream, session, callback);
 				}
 			});
 		}
