@@ -5,7 +5,7 @@ module.exports = function(Galleon, query, callback) {
     if (!folder) return callback('Folder not found!');
 
     if(!Galleon.connection.collections[folder.collection]) return callback(new Error('Collection Not Found!'));
-    console.log(folder.where,folder.sort, folder.paginate)
+
     function GALLEON_QUERY_GET_EXEC(error, mails) {
         if (error) return callback("Not Authenticated");
 

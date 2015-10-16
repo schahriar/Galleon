@@ -311,7 +311,7 @@ Galleon.prototype.query = function(method, query, callback) {
 	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback(new Error("Method not found!"));
 
 	// Log Query
-	console.log(colors.green(method.toUpperCase()), query);
+	if(this.environment.verbose) console.log(colors.green(method.toUpperCase()), query);
 
 	// Execute Query
 	GalleonQuery[method.toLowerCase()](this, query, callback);

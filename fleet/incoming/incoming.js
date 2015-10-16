@@ -56,7 +56,6 @@ Note: Includes parsing time
 /* Start the SMTP server. */
 var Incoming = function(environment){
 	this.environment = environment;
-	console.log(this.environment.paths);
 
 	eventEmmiter.call(this);
 }
@@ -126,13 +125,12 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
 		logger: false, // Disable Debug logs /* Add option for this in config */
 		onData: function(stream, session, callback) {
-			console.log("NEW ENVELOPE", JSON.stringify(session.envelope));
 			// Create a new connection eID (INC short for incoming)
 			session.eID = 'INC' + shortId.generate();
 			session.path = undefined;
 
 			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
-				console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+				if(_this.environment.verbose) console.log("CONNECTION MODULES LAUNCHED".green, arguments);
 				
 				if(_.isObject(_session)) session = _session;
 			
@@ -195,8 +193,6 @@ Incoming.prototype.attach = function(databaseConnection, eID, attachments) {
 			attachments: populatedAttachments
 		}, function(error, model){
 			if(error) console.error("EMAIL BOUNCED", error);
-			// Fix association
-			console.log("EMAIL RECEIVED FOR:", model[0].association);
 		});
 	});
 }
