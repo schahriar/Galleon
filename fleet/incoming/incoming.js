@@ -143,7 +143,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 					_this.emit('connection', session);
 					/* Add FS EXISTS Check */
 					// Set Connection path
-					session.path = (_this.environment.paths.raw)
+					session.path = (_.has(_this.environment, 'paths.raw'))
 						? path.resolve(_this.environment.paths.raw, session.eID)
 						: path.resolve(os.tmpdir(), session.eID)
 					// Create new stream
