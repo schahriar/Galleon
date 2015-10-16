@@ -63,14 +63,17 @@ var Galleon = function(env, callback){
 
 	// Internal
 	var _this = this;
-	if(!env) callback = env;
-	if(!callback) callback = function(){};
+	var environment;
+	
+	if((!callback) && (typeof(env) === 'function')) {
+		callback = env;
+		env = undefined;
+	}
+	if((!callback) || (typeof(callback) !== 'function')) {
+		callback = new Function;
+	}
 
-	// Defaults
-		var environment = _.defaultsDeep(env, Defaults);
-	//
-
-	if(typeof(env) !== 'object') {
+	if((typeof(env) !== 'object') || (!env.connections)) {
 		try {
 			environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
 		}catch(e) {
@@ -78,6 +81,11 @@ var Galleon = function(env, callback){
 			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass an environment object as the first parameter.");
 		}
 	}
+	
+	// Defaults
+	environment = _.defaultsDeep(environment, env, Defaults);
+	//
+	console.log("environment IS EQUAL", environment)
 
 	// Attach environment to Galleon Object
 	_this.environment = environment;
