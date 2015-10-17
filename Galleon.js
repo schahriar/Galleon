@@ -257,6 +257,10 @@ Galleon.prototype.createUser = function(user, callback) {
 
 Galleon.prototype.listUsers = function(options, callback) {
 	// Internal
+	if(typeof(options) === 'function') {
+		callback = options;
+		options = {};
+	}else if(!options) options = {};
 	if(!callback) callback = function(){};
 
 	this.connection.collections.users.find().limit(options.limit || 50).exec(callback);
@@ -265,6 +269,8 @@ Galleon.prototype.listUsers = function(options, callback) {
 Galleon.prototype.removeUser = function(query, callback) {
 	// Internal
 	if(!callback) callback = function(){};
+	// IF Query is email
+	if(typeof(query) === 'string') query = { email: query };
 
 	if(query) this.connection.collections.users.destroy(query).exec(callback);
 	else callback(new Error("NO QUERY"));
