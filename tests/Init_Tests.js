@@ -47,4 +47,18 @@ describe('Initial Test Suite', function(){
 			done();
 		})
 	})
+	it("should remove a user", function(done) {
+		global.galleon.removeUser("hash@example.com", function(error) {
+			if(error) throw error;
+			done();
+		})
+	})
+	it("should list users", function(done) {
+		global.galleon.listUsers(function(error, users) {
+			if(error) throw error;
+			expect(users).to.have.length(1);
+			expect(users[0].email).to.be.equal("info@example.com");
+			done();
+		})
+	})
 })
