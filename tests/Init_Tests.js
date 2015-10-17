@@ -2,7 +2,7 @@ var bcrypt = require('bcryptjs');
 var chai = require("chai");
 var expect = chai.expect;
 
-describe('Query Test Suite', function(){
+describe('Initial Test Suite', function(){
 	this.timeout(8000);
 	it("should create a new instance of Galleon", function(done) {
 		global.galleon = new global.Galleon(global.options);
@@ -36,6 +36,14 @@ describe('Query Test Suite', function(){
 			if(error) throw error;
 			expect(user.email).to.equal("hash@example.com");
 			expect(bcrypt.compareSync("okpassword", user.password)).to.equal(true);
+			done();
+		})
+	})
+	it("should change user's password & hash it correctly", function(done) {
+		global.galleon.changePassword("hash@example.com", "changetopass", "okpassword", function(error, user) {
+			if(error) throw error;
+			expect(user.email).to.equal("hash@example.com");
+			expect(bcrypt.compareSync("changetopass", user.password)).to.equal(true);
 			done();
 		})
 	})
