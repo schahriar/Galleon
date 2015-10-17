@@ -20,6 +20,8 @@ Get ready to sail into a new world featuring:
 ```javascript
 npm install -g galleon
 ```
+*Note: This module requires NodeJS v0.12+. There is currently no support for v.0.10.x*
+
 [Visit the tutorial for more info.](tutorials/INSTALLATION.md)
 
 # Why ditch your old Mail Servers?
