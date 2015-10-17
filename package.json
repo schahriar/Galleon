@@ -34,7 +34,7 @@
     "shelljs": "^0.4.0",
     "shortid": "^2.2.3",
     "smtp-server": "^1.6.0",
-    "spamc-stream": "^0.2.0",
+    "spamc-stream": "^0.3.0",
     "validator": "^3.43.0",
     "waterline": "^0.10.26",
     "yargs": "^2.3.0"
