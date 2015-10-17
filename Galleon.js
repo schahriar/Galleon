@@ -274,7 +274,8 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 	var self = this;
 	// Internal
 	if(!callback) callback = function(){};
-	if(!user) callback(new Error("User not found!"));
+	if(!user) callback(new Error("No user argument (email) passed!"));
+	if(user.email) user = user.email;
 
 	// REGEX to match:
 	// * Between 6 to 20 characters
@@ -284,19 +285,25 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 		return callback(new Error("Invalid password - Length must be between 6 to 20 characters"));
 
 	if(!forceChange) {
-		bcrypt.compare(oldPassword, user.password, function(error, result) {
-			if(error) return callback(new Error("Current password does not match!"));
-			bcrypt.hash(newPassword, 10, function(error, hash) {
-				if(hash)
-					self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
-				else
-					return callback(new Error("INCORRECT PASSWORD"));
+		self.connection.collections.users.findOne({ email: user }).exec(function(error, user){
+			if(!user) callback(new Error("User Not found!"));
+			bcrypt.compare(oldPassword, user.password, function(error, result) {
+				if(error) return callback(new Error("Current password does not match!"));
+				bcrypt.hash(newPassword, 10, function(error, hash) {
+					if(hash)
+						self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(function(error){
+							if(error) return callback(new Error("Password update failed"));
+							self.connection.collections.users.findOne({ email: user.email }).exec(callback);
+						});
+					else
+						return callback(new Error("INCORRECT PASSWORD"));
+				})
 			})
 		})
 	}else{
 		bcrypt.hash(newPassword, 10, function(error, hash) {
 			if(hash)
-				self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
+				self.connection.collections.users.update({ email: user }, { password: hash }).exec(callback);
 			else
 				return callback(new Error("INCORRECT PASSWORD"));
 		})
