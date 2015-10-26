@@ -17,7 +17,8 @@ global.connection = new SMTPConnection({
 global.options = {
 	verbose: false,
 	ports: {
-		incoming: PORT
+		incoming: PORT,
+		server: 3080
 	},
 	dock: true,
 	connections: {
