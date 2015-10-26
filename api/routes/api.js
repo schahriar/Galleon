@@ -28,7 +28,7 @@ var upload = multer({ storage: storage, limits: {
 router.use(function(req, res, next) {
 	// runs for all HTTP verbs first
 	req.getCredentials(function(error, credentials){
-		if(error) return res.status(500).json({ error: "Not Authenticated", definition: error });
+		if(error) return res.status(403).json({ error: "Not Authenticated", definition: error });
 		req.credentials = credentials;
 		next();
 	});

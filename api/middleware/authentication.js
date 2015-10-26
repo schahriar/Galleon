@@ -105,7 +105,7 @@ exports = module.exports = function(urls){
 
 		req.changePassword = function(req, res, callback){
 			req.getCredentials(function(error, credentials){
-				if(error) res.status(500).json({ error: "Not Authenticated" });
+				if(error) res.status(403).json({ error: "Not Authenticated" });
 
 				herb.log('Password Change requested for', credentials.name + ' <' + credentials.email + '>');
 				req.database.models.users.findOne({ email: credentials.email }).exec(function(error, user) {
