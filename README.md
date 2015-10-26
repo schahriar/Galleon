@@ -15,6 +15,8 @@ Get ready to sail into a new world featuring:
 
 [**\*Galleon**](http://en.wikipedia.org/wiki/Galleon) is named after multi-deck armed merchant ships dating back to 16th century.
 
+[![Build Status](https://travis-ci.org/schahriar/Galleon.svg)](https://travis-ci.org/schahriar/Galleon)
+
 # Installation
 [Installation](tutorials/INSTALLATION.md) can be as simple as this (but follow the [directions](tutorials/INSTALLATION.md)):
 ```javascript
