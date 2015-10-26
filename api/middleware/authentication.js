@@ -46,10 +46,10 @@ exports = module.exports = function(urls){
 		req.signIn = function(req, res, callback){
 			var opened = moment();
 			var expires = opened.add(7, 'days');
+			
+			herb.config({ verbose: (req.environment.verbose)?4:1 });
 
-			herb.config({ verbose: 4 });
-
-			herb.log('Login requested for', req.param('email'));
+			if(req.environment.verbose) herb.log('Login requested for', req.param('email'));
 
 			req.database.models.users.findOne({ email: req.param('email') }).exec(function(error, user) {
 				if (error) herb.error(error);
@@ -107,7 +107,7 @@ exports = module.exports = function(urls){
 			req.getCredentials(function(error, credentials){
 				if(error) res.status(403).json({ error: "Not Authenticated" });
 
-				herb.log('Password Change requested for', credentials.name + ' <' + credentials.email + '>');
+				if(req.environment.verbose) herb.log('Password Change requested for', credentials.name + ' <' + credentials.email + '>');
 				req.database.models.users.findOne({ email: credentials.email }).exec(function(error, user) {
 					if (error) herb.error(error);
 
@@ -116,7 +116,7 @@ exports = module.exports = function(urls){
 					if(!user.id) return callback('Email does not match a record');
 
 					req.galleon.changePassword(user, req.param('password'), req.param('cpassword'), function(error){
-						if(!error) herb.log('Password Changed for', credentials.name + ' <' + credentials.email + '>');
+						if(!error) if(req.environment.verbose) herb.log('Password Changed for', credentials.name + ' <' + credentials.email + '>');
 						callback(error);
 					});
 

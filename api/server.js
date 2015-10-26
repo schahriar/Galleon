@@ -60,7 +60,7 @@ module.exports = function(environment, port, connection, instance) {
     // uncomment after placing your favicon in /public
     //app.use(favicon(__dirname + '/public/favicon.ico'));
     app.use(compress());
-    app.use(logger('dev'));
+    if(environment.verbose) app.use(logger('dev'));
 
     // If Environment secret is not set assign a random secret on every restart
     app.use(cookieParser(app.get('secret') || crypto.randomBytes(20).toString('hex')));
