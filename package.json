@@ -50,14 +50,17 @@
   },
   "scripts": {
     "start": "node ./seascape/server.js",
-    "test": "mocha test.js"
+    "test": "mocha test.js",
+    "posttest": "mocha test.js -r blanket -R html-cov > coverage.html"
   },
   "main": "Galleon.js",
   "license": "MIT",
   "engine": "node 0.12.x",
   "version": "0.3.0",
   "devDependencies": {
+    "blanket": "^1.1.9",
     "chai": "^3.3.0",
+    "istanbul": "^0.4.0",
     "mocha": "^2.3.3",
     "smtp-connection": "^1.3.1"
   }
