@@ -51,7 +51,7 @@
   "scripts": {
     "start": "node ./seascape/server.js",
     "test": "mocha test.js",
-    "posttest": "mocha test.js -r blanket -R html-cov > coverage.html"
+    "coverage": "mocha test.js -r blanket -R html-cov > coverage.html"
   },
   "main": "Galleon.js",
   "license": "MIT",
