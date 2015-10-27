@@ -85,6 +85,7 @@ module.exports = function(_this, database, session, parsed, callback){
                 _this.emit('mail', error, session, parsed, database);
                 callback(error, session, parsed, database);
             }else{
+                /*88: Rename may no longer be needed since session.eID is used rather than a database generated eID */
                 // Store raw email
                 if (_.has(_this.environment, 'paths.raw')) {
                     fs.rename(session.path, path.resolve(path.dirname(session.path), model.eID), function(error) {

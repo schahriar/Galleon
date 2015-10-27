@@ -91,8 +91,26 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 			/* Fix naming issues */
 			parsed.envelopeTo = session.envelope.rcptTo;
 			create(_this, databaseConnection, session, parsed, function(error) {
-				Spamc.report(SpamcPassThrough, function(spamc_error, result) {
-					callback(error);
+				callback(error);
+				
+				var reporter = Spamc.report();
+				SpamcPassThrough.pipe(reporter);
+				// Once report is obtained
+				reporter.once('report', function(report) {
+					if(!report) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
+					// Update Email from EID
+					databaseConnection.collections.mail.update({ eID: session.eID }, {
+						isSpam: report.isSpam || false,
+						spamScore: report.spamScore || false
+					}, function(error, models) {
+						if(error || (models.length < 1)) {
+							return  console.error("SPAMC-STREAM-ERROR::NO_RECORD")
+						}
+					})
+				});
+				
+				reporter.on('error', function(error) {
+					console.error("SPAMC-STREAM-ERROR::", error)
 				})
 			});
 		});
@@ -121,7 +139,6 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
 		logger: false, // Disable Debug logs /* Add option for this in config */
 		onData: function(stream, session, callback) {
-			console.log(session);
 			// Create a new connection eID
 			session.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(session.id || "NONE").digest('hex');
 			session.path = undefined;
