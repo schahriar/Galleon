@@ -12,7 +12,9 @@ module.exports = function(_this, database, session, parsed, labResults){
     else if(_.isArray(parsed.from))
         parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
     else {
-        return console.error("FAILED TO PARSE HEADER\nIGNORING MAIL");
+        _this.emit('ignored', session, parsed || {}, database);
+        if(_this.environment.verbose) console.error("FAILED TO PARSE HEADER\nIGNORING MAIL");
+        return;
     }
 
     // Sets association to envelope's receiver
