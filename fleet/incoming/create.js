@@ -5,6 +5,30 @@ var _ = require('lodash');
 
 module.exports = function(_this, database, session, parsed, labResults){
     if(!labResults) labResults = new Object;
+    
+    // Makes sure Email is parsed properly
+    // Otherwise ignore
+    if(
+        (!parsed)
+        ||
+        (typeof(parsed) !== 'object')
+        ||
+        (!parsed.envelopeTo)
+        ||
+        (!_.isArray(parsed.envelopeTo))
+        ||
+        (!parsed.envelopeTo[0].address)
+        ||
+        (!parsed.from)
+        ||
+        (!_.isObject(parsed.from))
+        ||
+        (!session)
+    ) {
+        _this.emit('ignored', session, parsed || {}, database);
+        if(_this.environment.verbose) console.error("FAILED TO PARSE EMAIL");
+        return;
+    }
 
     // Formats from to -> Name <email>
     if(_.isPlainObject(parsed.from))
