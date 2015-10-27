@@ -127,7 +127,7 @@ module.exports = {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables content checking using a MD5 checksum
 		if(!attributes.html) attributes.html = attributes.text || "[NO_MESSAGE]";
-		attributes.eID = (attributes.eID)?attributes.eID:shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html || attributes.text || attributes.subject || "NONE").digest('hex');
+		if(!attributes.eID) attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.subject || "NONE").digest('hex');
 		callback();
 	}
 };

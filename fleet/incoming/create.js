@@ -3,9 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
-module.exports = function(_this, database, session, parsed, labResults){
-    if(!labResults) labResults = new Object;
-    
+module.exports = function(_this, database, session, parsed, callback){
     // Makes sure Email is parsed properly
     // Otherwise ignore
     if(
@@ -46,6 +44,7 @@ module.exports = function(_this, database, session, parsed, labResults){
     // --------------------- //
     
     var email = {
+        eID: session.eID,
         association: parsed.associtaion,
         sender: parsed.from,
         receiver: parsed.headers.to || parsed.associtaion,
@@ -61,8 +60,8 @@ module.exports = function(_this, database, session, parsed, labResults){
         dkim: (parsed.dkim === "pass"),
         spf: (parsed.spf === "pass"),
 
-        spam: labResults.isSpam || false,
-        spamScore: labResults.spamScore || 0,
+        spam: false,
+        spamScore: 0,
 
         // STRING ENUM: ['pending', 'approved', 'denied']
         state: 'approved'
@@ -83,7 +82,8 @@ module.exports = function(_this, database, session, parsed, labResults){
                 console.error(error, 'error');
     
                 // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database failure & Database object
-                _this.emit('mail', session, parsed, error, database);
+                _this.emit('mail', error, session, parsed, database);
+                callback(error, session, parsed, database);
             }else{
                 // Store raw email
                 if (_.has(_this.environment, 'paths.raw')) {
@@ -106,7 +106,8 @@ module.exports = function(_this, database, session, parsed, labResults){
                 _this.attach(database, model.eID, parsed.attachments);
     
                 // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database model & Database object
-                _this.emit('mail', session, parsed, model, database);
+                _this.emit('mail', null, session, parsed, database);
+                callback(null, session, parsed, database);
             }
         });
     })

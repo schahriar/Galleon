@@ -5,6 +5,7 @@ var util         = require("util");
 var fs 			 = require('fs');
 var path		 = require('path');
 var os			 = require('os');
+var PassThrough  = require('stream').PassThrough;
 
 // SMTP Mail Handling
 var SMTPServer = require('smtp-server').SMTPServer;
@@ -12,11 +13,14 @@ var MailParser = require("mailparser").MailParser;
 
 // Utilities
 var async   = require('async');
-var shortId = require('shortid');
 var _ 		= require('lodash');
 
 // Functions
 var create = require("./create");
+
+// ID Generation
+var crypto = require('crypto');
+var shortId = require('shortid');
 
 /* -- ------- -- */
 
@@ -76,6 +80,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	*/
 	
 	var ProcessMail = function INCOMING_EMAIL_PROCESSOR(stream, session, callback){
+		var SpamcPassThrough, fileStream;
 		/* Find/Create a Spamc module with streaming capability */
 		// Will not use SPAMASSASIN if the process is not available
 		var mailparser = new MailParser({
@@ -85,28 +90,29 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		mailparser.on("end", function(parsed){
 			/* Fix naming issues */
 			parsed.envelopeTo = session.envelope.rcptTo;
-			create(_this, databaseConnection, session, parsed);
-			callback();
+			create(_this, databaseConnection, session, parsed, function(error) {
+				Spamc.report(SpamcPassThrough, function(spamc_error, result) {
+					callback(error);
+				})
+			});
 		});
 		
 		mailparser.on("error", function() {
-			console.log("PARSER-STREAM-ERROR", arguments)
+			if(_this.environment.verbose) console.log("PARSER-STREAM-ERROR", arguments)
 			callback(new Error("FAILED TO STORE EMAIL"));
 		})
 		
 		// Set Stream Encoding
 		stream.setEncoding('utf8');
+		SpamcPassThrough = new PassThrough;
 		// Create new FS Write stream
-		var fileStream = fs.createWriteStream(session.path);
+		fileStream = fs.createWriteStream(session.path);
 		// Pipe to FS Write Stream
 		stream.pipe(fileStream);
 		// Pipe to MailParser Stream
 		stream.pipe(mailparser);
-		
-		// Pipe to Spamc /* Make Spamc PassThrough
-		/*Spamc.report(stream, function(error, result) {
-			console.log("HERE", arguments)
-		})*/
+		// Pipe to PassThrough for Spamc-stream
+		stream.pipe(SpamcPassThrough);
 	}
 
 	var server = new SMTPServer({
@@ -115,8 +121,9 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
 		logger: false, // Disable Debug logs /* Add option for this in config */
 		onData: function(stream, session, callback) {
-			// Create a new connection eID (INC short for incoming)
-			session.eID = 'INC' + shortId.generate();
+			console.log(session);
+			// Create a new connection eID
+			session.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(session.id || "NONE").digest('hex');
 			session.path = undefined;
 
 			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
