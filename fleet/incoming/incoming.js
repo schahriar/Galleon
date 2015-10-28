@@ -148,9 +148,11 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 				
 				if(_.isObject(_session)) session = _session;
 			
-				// Ignore email if requested ELSE Process Stream
+				// Ignore email if requested by 'incoming-connection' modules
+				// Otherwise Process Stream
 				if(_block === true) {
 					_this.emit('blocked', session);
+					callback({ responseCode: 451, message: "Request Blocked"});
 				}else{
 					_this.emit('connection', session);
 					/* Add FS EXISTS Check */
