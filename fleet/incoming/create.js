@@ -35,11 +35,6 @@ module.exports = function(_this, database, session, parsed, callback){
         parsed.from = parsed.from.name + ' <' + parsed.from.address + '>';
     else if(_.isArray(parsed.from))
         parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
-    else {
-        _this.emit('ignored', session, parsed || {}, database);
-        if(_this.environment.verbose) console.error("FAILED TO PARSE HEADER\nIGNORING MAIL");
-        return;
-    }
 
     // Sets association to envelope's receiver
     parsed.associtaion = parsed.envelopeTo[0].address;
