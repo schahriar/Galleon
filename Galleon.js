@@ -24,6 +24,7 @@ var GalleonQuery = {
 	getattachment: require('./query/get.attachment'),
 	linkattachment: require('./query/link.attachment'),
 	unlinkattachment: require('./query/unlink.attachment'),
+	clean: require('./query/clean.js')
 }
 
 // Essential

@@ -75,6 +75,11 @@ var tasks = {
         description: "INSTALLING|INSTALLS| MODULES",
         category: "modules",
         FUNC: require("./tasks/install")
+    },
+    clean: {
+        description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
+        category: "maintenance",
+        FUNC: require("./tasks/clean")
     }
 }
 
@@ -118,5 +123,5 @@ if (
 	})
     
 } else {
-    console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help'.magenta, 'for more info.'.cyan);
+    console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help', 'for more info.'.cyan);
 }
