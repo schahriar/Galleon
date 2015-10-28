@@ -50,4 +50,10 @@ describe('User Management Test Suite', function(){
 			done();
 		})
 	})
+	it("should deny a short/bad password", function(done) {
+		global.galleon.changePassword("info@example.com", "pass", "bestpasswordever", function(error, user) {
+			expect(error).to.exist;
+			done();
+		})
+	})
 })
