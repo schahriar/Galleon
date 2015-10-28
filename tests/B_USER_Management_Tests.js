@@ -56,4 +56,11 @@ describe('User Management Test Suite', function(){
 			done();
 		})
 	})
+	it("should deny a password change with wrong old password", function(done) {
+		global.galleon.changePassword("info@example.com", "bestpasswordever", "wrongpass", function(error, user) {
+			expect(error).to.exist;
+			expect(error.message).to.equal("Current password does not match!");
+			done();
+		})
+	})
 })
