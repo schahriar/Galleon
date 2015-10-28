@@ -294,7 +294,7 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 		self.connection.collections.users.findOne({ email: user }).exec(function(error, user){
 			if(!user) callback(new Error("User Not found!"));
 			bcrypt.compare(oldPassword, user.password, function(error, result) {
-				if(error) return callback(new Error("Current password does not match!"));
+				if(error || !result) return callback(new Error("Current password does not match!"));
 				bcrypt.hash(newPassword, 10, function(error, hash) {
 					if(hash)
 						self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(function(error){
