@@ -5,18 +5,14 @@ var util         = require("util");
 var fs 			 = require('fs');
 var path		 = require('path');
 var os			 = require('os');
-var PassThrough  = require('stream').PassThrough;
 
 // SMTP Mail Handling
 var SMTPServer = require('smtp-server').SMTPServer;
-var MailParser = require("mailparser").MailParser;
+var Processor = require('./processor.js');
 
 // Utilities
 var async   = require('async');
 var _ 		= require('lodash');
-
-// Functions
-var create = require("./create");
 
 // ID Generation
 var crypto = require('crypto');
@@ -79,60 +75,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	}
 	*/
 	
-	var ProcessMail = function INCOMING_EMAIL_PROCESSOR(stream, session, callback){
-		var SpamcPassThrough, fileStream;
-		/* Find/Create a Spamc module with streaming capability */
-		// Will not use SPAMASSASIN if the process is not available
-		var mailparser = new MailParser({
-			showAttachmentLinks: true,
-		});
-		
-		mailparser.on("end", function(parsed){
-			/* Fix naming issues */
-			parsed.envelopeTo = session.envelope.rcptTo;
-			create(_this, databaseConnection, session, parsed, function(error) {
-				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
-				callback(error);
-				
-				var reporter = Spamc.report();
-				SpamcPassThrough.pipe(reporter);
-				// Once report is obtained
-				reporter.once('report', function(report) {
-					if(!report) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
-					// Update Email from EID
-					databaseConnection.collections.mail.update({ eID: session.eID }, {
-						isSpam: report.isSpam || false,
-						spamScore: report.spamScore || false
-					}, function(error, models) {
-						if(error || (models.length < 1)) {
-							return  console.error("SPAMC-STREAM-ERROR::NO_RECORD")
-						}
-					})
-				});
-				
-				reporter.on('error', function(error) {
-					console.error("SPAMC-STREAM-ERROR::", error)
-				})
-			});
-		});
-		
-		mailparser.on("error", function() {
-			if(_this.environment.verbose) console.log("PARSER-STREAM-ERROR", arguments)
-			callback(new Error("FAILED TO STORE EMAIL"));
-		})
-		
-		// Set Stream Encoding
-		stream.setEncoding('utf8');
-		SpamcPassThrough = new PassThrough;
-		// Create new FS Write stream
-		fileStream = fs.createWriteStream(session.path);
-		// Pipe to FS Write Stream
-		stream.pipe(fileStream);
-		// Pipe to MailParser Stream
-		stream.pipe(mailparser);
-		// Pipe to PassThrough for Spamc-stream
-		stream.pipe(SpamcPassThrough);
-	}
+	var ProcessMail = Processor(this, databaseConnection, Spamc);
 
 	var server = new SMTPServer({
 		size: 20971520, // MAX 20MB Message
