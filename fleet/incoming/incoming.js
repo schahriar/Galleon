@@ -91,6 +91,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 			/* Fix naming issues */
 			parsed.envelopeTo = session.envelope.rcptTo;
 			create(_this, databaseConnection, session, parsed, function(error) {
+				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
 				callback(error);
 				
 				var reporter = Spamc.report();

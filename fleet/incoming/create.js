@@ -25,7 +25,7 @@ module.exports = function(_this, database, session, parsed, callback){
     ) {
         _this.emit('ignored', session, parsed || {}, database);
         if(_this.environment.verbose) console.error("FAILED TO PARSE EMAIL");
-        return;
+        return callback({ responseCode: 451, message: "local error in processing, E-MAIL is invalid." });
     }
 
     // Formats from to -> Name <email>
