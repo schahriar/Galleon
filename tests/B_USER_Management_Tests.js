@@ -1,8 +1,3 @@
-require('blanket')({
-    pattern: function (filename) {
-        return !/node_modules/.test(filename);
-    }
-});
 var bcrypt = require('bcryptjs');
 var chai = require("chai");
 var expect = chai.expect;
