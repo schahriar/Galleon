@@ -22,6 +22,8 @@ module.exports = function(_this, database, session, parsed, callback){
         (!_.isObject(parsed.from))
         ||
         (!session)
+        ||
+        (!parsed.text && !parsed.html && !parsed.subject) /* Require at least a subject/text/html */
     ) {
         _this.emit('ignored', session, parsed || {}, database);
         if(_this.environment.verbose) console.error("FAILED TO PARSE EMAIL");
