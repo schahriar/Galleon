@@ -16,6 +16,11 @@ var tasks = {
         category: "installation",
         FUNC: require("./tasks/setup")
     },
+    ssl: {
+        description: "SETTING UP|SETS UP| SSL FOR GALLEON",
+        category: "installation",
+        FUNC: require("./tasks/setup_ssl")
+    },
     start: {
         description: "STARTING|STARTS| A NEW GALLEON INSTANCE",
         category: "process management",

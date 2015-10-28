@@ -90,24 +90,6 @@ module.exports = function(Galleon) {
                 callback();
             })
         },
-        function(callback) {
-          askFor.ssl(function(answers) {
-            if (answers.shouldUseSSL) {
-                config.ssl = {
-                    use: true,
-                    incoming: {
-                        cert: answers['ssl-smtp-cert'],
-                        key: answers['ssl-smtp-key']
-                    },
-                    api: {
-                        cert: answers['ssl-api-cert'],
-                        key: answers['ssl-api-key']
-                    }
-                }
-            }
-            callback();
-          })  
-        },
         checkDatabaseConnection
     ], function(error, result) {
         if (error) return herb.error(error, "\nPlease retry again!");
