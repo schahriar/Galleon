@@ -29,4 +29,13 @@ describe("SMTP Incoming Tests", function () {
 			});
 		});
 	})
+	it("should handle bad email gracefully", function (done) {
+		global.connection.send({
+			from: "test@example.com",
+			to: "info@example.com"
+		}, "From: me@domain.com\nTo: you@ubject: Example MessageSending a test message.", function (error) {
+			expect(error.responseCode).to.equal(451);
+			done();
+		});
+	})
 })
