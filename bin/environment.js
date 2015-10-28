@@ -3,7 +3,16 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
+function createDirectoryIfNotFound() {
+    var dir = path.resolve.apply(null, arguments);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    return dir;
+}
+
 var defaultPath = path.resolve(osenv.home(), '.galleon/galleon.conf');
+createDirectoryIfNotFound(path.resolve(osenv.home(), '.galleon'));
 
 var env = {
     get: function(callback) {
@@ -16,7 +25,7 @@ var env = {
         });
     },
     getSync: function() {
-        if(!fs.existsSync(defaultPath)) return "CONFIG FILE NOT FOUND!";
+        if(!fs.existsSync(defaultPath)) return {};
         return JSON.parse(fs.readFileSync(defaultPath, 'utf8'));
     },
     getModulesSync: function() {
