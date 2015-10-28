@@ -51,7 +51,18 @@
   "scripts": {
     "start": "node ./seascape/server.js",
     "test": "mocha test.js",
-    "coverage": "mocha test.js -r blanket -R html-cov > coverage.html"
+    "coverage": "mocha ./test.js -r blanket -R html-cov > coverage.html"
+  },
+  "config": {
+    "blanket": {
+      "data-cover-never": [
+        "node_modules",
+        "tests"
+      ],
+      "data-cover-reporter-options": {
+        "shortnames": true
+      }
+    }
   },
   "main": "Galleon.js",
   "license": "MIT",
