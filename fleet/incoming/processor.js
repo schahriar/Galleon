@@ -34,6 +34,13 @@ module.exports = function (context, databaseConnection, Spamc) {
 
 		mailparser.on("end", function (parsed) {
 			/* Fix naming issues */
+			// Return an error if we don't know who the envelope is sent to
+			if((!session.envelope) && (!parsed.envelope)) {
+				return callback({
+					responseCode: 451,
+					message: "Failed to process Envelope headers"
+				});
+			}
 			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.envelope.rcptTo;
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
