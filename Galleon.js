@@ -101,8 +101,8 @@ var Galleon = function(env, callback){
 		if(environment.verbose) console.log("Connection attempted".yellow);
 		if(error) {
 			console.error("Connection error!".red);
-			callback(error);
-			throw error;
+			if(callback) callback(error);
+			else throw error;
 		}
 
 		if(environment.verbose) console.log("Database connection established".green);
