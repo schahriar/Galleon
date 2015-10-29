@@ -106,7 +106,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 					// Set Connection path
 					session.path = (_.has(_this.environment, 'paths.raw'))
 						? path.resolve(_this.environment.paths.raw, session.eID)
-						: path.resolve(os.tmpdir(), session.eID)
+						: path.resolve(os.tmpdir(), session.eID);
 					ProcessMail(stream, session, callback);
 				}
 			});
