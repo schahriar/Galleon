@@ -80,6 +80,11 @@ var tasks = {
         description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
         category: "maintenance",
         FUNC: require("./tasks/clean")
+    },
+    restore: {
+        description: "RESTORING|RESTORES| RAW EMAILS TO DATABASE",
+        category: "maintenance",
+        FUNC: require("./tasks/restore")
     }
 }
 
