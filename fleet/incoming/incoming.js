@@ -8,7 +8,8 @@ var os			 = require('os');
 
 // SMTP Mail Handling
 var SMTPServer = require('smtp-server').SMTPServer;
-var Processor = require('./processor.js');
+var Processor = require('./processor');
+var Attachment = require('./attachment');
 
 // Utilities
 var async   = require('async');
@@ -117,39 +118,10 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	_this.emit("ready", server);
 };
 
-Incoming.prototype.attach = function(databaseConnection, eID, attachments) {
-	if (!attachments) return;
+Incoming.prototype.attach = function(databaseConnection, eID, attachments){
+	if((!this.environment.paths) || (!this.environment.paths.attachments)) return;
 	
-	var self = this;
-	var populatedAttachments = [];
-	async.forEach(attachments || [], function(attachment, callback) {
-		attachment.id   = eID + "_" + shortId.generate();
-		attachment.path = path.resolve(self.environment.paths.attachments, attachment.id);
-
-		fs.writeFile(attachment.path, attachment.content, function(err) {
-			if(err) return callback(err);
-			populatedAttachments.push({
-				id: 	  attachment.id,
-				cid:	  attachment.contentId,
-				fileName: attachment.fileName,
-				path: 	  attachment.path,
-
-				transferEncoding: attachment.transferEncoding,
-				contentType: attachment.contentType,
-				checksum: attachment.checksum,
-				length:   attachment.length
-			});
-			callback();
-		});
-	}, function(err) {
-		if (err) return console.error(err);
-
-		databaseConnection.collections.mail.update({ 'eID': eID }, {
-			attachments: populatedAttachments
-		}, function(error, model){
-			if(error) console.error("EMAIL BOUNCED", error);
-		});
-	});
+	Attachment(this.environment.paths.attachments, databaseConnection, eID, attachments);
 }
 
 module.exports = Incoming;

@@ -81,7 +81,7 @@ module.exports = function(_this, database, session, parsed, callback){
                 // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database failure & Database object
                 _this.emit('mail', error, session, parsed, database);
                 callback(error, session, parsed, database);
-            }else{    
+            }else{
                 // Add attachments to Mail
                 _this.attach(database, model.eID, parsed.attachments);
     

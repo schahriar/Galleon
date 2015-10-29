@@ -42,6 +42,8 @@ module.exports = function (context, databaseConnection, Spamc) {
 				});
 			}
 			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.to;
+			
+			if(!context.attach) context.attach = require('./attachment');
 
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
