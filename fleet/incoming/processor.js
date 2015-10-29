@@ -65,7 +65,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 				});
 
 				reporter.on('error', function (error) {
-					console.error("SPAMC-STREAM-ERROR::", error)
+					if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::", error)
 				})
 			});
 		});
