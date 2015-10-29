@@ -84,6 +84,9 @@ var Galleon = function(env, callback){
 		}
 	}
 	
+	// Set Spamc
+	this.spamc = new Spamc('localhost', 783, 20);
+	
 	// Defaults
 	environment = _.defaultsDeep(environment || {}, env);
 	environment = _.defaultsDeep(environment || {}, Defaults);
@@ -183,7 +186,6 @@ Galleon.prototype.dock = function(callback){
 	// Internal
 	if(!callback) callback = function(){};
 
-	this.spamc = new Spamc('localhost', 783, 20);
 	var INCOMING = new incoming(this.environment);
 	INCOMING.listen(this.environment.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
 
