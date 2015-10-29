@@ -100,8 +100,8 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 				}else{
 					_this.emit('connection', session);
 					/* Add FS EXISTS Check */
-					// Tell Processor to Store RAW
-					session.store = true;
+					// Tell Processor to Store RAW if env path is set
+					session.store = _.has(_this.environment, 'paths.raw');
 					// Set Connection path
 					session.path = (_.has(_this.environment, 'paths.raw'))
 						? path.resolve(_this.environment.paths.raw, session.eID)
