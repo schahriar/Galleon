@@ -32,7 +32,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 			showAttachmentLinks: true,
 		});
 
-		mailparser.on("end", function (parsed) {
+		mailparser.once("end", function (parsed) {
 			/* Fix naming issues */
 			// Return an error if we don't know who the envelope is sent to
 			if((!session.envelope) && (!parsed.envelope)) {
@@ -68,7 +68,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 			});
 		});
 
-		mailparser.on("error", function () {
+		mailparser.once("error", function () {
 			if (context.environment.verbose) console.log("PARSER-STREAM-ERROR", arguments)
 			callback(new Error("FAILED TO STORE EMAIL"));
 		})
