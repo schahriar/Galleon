@@ -31,17 +31,18 @@ module.exports = function (context, databaseConnection, Spamc) {
 		var mailparser = new MailParser({
 			showAttachmentLinks: true,
 		});
-
+		
 		mailparser.once("end", function (parsed) {
 			/* Fix naming issues */
 			// Return an error if we don't know who the envelope is sent to
-			if((!session.envelope) && (!parsed.envelope)) {
+			if((!session.envelope) && ((!parsed.to) || (!parsed.to[0]) || (!parsed.to[0].address))) {
 				return callback({
 					responseCode: 451,
 					message: "Failed to process Envelope headers"
 				});
 			}
-			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.envelope.rcptTo;
+			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.to[0].address;
+
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
 				callback(error);
@@ -50,14 +51,15 @@ module.exports = function (context, databaseConnection, Spamc) {
 				SpamcPassThrough.pipe(reporter);
 				// Once report is obtained
 				reporter.once('report', function (report) {
-					if (!report) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
+					if (!report && context.environment.verbose) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
 					// Update Email from EID
 					databaseConnection.collections.mail.update({ eID: session.eID }, {
 						isSpam: report.isSpam || false,
 						spamScore: report.spamScore || false
 					}, function (error, models) {
 						if (error || (models.length < 1)) {
-							return console.error("SPAMC-STREAM-ERROR::NO_RECORD")
+							if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::NO_RECORD");
+							return;
 						}
 					})
 				});
