@@ -70,9 +70,9 @@ module.exports = function (context, databaseConnection, Spamc) {
 		stream.setEncoding('utf8');
 		SpamcPassThrough = new PassThrough;
 		// Create new FS Write stream
-		fileStream = fs.createWriteStream(session.path);
+		if(session.store) fileStream = fs.createWriteStream(session.path);
 		// Pipe to FS Write Stream
-		stream.pipe(fileStream);
+		if(session.store) stream.pipe(fileStream);
 		// Pipe to MailParser Stream
 		stream.pipe(mailparser);
 		// Pipe to PassThrough for Spamc-stream
