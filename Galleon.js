@@ -94,8 +94,12 @@ var Galleon = function(env, callback){
 
 	// Assign module environment
 	_this.environment.modulator = modulator;
-	// Assign modules
-	_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
+	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
+	if(_this.environment.safemode === true) {
+		_this.environment.modules = {}
+	}else{
+		_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
+	}
 
 	Database(_this.environment.connections, function(error, connection){
 		if(environment.verbose) console.log("Connection attempted".yellow);
