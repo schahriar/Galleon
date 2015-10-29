@@ -34,7 +34,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 
 		mailparser.on("end", function (parsed) {
 			/* Fix naming issues */
-			parsed.envelopeTo = session.envelope.rcptTo;
+			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.envelope.rcptTo;
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
 				callback(error);
