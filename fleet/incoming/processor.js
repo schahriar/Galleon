@@ -41,7 +41,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 					message: "Failed to process Envelope headers"
 				});
 			}
-			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.to[0].address;
+			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.to;
 
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
