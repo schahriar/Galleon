@@ -21,7 +21,7 @@ describe("SMTP Incoming Tests", function () {
 			global.galleon.query('get', {
 				email: "info@example.com",
 				folder: 'inbox',
-				page: 0
+				paginate: false
 			}, function (error, results) {
 				if (error) throw error;
 				expect(results[0].text).to.equal('Sending a test message.');

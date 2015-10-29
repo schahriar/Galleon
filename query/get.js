@@ -3,6 +3,9 @@ var build = require('./get.build');
 module.exports = function(Galleon, query, callback) {
     var folder = build(query.email, query.page)[query.folder.toUpperCase()];
     if (!folder) return callback('Folder not found!');
+    
+    // Set Default Query Paginate to true
+    if(query.paginate === undefined) query.paginate = true;
 
     if(!Galleon.connection.collections[folder.collection]) return callback(new Error('Collection Not Found!'));
 
@@ -26,7 +29,7 @@ module.exports = function(Galleon, query, callback) {
                 })
         })
     }
-    if(Galleon.connection.collections[folder.collection].paginate) {
+    if(query.paginate) {
         Galleon.connection.collections[folder.collection]
         .find()
         .where(folder.where)
