@@ -49,26 +49,34 @@ module.exports = function (context, databaseConnection, Spamc) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
 				callback(error);
 
-				var reporter = Spamc.report();
-				SpamcPassThrough.pipe(reporter);
-				// Once report is obtained
-				reporter.once('report', function (report) {
-					if (!report && context.environment.verbose) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
-					// Update Email from EID
-					databaseConnection.collections.mail.update({ eID: session.eID }, {
-						isSpam: report.isSpam || false,
-						spamScore: report.spamScore || false
-					}, function (error, models) {
-						if (error || (models.length < 1)) {
-							if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::NO_RECORD");
-							return;
-						}
+				if(session.store) {
+					var reporter = Spamc.report();
+					var RawStream = fs.createReadStream(session.path);
+					RawStream.pipe(reporter);
+					
+					// Once report is obtained
+					reporter.once('report', function (report) {
+						if (!report && context.environment.verbose) return console.error("SPAMC-STREAM-ERROR::NO_REPORT");
+						// Update Email from EID
+						databaseConnection.collections.mail.update({ eID: session.eID }, {
+							isSpam: report.isSpam || false,
+							spamScore: report.spamScore || false
+						}, function (error, models) {
+							if (error || (models.length < 1)) {
+								if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::NO_RECORD");
+								return;
+							}
+						})
+					});
+					
+					RawStream.once('error', function(error) {
+						if (context.environment.verbose) console.error("RAW-STREAM-ERROR::", error)
 					})
-				});
-
-				reporter.on('error', function (error) {
-					if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::", error)
-				})
+	
+					reporter.once('error', function (error) {
+						if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::", error)
+					})
+				}
 			});
 		});
 
@@ -79,14 +87,11 @@ module.exports = function (context, databaseConnection, Spamc) {
 	
 		// Set Stream Encoding
 		stream.setEncoding('utf8');
-		SpamcPassThrough = new PassThrough;
 		// Create new FS Write stream
 		if(session.store) fileStream = fs.createWriteStream(session.path);
 		// Pipe to FS Write Stream
 		if(session.store) stream.pipe(fileStream);
 		// Pipe to MailParser Stream
 		stream.pipe(mailparser);
-		// Pipe to PassThrough for Spamc-stream
-		stream.pipe(SpamcPassThrough);
 	}
 }
