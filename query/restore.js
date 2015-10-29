@@ -11,7 +11,7 @@ module.exports = function(Galleon, query, callback) {
     // Resolve Path to raw emails
     var rawPath = path.resolve(Galleon.environment.paths.raw);
     
-    var RestoreToDatabase = Processor(Galleon, Galleon.connection, Galleon.Spamc);
+    var RestoreToDatabase = Processor(Galleon, Galleon.connection, Galleon.spamc);
     
     // Read List of files
     fs.readdir(rawPath, function(error, files) {
@@ -24,17 +24,46 @@ module.exports = function(Galleon, query, callback) {
                 Galleon.connection.collections.mail.findOne({ eID: eID }, function(error, model) {
                     if(error) return _callback(error);
                     // If record not found restore
+                    // Match Legacy Raw records
+                    var OriginalID = eID;
+                    if(eID.substring(0,5) === '_raw_') eID = eID.substring(5);
                     if(!model) {
-                        RestoreToDatabase(fs.createReadStream(path.resolve(rawPath, eID)), {
+                        var CALLBACK_CALLED = false;
+                        var FileStream = fs.createReadStream(path.resolve(rawPath, OriginalID));
+                        // Ignore Stream errors
+                        FileStream.on('error', function(error){
+                            if(!CALLBACK_CALLED) _callback(null, "ERROR:" + eID + "TIMED_OUT");
+                            CALLBACK_CALLED = true;
+                        });
+                        RestoreToDatabase(FileStream, {
                             eID: eID,
-                            path: path.resolve(rawPath, eID),
+                            path: path.resolve(rawPath, OriginalID),
                             store: false
-                        }, _callback);
+                        }, function(error) {
+                            // Call callback regardless of error
+                            if(error) {
+                                CALLBACK_CALLED = true;
+                                return _callback(null, "ERROR:" + eID + error);
+                            }
+                            console.log("RESTORED", eID);
+                            if(!CALLBACK_CALLED) _callback();
+                            CALLBACK_CALLED = true;
+                        });
+                        // Timeout Function
+                        setTimeout(function(){
+                            if(!CALLBACK_CALLED) {
+                                _callback(null, "ERROR:" + eID + "TIMED_OUT");
+                            }
+                            CALLBACK_CALLED = true;
+                        }, 15000);
+                    }else{
+                        // EMAIL Exists -> Continue
+                        _callback();
                     }
                 })
             })
         })
         // Launch in parallel
-        async.parallel(ParallelExecutionArray, callback);
+        async.parallelLimit(ParallelExecutionArray, 5, callback);
     })
 }
