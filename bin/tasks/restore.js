@@ -10,7 +10,12 @@ module.exports = function(Galleon, argv) {
                 console.error(error);
                 process.exit(1);
             }
-            console.log("FAILED TO PROCESS", failed.length, "ITEMS");
+            var i;
+            var errors = [];
+            for(i=0; i<failed.length; i++) {
+                if(failed[i] !== undefined) error.push(failed[i]);
+            }
+            if(errors.length >= 1) console.log("FAILED TO PROCESS", errors.length, "ITEMS");
             console.log("RESTORE WAS SUCCESSFUL");
             process.exit(0);
         });

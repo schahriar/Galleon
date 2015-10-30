@@ -22,7 +22,10 @@ module.exports = function(Galleon, query, callback) {
                     if(error) return _callback(error);
                     // If record not found Unlink
                     if(!model) {
+                        console.log("UNLINKING", path.resolve(rawPath, eID));
                         fs.unlink(path.resolve(rawPath, eID), _callback);
+                    }else{
+                        _callback();
                     }
                 })
             })
