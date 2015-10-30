@@ -121,7 +121,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 Incoming.prototype.attach = function(databaseConnection, eID, attachments){
 	if((!this.environment.paths) || (!this.environment.paths.attachments)) return;
 	
-	Attachment(this.environment.paths.attachments, databaseConnection, eID, attachments);
+	Attachment.save(this.environment.paths.attachments, databaseConnection, eID, attachments);
 }
 
 module.exports = Incoming;

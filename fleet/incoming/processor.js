@@ -6,6 +6,7 @@ var path		= require('path');
 
 // Functions
 var create = require("./create");
+var Attachment = require('./attachment');
 
 //
 /* -------------- Module Human description -------------- */
@@ -25,11 +26,12 @@ var create = require("./create");
 
 module.exports = function (context, databaseConnection, Spamc) {
 	return function INCOMING_EMAIL_PROCESSOR(stream, session, callback) {
-		var SpamcPassThrough, fileStream;
+		var fileStream;
 		/* Find/Create a Spamc module with streaming capability */
 		// Will not use SPAMASSASIN if the process is not available
 		var mailparser = new MailParser({
 			showAttachmentLinks: true,
+			streamAttachments: true
 		});
 		
 		mailparser.once("end", function (parsed) {
@@ -43,7 +45,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 			}
 			parsed.envelopeTo = (session.envelope)?session.envelope.rcptTo:parsed.to;
 			
-			if(!context.attach) context.attach = require('./attachment');
+			if(!context.attach) context.attach = require('./attachment').save;
 
 			create(context, databaseConnection, session, parsed, function (error) {
 				// Respond to SMTP Connection (WITH OR WITHOUT ERROR)
@@ -80,6 +82,11 @@ module.exports = function (context, databaseConnection, Spamc) {
 				}
 			});
 		});
+		
+		mailparser.on("attachment", function(attachment, mail){
+			if((!context.environment.paths) || (!context.environment.paths.attachments)) return;
+			Attachment.stream(context.environment.paths.attachments, session.eID, attachment);
+		});
 
 		mailparser.once("error", function () {
 			if (context.environment.verbose) console.log("PARSER-STREAM-ERROR", arguments)
@@ -89,7 +96,7 @@ module.exports = function (context, databaseConnection, Spamc) {
 		// Set Stream Encoding
 		stream.setEncoding('utf8');
 		// Create new FS Write stream
-		if(session.store) fileStream = fs.createWriteStream(session.path);
+		if(session.store) fileStream = fs.createWriteStream(session.path); /* Add Error handling for FileStream */
 		// Pipe to FS Write Stream
 		if(session.store) stream.pipe(fileStream);
 		// Pipe to MailParser Stream
