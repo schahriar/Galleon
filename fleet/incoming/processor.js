@@ -60,7 +60,8 @@ module.exports = function (context, databaseConnection, Spamc) {
 						// Update Email from EID
 						databaseConnection.collections.mail.update({ eID: session.eID }, {
 							isSpam: report.isSpam || false,
-							spamScore: report.spamScore || false
+							spamScore: report.spamScore || false,
+							status: "approved"
 						}, function (error, models) {
 							if (error || (models.length < 1)) {
 								if (context.environment.verbose) console.error("SPAMC-STREAM-ERROR::NO_RECORD");

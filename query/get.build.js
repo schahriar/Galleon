@@ -85,7 +85,7 @@ module.exports = function(email, page) {
             return _.chain(mails)
                 .map(function(t) {
                     // Filter
-                    t = _.pick(t, ['eID', 'sender', 'receiver', 'to', 'stamp', 'subject', 'text', 'html', 'read', 'spam', 'trash', 'attachments']);
+                    t = _.pick(t, ['eID', 'sender', 'receiver', 'to', 'stamp', 'subject', 'text', 'html', 'read', 'spam', 'trash', 'attachments', 'status']);
                     // Remove path from Attachments
                     t.attachments = _.map(t.attachments, function(attachment) {
                         return _.pick(attachment, ['fileName', 'checksum', 'id', 'length']);

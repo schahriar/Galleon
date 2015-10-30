@@ -61,7 +61,7 @@ module.exports = function(_this, database, session, parsed, callback){
         spamScore: 0,
 
         // STRING ENUM: ['pending', 'approved', 'denied']
-        state: 'approved'
+        state: 'pending'
     }
     
     // Load incoming modules
