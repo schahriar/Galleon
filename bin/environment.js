@@ -37,6 +37,9 @@ var env = {
             if(callback) callback();
         });
     },
+    setSync: function(obj) {
+        return fs.writeFileSync(defaultPath, JSON.stringify(obj, null, 2));
+    },
     setModules: function(modules, callback) {
         var self = this;
         var modules = _.toArray(modules);
@@ -53,7 +56,8 @@ var env = {
             if(error) return callback(error);
             var MODULE = _.findWhere(data.modules, { name: Module.name });
             MODULE.config = _.merge(MODULE.config, Config);
-            self.set(data, callback);
+            if(typeof(callback) === 'function') self.set(data, callback);
+            else self.setSync(data);
         })
     },
     addModules: function(modules, callback) {
