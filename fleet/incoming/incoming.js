@@ -109,7 +109,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 			ServerConfig.key = fs.readFileSync(_this.environment.ssl.incoming.key, 'utf8');
 			ServerConfig.cert = fs.readFileSync(_this.environment.ssl.incoming.cert, 'utf8');
 			ServerConfig.ca = fs.readFileSync(_this.environment.ssl.incoming.ca, 'utf8');
-			console.log("USING KEY", _this.environment.ssl.incoming);
+			if(_this.environment.verbose) console.log("USING KEY", _this.environment.ssl.incoming);
 		}catch(e) {
 			if(_this.environment.verbose) console.log("FAILED TO START INCOMING SSL\nFALLING BACK.");
 			ServerConfig.key = null;
@@ -121,7 +121,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var server = new SMTPServer(ServerConfig);
 	
 	server.listen(port, null, function(){
-		console.log("SMTP SERVER LISTENING ON PORT", port);
+		if(_this.environment.verbose) console.log("SMTP SERVER LISTENING ON PORT", port);
 	});
 	server.on('error', function(error) {
 		if(_this.environment.verbose) console.log('SMTP-SERVER-ERROR::%s', error.message);
