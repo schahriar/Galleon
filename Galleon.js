@@ -85,7 +85,7 @@ var Galleon = function(env, callback){
 	}
 	
 	// Set Spamc
-	this.spamc = new Spamc('localhost', 783, 20);
+	this.spamc = new Spamc('localhost', 783, 60);
 	
 	// Defaults
 	environment = _.defaultsDeep(environment || {}, env);
