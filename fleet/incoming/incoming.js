@@ -66,19 +66,9 @@ util.inherits(Incoming, eventEmmiter);
 Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
 	
-	/*
-	if (this.environment.ssl.use) {
-		options.secureConnection = true;
-		options.credentials = {
-			key: fs.readFileSync(this.environment.ssl.incoming.key, 'utf8'),
-			cert: fs.readFileSync(this.environment.ssl.incoming.cert, 'utf8')
-		}
-	}
-	*/
-	
 	var ProcessMail = Processor(this, databaseConnection, Spamc);
 
-	var server = new SMTPServer({
+	var ServerConfig = {
 		size: 20971520, // MAX 20MB Message
 		banner: "Galleon MailServer <galleon.email>",
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
@@ -111,9 +101,30 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 				}
 			});
 		}
-	});
+	};
 	
-	server.listen(port);
+	if ((_this.environment.ssl.use) && (_this.environment.ssl.incoming) && (_this.environment.ssl.incoming.key) && (_this.environment.ssl.incoming.cert)) {
+		try {
+			ServerConfig.key = fs.readFileSync(_this.environment.ssl.incoming.key, 'utf8');
+			ServerConfig.cert = fs.readFileSync(_this.environment.ssl.incoming.cert, 'utf8');
+			ServerConfig.ca = fs.readFileSync(_this.environment.ssl.incoming.ca, 'utf8');
+			console.log("USING KEY", _this.environment.ssl.incoming);
+		}catch(e) {
+			if(_this.environment.verbose) console.log("FAILED TO START INCOMING SSL\nFALLING BACK.");
+			ServerConfig.key = null;
+			ServerConfig.cert = null;
+			ServerConfig.ca = null;
+		}
+	}
+	
+	var server = new SMTPServer(ServerConfig);
+	
+	server.listen(port, null, function(){
+		console.log("SMTP SERVER LISTENING ON PORT", port);
+	});
+	server.on('error', function(error) {
+		if(_this.environment.verbose) console.log('SMTP-SERVER-ERROR::%s', error.message);
+	})
 
 	_this.emit("ready", server);
 };
