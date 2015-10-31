@@ -3,7 +3,7 @@ var expect = chai.expect;
 var http = require('http');
 
 describe('Initial Test Suite', function(){
-	this.timeout(8000);
+	this.timeout(14000);
 	it("should create a new instance of Galleon", function(done) {
 		global.galleon = new global.Galleon(global.options);
 		global.galleon.on('ready', function(){
