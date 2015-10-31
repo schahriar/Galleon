@@ -21,5 +21,5 @@ module.exports = function() {
     // Ignore if no modules are registered for the current task
     if(functions.length <= 0) return callback();
     
-    async.applyEachSeries(functions, args, callback);
+    async.series(functions, callback);
 }
