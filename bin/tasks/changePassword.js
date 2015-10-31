@@ -1,7 +1,7 @@
 var colors = require('colors'); // Better looking error handling
 
 module.exports = function(Galleon, argv) {
-    var g = new Galleon({ noCheck: true, verbose: false });
+    var g = new Galleon({ noCheck: true, verbose: false, safemode: true });
     g.on('ready', function(){
         g.changePassword({ email: argv._[1] }, argv.password || argv.p, null, function(error, user) {
             if(error) {

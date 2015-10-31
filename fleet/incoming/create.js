@@ -1,24 +1,48 @@
-// Functions
-var store = require("./store");
+// Essentials
+var fs = require('fs');
+var path = require('path');
+var _ = require('lodash');
 
-module.exports = function(_this, database, connection, parsed, raw, labResults){
-    if(!labResults) labResults = new Object;
-
-    // Tiny bit of arranging //
+module.exports = function(_this, database, session, parsed, callback){
+    // Makes sure Email is parsed properly
+    // Otherwise ignore
+    if(
+        (!parsed)
+        ||
+        (typeof(parsed) !== 'object')
+        ||
+        (!parsed.envelopeTo)
+        ||
+        (!_.isArray(parsed.envelopeTo))
+        ||
+        (!parsed.envelopeTo[0].address)
+        ||
+        (!parsed.from)
+        ||
+        (!_.isObject(parsed.from))
+        ||
+        (!session)
+        ||
+        (!parsed.text && !parsed.html && !parsed.subject) /* Require at least a subject/text/html */
+    ) {
+        _this.emit('ignored', session, parsed || {}, database);
+        if(_this.environment.verbose) console.error("FAILED TO PARSE EMAIL");
+        return callback({ responseCode: 451, message: "local error in processing, E-MAIL is invalid." });
+    }
 
     // Formats from to -> Name <email>
-    if(parsed.from.constructor === Array)
-        parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
-    else
+    if(_.isPlainObject(parsed.from))
         parsed.from = parsed.from.name + ' <' + parsed.from.address + '>';
+    else if(_.isArray(parsed.from))
+        parsed.from = parsed.from[0].name + ' <' + parsed.from[0].address + '>';
 
     // Sets association to envelope's receiver
     parsed.associtaion = parsed.envelopeTo[0].address;
     // --------------------- //
-    console.log(parsed.associtaion);
     
     var email = {
-        association: [parsed.associtaion],
+        eID: session.eID,
+        association: parsed.associtaion,
         sender: parsed.from,
         receiver: parsed.headers.to || parsed.associtaion,
         to: parsed.toAll,
@@ -33,39 +57,37 @@ module.exports = function(_this, database, connection, parsed, raw, labResults){
         dkim: (parsed.dkim === "pass"),
         spf: (parsed.spf === "pass"),
 
-        spam: labResults.isSpam || false,
-        spamScore: labResults.spamScore || 0,
+        spam: false,
+        spamScore: 0,
 
         // STRING ENUM: ['pending', 'approved', 'denied']
-        state: 'approved'
+        state: 'pending'
     }
     
     // Load incoming modules
-	_this.environment.modulator.launch(_this.environment.modules['incoming'], parsed.associtaion, email, parsed, raw, function(error, _email, _ignore){
-		console.log("INCOMING MODULES LAUNCHED".green, arguments);
+	_this.environment.modulator.launch(_this.environment.modules['incoming'], parsed.associtaion, email, parsed, function(error, _email, _ignore){
+		if(_this.environment.verbose) console.log("INCOMING MODULES LAUNCHED".green, arguments);
         
         // Ignore email if requested
-        if(_ignore === true) return _this.emit('ignored', connection, parsed, raw, database);
+        if(_ignore === true) return _this.emit('ignored', session, parsed, database);
         
         // Assign modified ~email~ object if provided
         if(!_email) _email = email;
-	
         // Create a new mail in the database
         database.collections.mail.create(_email, function(error, model){
             if(error){
                 console.error(error, 'error');
     
-                // Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database failure & Database object
-                _this.emit('mail', connection, parsed, raw, error, database);
+                // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database failure & Database object
+                _this.emit('mail', error, session, parsed, database);
+                callback(error, session, parsed, database);
             }else{
-                // Store raw email
-                store(_this, model.eID, raw);
-    
                 // Add attachments to Mail
                 _this.attach(database, model.eID, parsed.attachments);
     
-                // Emits 'mail' event with - SMTP Connection, Mail object, Raw content, Database model & Database object
-                _this.emit('mail', connection, parsed, raw, model, database);
+                // Emits 'mail' event with - SMTP Session, Mail object, Raw content, Database model & Database object
+                _this.emit('mail', null, session, parsed, database);
+                callback(null, session, parsed, database);
             }
         });
     })

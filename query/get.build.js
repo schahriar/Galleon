@@ -13,14 +13,14 @@ module.exports = function(email, page) {
         collection: 'queue',
         find: new Object,
         where: {
-            association: { contains: email },
+            association: email,
             state: { '!=': 'draft' } /* MIGHT CAUSE POSTGRES ISSUES -> http://stackoverflow.com/a/22600564/804759 */
         },
         sort: {
             createdAt: 'desc'
         },
         paginate: {
-            page: page,
+            page: page || 1,
             limit: 10
         },
         filter: function(mails) {
@@ -56,7 +56,7 @@ module.exports = function(email, page) {
     
     folders.DRAFT = _.extend(_.clone(folders.OUTBOX, true), {
         where: {
-            association: { contains: email },
+            association: email,
             state: 'draft'
         },
     });
@@ -65,7 +65,7 @@ module.exports = function(email, page) {
         collection: 'mail',
         find: new Object,
         where: {
-            association: { contains: email },
+            association: email,
             trash: false,
             spam: false,
             sent: false,
@@ -85,7 +85,7 @@ module.exports = function(email, page) {
             return _.chain(mails)
                 .map(function(t) {
                     // Filter
-                    t = _.pick(t, ['eID', 'sender', 'receiver', 'to', 'stamp', 'subject', 'text', 'html', 'read', 'spam', 'trash', 'attachments']);
+                    t = _.pick(t, ['eID', 'sender', 'receiver', 'to', 'stamp', 'subject', 'text', 'html', 'read', 'spam', 'trash', 'attachments', 'status']);
                     // Remove path from Attachments
                     t.attachments = _.map(t.attachments, function(attachment) {
                         return _.pick(attachment, ['fileName', 'checksum', 'id', 'length']);
@@ -107,7 +107,7 @@ module.exports = function(email, page) {
 
     folders.SENT = _.extend(_.clone(folders.INBOX, true), {
         where: {
-            association: { contains: email },
+            association: email,
             sent: true,
 			spam: false,
 			trash: false,
@@ -116,7 +116,7 @@ module.exports = function(email, page) {
 
     folders.SPAM = _.extend(_.clone(folders.INBOX, true), {
         where: {
-            association: { contains: email },
+            association: email,
             trash: false,
             or: [{
                 spam: true
@@ -130,7 +130,7 @@ module.exports = function(email, page) {
 
     folders.TRASH = _.extend(_.clone(folders.INBOX, true), {
         where: {
-            association: { contains: email },
+            association: email,
             trash: true
         },
     });

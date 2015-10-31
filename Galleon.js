@@ -1,13 +1,13 @@
 /**
  * Runs Galleon Server.
  *
- * @param  {Config} Object
+ * @param  {Env} Object
  */
 
 /* -- Modules -- */
 // Core
 var incoming = require('./fleet/incoming/incoming');
-var outgoing = require('./fleet/outgoing/outgoing');
+//var outgoing = require('./fleet/outgoing/outgoing');
 
 var outbound = require('./fleet/outgoing/outbound');
 var queue = require('./fleet/outgoing/queue');
@@ -24,6 +24,8 @@ var GalleonQuery = {
 	getattachment: require('./query/get.attachment'),
 	linkattachment: require('./query/link.attachment'),
 	unlinkattachment: require('./query/unlink.attachment'),
+	clean: require('./query/clean.js'),
+	restore: require('./query/restore.js')
 }
 
 // Essential
@@ -39,10 +41,9 @@ var portscanner  = require('portscanner');
 var validator = require('validator');
 var bcrypt = require('bcryptjs');
 var colors = require('colors'); // Better looking error handling
-var Spamc = require('spamc');
+var Spamc = require('spamc-stream');
 /* -- ------- -- */
 
-var handlers = {};
 var pass = true, fail = false;
 
 var Defaults = {
@@ -54,52 +55,73 @@ var Defaults = {
 	},
 	dock: false,
 	noCheck: false,
-	verbose: true
+	verbose: true,
+	ssl: {
+		use: false
+	}
 };
 
-var Galleon = function(config, callback){
+var Galleon = function(env, callback){
 
 	// Internal
 	var _this = this;
-	if(!config) callback = config;
-	if(!callback) callback = function(){};
-
-	// Defaults
-	// if((!config.port)||(typeof config.port != 'number')||(config.port % 1 != 0)) config.port = 25; // Sets to default port
-		_.defaults(config, Defaults);
-		Defaults = config;
-	//
-
-	if(!config.configFile) {
-		config.environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+	var environment;
+	
+	if((!callback) && (typeof(env) === 'function')) {
+		callback = env;
+		env = undefined;
+	}
+	if((!callback) || (typeof(callback) !== 'function')) {
+		callback = new Function;
 	}
 
+	if((typeof(env) !== 'object') || (!env.connections)) {
+		try {
+			environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+		}catch(e) {
+			console.trace(e);
+			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass an environment object as the first parameter.");
+		}
+	}
+	
+	// Set Spamc
+	this.spamc = new Spamc('localhost', 783, 60);
+	
+	// Defaults
+	environment = _.defaultsDeep(environment || {}, env);
+	environment = _.defaultsDeep(environment || {}, Defaults);
+	//
+
 	// Attach environment to Galleon Object
-	_this.environment = environment = config.environment;
+	_this.environment = environment;
 
 	// Assign module environment
 	_this.environment.modulator = modulator;
-	// Assign modules
-	_this.environment.modules = _this.environment.modulator.load(environment.modules);
+	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
+	if(_this.environment.safemode === true) {
+		_this.environment.modules = {}
+	}else{
+		_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
+	}
 
-	Database(environment.connections, function(error, connection){
-		if(Defaults.verbose) console.log("Connection attempted".yellow);
+	Database(_this.environment.connections, function(error, connection){
+		if(environment.verbose) console.log("Connection attempted".yellow);
 		if(error) {
 			console.error("Connection error!".red);
-			callback(error);
-			throw error;
+			if(callback) callback(error);
+			else throw error;
 		}
 
-		if(Defaults.verbose) console.log("Database connection established".green);
+		if(environment.verbose) console.log("Database connection established".green);
 		// Add database connection to `this`
 		_this.connection = connection;
 
-		if(!Defaults.noCheck) {
-			var ports = Defaults.ports;
+		if(!environment.noCheck) {
+			var ports = environment.ports;
 			InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
-				if(check) console.log("All requested ports are free");
+				if(check && environment.verbose) console.log("All requested ports are free");
 
-				if(Defaults.dock) {
+				if(environment.dock) {
 					_this.dock(function(error, incoming) {
 						_this.emit('ready', error, incoming);
 						callback(error, incoming, connection);
@@ -115,7 +137,7 @@ var Galleon = function(config, callback){
 
 	// Load front-end modules
 	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
-		console.log("FRONTEND MODULES LAUNCHED".green, arguments)
+		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
 	})
 
 	eventEmmiter.call(this);
@@ -164,9 +186,8 @@ Galleon.prototype.dock = function(callback){
 	// Internal
 	if(!callback) callback = function(){};
 
-	this.spamc = new Spamc('localhost', 783, 20);
-	var INCOMING = new incoming(environment);
-	INCOMING.listen(Defaults.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
+	var INCOMING = new incoming(this.environment);
+	INCOMING.listen(this.environment.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
 
 	//var OUTGOING = new outgoing();
 	//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
@@ -181,7 +202,7 @@ Galleon.prototype.server = function(callback) {
 	// Internal
 	if(!callback) callback = function(){};
 
-	Server(environment, Defaults.ports.server, this.connection, this);
+	Server(this.environment, this.environment.ports.server, this.connection, this);
 	callback(undefined, true);
 }
 /* - --------------- - */
@@ -189,8 +210,8 @@ Galleon.prototype.server = function(callback) {
 /* - DISPATCH METHOD - */
 Galleon.prototype.dispatch = function(mail, callback, connection){
 	connection = connection || this.connection;
-	var QUEUE = new queue(environment);
-	QUEUE.add(connection, mail, Defaults, callback);
+	var QUEUE = new queue(this.environment);
+	QUEUE.add(connection, mail, this.environment, callback);
 }
 /* - ---------------- - */
 
@@ -207,28 +228,28 @@ Galleon.prototype.createUser = function(user, callback) {
 	// * Alphanumeric
 	// * Must start with a letter
 	if(!validator.isEmail(user.email))
-		return callback("Invalid email");
+		return callback(new Error("Invalid email"));
 
 	// REGEX to match:
 	// * Between 2 to 256 characters
 	// * Special characters allowed (&)
 	// * Alpha
 	if((!validator.matches(user.name, /^([ \u00c0-\u01ffa-zA-Z-\&'\-])+$/))&&(validator.isLength(user.name,2,256)))
-		return callback("Invalid name");
+		return callback(new Error("Invalid name"));
 
 	// Check if name is provided
 	if(!user.name)
-		return callback("No name provided\nTry -> --name=\"<name>\"");
+		return callback(new Error("No name provided\nTry -> --name=\"<name>\""));
 
 	// REGEX to match:
 	// * Between 6 to 20 characters
 	// * Special characters allowed (@,$,!,%,*,?,&)
 	// * Alphanumeric
 	if(!validator.matches(user.password, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
-		return callback("Invalid password");
+		return callback(new Error("Invalid password"));
 
 	bcrypt.hash(user.password, 10, function(error, hash) {
-		if(error) return res.status(500).json({ error: error });
+		if(error) return callback(error)
 
 		_this.connection.collections.users.create({
 			email: user.email,
@@ -244,6 +265,10 @@ Galleon.prototype.createUser = function(user, callback) {
 
 Galleon.prototype.listUsers = function(options, callback) {
 	// Internal
+	if(typeof(options) === 'function') {
+		callback = options;
+		options = {};
+	}else if(!options) options = {};
 	if(!callback) callback = function(){};
 
 	this.connection.collections.users.find().limit(options.limit || 50).exec(callback);
@@ -252,40 +277,49 @@ Galleon.prototype.listUsers = function(options, callback) {
 Galleon.prototype.removeUser = function(query, callback) {
 	// Internal
 	if(!callback) callback = function(){};
+	// IF Query is email
+	if(typeof(query) === 'string') query = { email: query };
 
 	if(query) this.connection.collections.users.destroy(query).exec(callback);
-	else callback("NO QUERY");
+	else callback(new Error("NO QUERY"));
 }
 
 Galleon.prototype.changePassword = function(user, newPassword, oldPassword, callback, forceChange) {
 	var self = this;
 	// Internal
 	if(!callback) callback = function(){};
-	if(!user) callback("User not found!");
+	if(!user) callback(new Error("No user argument (email) passed!"));
+	if(user.email) user = user.email;
 
 	// REGEX to match:
 	// * Between 6 to 20 characters
 	// * Special characters allowed (@,$,!,%,*,?,&)
 	// * Alphanumeric
 	if(!validator.matches(newPassword, /^(?=.*[a-zA-Z])[A-Za-z\d$@$!%*?&]{6,20}/))
-		return callback("Invalid password - Length must be between 6 to 20 characters");
+		return callback(new Error("Invalid password - Length must be between 6 to 20 characters"));
 
 	if(!forceChange) {
-		bcrypt.compare(oldPassword, user.password, function(error, result) {
-			if(error) return callback("Current password does not match!");
-			bcrypt.hash(newPassword, 10, function(error, hash) {
-				if(hash)
-					self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
-				else
-					return callback("INCORRECT PASSWORD");
+		self.connection.collections.users.findOne({ email: user }).exec(function(error, user){
+			if(!user) callback(new Error("User Not found!"));
+			bcrypt.compare(oldPassword, user.password, function(error, result) {
+				if(error || !result) return callback(new Error("Current password does not match!"));
+				bcrypt.hash(newPassword, 10, function(error, hash) {
+					if(hash)
+						self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(function(error){
+							if(error) return callback(new Error("Password update failed"));
+							self.connection.collections.users.findOne({ email: user.email }).exec(callback);
+						});
+					else
+						return callback(new Error("INCORRECT PASSWORD"));
+				})
 			})
 		})
 	}else{
 		bcrypt.hash(newPassword, 10, function(error, hash) {
 			if(hash)
-				self.connection.collections.users.update({ email: user.email }, { password: hash }).exec(callback);
+				self.connection.collections.users.update({ email: user }, { password: hash }).exec(callback);
 			else
-				return callback("INCORRECT PASSWORD");
+				return callback(new Error("INCORRECT PASSWORD"));
 		})
 	}
 }
@@ -294,11 +328,11 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 /* - EMAIL MANAGEMENT - */
 Galleon.prototype.query = function(method, query, callback) {
 	// Check if a corresponding Function is available
-	if(!GalleonQuery[method.toLowerCase()]) return callback("Method not found!");
-	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback("Method not found!");
+	if(!GalleonQuery[method.toLowerCase()]) return callback(new Error("Method not found!"));
+	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback(new Error("Method not found!"));
 
 	// Log Query
-	console.log(colors.green(method.toUpperCase()), query);
+	if(this.environment.verbose) console.log(colors.green(method.toUpperCase()), query);
 
 	// Execute Query
 	GalleonQuery[method.toLowerCase()](this, query, callback);

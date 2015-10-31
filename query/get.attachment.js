@@ -3,8 +3,9 @@ var fs = require('fs');
 var _ = require('lodash');
 
 module.exports = function(Galleon, query, callback) {
+    if(!Galleon.connection.collections.mail) return callback(new Error('Collection Not Found!'));
     Galleon.connection.collections.mail.findOne({
-        association: { contains: query.email },
+        association: query.email,
         eID: query.eID.substring(1)
     }).exec(function(error, mail) {
         if (error) return callback(error);

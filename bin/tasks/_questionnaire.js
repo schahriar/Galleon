@@ -12,6 +12,14 @@ function validateDirectory(input) {
     });
 }
 
+function validateFile(input) {
+    var done = this.async();
+    
+    fs.exists(path.resolve(input), function(exists) {
+        done(!exists ? 'NO ACCESS! FILE NOT FOUND' : true);
+    })
+}
+
 module.exports = {
     domain: function(callback) {
         inquirer.prompt([{
@@ -55,6 +63,77 @@ module.exports = {
             },
             validate: validateDirectory
         }], callback)
+    },
+    ssl: function(callback) {
+        inquirer.prompt([{
+            type: "confirm",
+            name: "shouldUseSSL",
+            message: "Do you want to setup SSL Certificates with Galleon? (You can use the same cert/key for both options | Certificates and Keys must be stored locally)",
+        }, {
+            type: "checkbox",
+            name: "sslOpt",
+            message: "Should Galleon use SSL Certificates for the following? (You can Multi-Select)",
+            when: function(answers) {
+                return answers.shouldUseSSL;
+            },
+            choices: [{
+                value: "ssl-smtp",
+                name: "SMTP Server",
+                checked: true
+            }, {
+                value: "ssl-api",
+                name: "Front-end Server & API",
+                checked: true
+            }]
+        }, {
+            type: "input",
+            name: "ssl-smtp-cert",
+            message: "Enter the location for *SSL Certificate* for (SMTP SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-smtp-key",
+            message: "Enter the location for *SSL Key* for (SMTP SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-smtp-ca",
+            message: "Enter the location for *SSL CA* for (SMTP SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-api-cert",
+            message: "Enter the location for *SSL Certificate* for (API/FRONTEND SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-api-key",
+            message: "Enter the location for *SSL Key* for (API/FRONTEND SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-api-ca",
+            message: "Enter the location for *SSL CA* for (API/FRONTEND SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateFile
+        },], callback)
     },
     database: function(callback) {
         inquirer.prompt([{

@@ -4,15 +4,20 @@ var eventEmmiter = require('events').EventEmitter;
 var util         = require("util");
 var fs 			 = require('fs');
 var path		 = require('path');
+var os			 = require('os');
+
+// SMTP Mail Handling
+var SMTPServer = require('smtp-server').SMTPServer;
+var Processor = require('./processor');
+var Attachment = require('./attachment');
 
 // Utilities
-var mailin  = require('mailin');
 var async   = require('async');
-var shortId = require('shortid');
 var _ 		= require('lodash');
 
-// Functions
-var create = require("./create");
+// ID Generation
+var crypto = require('crypto');
+var shortId = require('shortid');
 
 /* -- ------- -- */
 
@@ -33,11 +38,6 @@ var create = require("./create");
 	each in this module in each version but they will
 	mostly be opt-in additions rather than opt-out.
 
-	Note: SpamAssasin is currently disabled through
-		  ~mailin~ and would most probably be
-		  implemented in Galleon itself for direct
-		  access.
-
 */
 /* -------------- ------------------------ -------------- */
 //
@@ -54,10 +54,9 @@ Note: Includes parsing time
 ----------------
 */
 
-/* Start the Mailin server. */
+/* Start the SMTP server. */
 var Incoming = function(environment){
 	this.environment = environment;
-	console.log(this.environment.paths);
 
 	eventEmmiter.call(this);
 }
@@ -66,87 +65,75 @@ util.inherits(Incoming, eventEmmiter);
 
 Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 	var _this = this;
+	
+	var ProcessMail = Processor(this, databaseConnection, Spamc);
 
-    mailin.start({
-		port: port,
-		disableWebhook: true,
-		logLevel: 'error',
-		disableSpamScore: true
-	});
+	var ServerConfig = {
+		size: 20971520, // MAX 20MB Message
+		banner: "Galleon MailServer <" + (_this.environment.domain || 'galleon.email') + ">",
+		name: (_this.environment.domain),
+		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
+		logger: false, // Disable Debug logs /* Add option for this in config */
+		onData: function(stream, session, callback) {
+			// Create a new connection eID
+			session.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(session.id || "NONE").digest('hex');
+			session.path = undefined;
 
-	_this.emit("ready", mailin);
-
-	// Bind events
-	/*
-		We'll later use this file to extend Mailin functionality without a need to fork the entire repository
-	*/
-	mailin.on('startMessage', function(connection){
-		console.log(connection.toString())
-		// Load connection modules
-		_this.environment.modulator.launch(_this.environment.modules['connection'], connection, function(error, _connection, _block){
-			console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
+				if(_this.environment.verbose) console.log("CONNECTION MODULES LAUNCHED".green, arguments);
+				
+				if(_.isObject(_session)) session = _session;
 			
-			if(_.isObject(_connection)) connection = _connection;
-        
-        	// Ignore email if requested
-        	if(_block === true) {
-				_this.emit('blocked', connection);
-				connection.end();
-			}else _this.emit('connection', connection);
-		});
-	}); // Event emitted when a connection with the Mailin smtp server is initiated. //
-
-	mailin.on('data', function(connection, chunk){ _this.emit('stream', connection, chunk) }); // Event emmited when data chunk is sent - Useful for Galleon's internal functions such as ratelimiting and bandwidth limiting
-	// Event emitted after a message was received and parsed //
-
-	mailin.on('message', function(connection, data, raw){
-		// Will not use SPAMASSASIN if the process is not available
-		try {
-			Spamc.report(raw, function (error, labResults) {
-				if(error) console.log("SMAPC", error);
-				create(_this, databaseConnection, connection, data, raw, labResults);
+				// Ignore email if requested by 'incoming-connection' modules
+				// Otherwise Process Stream
+				if(_block === true) {
+					_this.emit('blocked', session);
+					callback({ responseCode: 451, message: "Request Blocked"});
+				}else{
+					_this.emit('connection', session);
+					/* Add FS EXISTS Check */
+					// Tell Processor to Store RAW if env path is set
+					session.store = _.has(_this.environment, 'paths.raw');
+					// Set Connection path
+					session.path = (_.has(_this.environment, 'paths.raw'))
+						? path.resolve(_this.environment.paths.raw, session.eID)
+						: path.resolve(os.tmpdir(), session.eID);
+					ProcessMail(stream, session, callback);
+				}
 			});
-		}catch(error) {
-			if(error) console.log("SMAPC-NOT-FOUND", error);
-			create(_this, databaseConnection, connection, data, raw);
 		}
-
+	};
+	
+	if ((_this.environment.ssl.use) && (_this.environment.ssl.incoming) && (_this.environment.ssl.incoming.key) && (_this.environment.ssl.incoming.cert)) {
+		try {
+			ServerConfig.key = fs.readFileSync(_this.environment.ssl.incoming.key, 'utf8');
+			ServerConfig.cert = fs.readFileSync(_this.environment.ssl.incoming.cert, 'utf8');
+			ServerConfig.ca = fs.readFileSync(_this.environment.ssl.incoming.ca, 'utf8');
+			if(_this.environment.verbose) console.log("USING KEY", _this.environment.ssl.incoming);
+		}catch(e) {
+			if(_this.environment.verbose) console.log("FAILED TO START INCOMING SSL\nFALLING BACK.");
+			ServerConfig.key = null;
+			ServerConfig.cert = null;
+			ServerConfig.ca = null;
+		}
+	}
+	
+	var server = new SMTPServer(ServerConfig);
+	
+	server.listen(port, null, function(){
+		if(_this.environment.verbose) console.log("SMTP SERVER LISTENING ON PORT", port);
 	});
+	server.on('error', function(error) {
+		if(_this.environment.verbose) console.log('SMTP-SERVER-ERROR::%s', error.message);
+	})
+
+	_this.emit("ready", server);
 };
 
-Incoming.prototype.attach = function(databaseConnection, eID, attachments) {
-	var self = this;
-	var populatedAttachments = [];
-	async.forEach(attachments, function(attachment, callback) {
-		attachment.id   = eID + "_" + shortId.generate();
-		attachment.path = path.resolve(self.environment.paths.attachments, attachment.id);
-
-		fs.writeFile(attachment.path, attachment.content, function(err) {
-			if(err) return callback(err);
-			populatedAttachments.push({
-				id: 	  attachment.id,
-				cid:	  attachment.contentId,
-				fileName: attachment.fileName,
-				path: 	  attachment.path,
-
-				transferEncoding: attachment.transferEncoding,
-				contentType: attachment.contentType,
-				checksum: attachment.checksum,
-				length:   attachment.length
-			});
-			callback();
-		});
-	}, function(err) {
-		if (err) return console.error(err);
-
-		databaseConnection.collections.mail.update({ 'eID': eID }, {
-			attachments: populatedAttachments
-		}, function(error, model){
-			if(error) console.error("EMAIL BOUNCED", error);
-			// Fix association
-			console.log("EMAIL RECEIVED FOR:", model[0].association);
-		});
-	});
+Incoming.prototype.attach = function(databaseConnection, eID, attachments){
+	if((!this.environment.paths) || (!this.environment.paths.attachments)) return;
+	
+	Attachment.save(this.environment.paths.attachments, databaseConnection, eID, attachments);
 }
 
 module.exports = Incoming;

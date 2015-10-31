@@ -21,14 +21,11 @@ module.exports = {
 		},
 
         // Should handle multiple associations
-        // in beta:
-        // http://stackoverflow.com/questions/24166253/waterline-find-array-in-array
-        /* FORMAT
-            .find({association: { contains: ["owner1","owner2", ...]}})
-        */
         // This would allow email sharing within organization and group associations
+        // Unfortunately `contains` is not consistent across waterline adapters
+		// Multiple Association is not possible at the time
         association: {
-			type: 'array',
+			type: 'string',
 			required: true,
 			index: true,
 		},
@@ -68,7 +65,7 @@ module.exports = {
 
 		html: {
 			type: 'string',
-			required: true // Convert text to HTML if !HTML
+			required: false
 		},
 
 		// Indicates if an email has been read
@@ -129,7 +126,8 @@ module.exports = {
 	beforeCreate: function(attributes, callback) {
 		// Should round up about 14 + 2 + 32 = 48 characters at max
 		// Hashsum enables content checking using a MD5 checksum
-		attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.html).digest('hex');
+		if(!attributes.html) attributes.html = attributes.text || "[NO_MESSAGE]";
+		if(!attributes.eID) attributes.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(attributes.subject || "NONE").digest('hex');
 		callback();
 	}
 };

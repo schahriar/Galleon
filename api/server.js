@@ -1,3 +1,6 @@
+// HTTP/HTTPS
+var https = require('https');
+var http = require('http');
 // Express
 var express = require('express');
 var inspect = require('util').inspect;
@@ -9,6 +12,8 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var authentication = require('./middleware/authentication');
 var crypto = require('crypto');
+// File System
+var fs = require('fs');
 
 var ACCESS = require('./routes/access');
 var API = require('./routes/api');
@@ -26,7 +31,21 @@ module.exports = function(environment, port, connection, instance) {
     app.set("environment", environment);
     app.set("secret", environment.secret);
 
-    app.listen(port);
+    // SSL Detection, Automatically switches between HTTP and HTTPS on start
+    if (environment.ssl.use) {
+        var SSL_CONFIG;
+        try {
+            SSL_CONFIG = {
+                key: fs.readFileSync(environment.ssl.api.key, 'utf8'),
+                cert: fs.readFileSync(environment.ssl.api.cert, 'utf8')
+            }
+            https.createServer(SSL_CONFIG, app).listen(port);
+        }catch(e) {
+            http.createServer(app).listen(port);
+        }
+    }else {
+        http.createServer(app).listen(port);
+    }
 
     // Allow API access outside origin (This is an API after all)
     app.use(function(req, res, next) {
@@ -41,7 +60,7 @@ module.exports = function(environment, port, connection, instance) {
     // uncomment after placing your favicon in /public
     //app.use(favicon(__dirname + '/public/favicon.ico'));
     app.use(compress());
-    app.use(logger('dev'));
+    if(environment.verbose) app.use(logger('dev'));
 
     // If Environment secret is not set assign a random secret on every restart
     app.use(cookieParser(app.get('secret') || crypto.randomBytes(20).toString('hex')));

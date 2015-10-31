@@ -16,6 +16,11 @@ var tasks = {
         category: "installation",
         FUNC: require("./tasks/setup")
     },
+    ssl: {
+        description: "SETTING UP|SETS UP| SSL FOR GALLEON",
+        category: "installation",
+        FUNC: require("./tasks/setup_ssl")
+    },
     start: {
         description: "STARTING|STARTS| A NEW GALLEON INSTANCE",
         category: "process management",
@@ -71,6 +76,21 @@ var tasks = {
         category: "modules",
         FUNC: require("./tasks/install")
     },
+    config: {
+        description: "CONFIGURING|CONFIGURES| A SETTING IN A GIVEN MODULE",
+        category: "modules",
+        FUNC: require("./tasks/config")
+    },
+    clean: {
+        description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
+        category: "maintenance",
+        FUNC: require("./tasks/clean")
+    },
+    restore: {
+        description: "RESTORING|RESTORES| RAW EMAILS TO DATABASE",
+        category: "maintenance",
+        FUNC: require("./tasks/restore")
+    }
 }
 
 function verbalize(string, isVerb) {
@@ -86,6 +106,7 @@ function capitalizeFirstLetter(string) {
 }
 
 if (
+    (argv._[0]) &&
     (tasks[argv._[0].toLowerCase()] !== undefined) &&
     (argv._[0].constructor === String) &&
     (argv._[0].substring(0, 1) !== '-') &&
@@ -112,5 +133,5 @@ if (
 	})
     
 } else {
-    console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help'.magenta, 'for more info.'.cyan);
+    console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help', 'for more info.'.cyan);
 }

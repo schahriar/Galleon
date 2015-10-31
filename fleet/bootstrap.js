@@ -30,16 +30,14 @@ module.exports = function bootstrap( options, cb ) {
   var connections = options.connections || {};
   var collections = options.collections || {};
 
-
-
-  _(adapters).each(function (def, identity) {
+  _.each(adapters, function (def, identity) {
     // Make sure our adapter defs have `identity` properties
     def.identity = def.identity || identity;
   });
   
 
   var extendedCollections = [];
-  _(collections).each(function (def, identity) {
+  _.each(collections, function (def, identity) {
 
     // Make sure our collection defs have `identity` properties
     def.identity = def.identity || identity;

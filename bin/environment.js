@@ -3,7 +3,16 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 
+function createDirectoryIfNotFound() {
+    var dir = path.resolve.apply(null, arguments);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    return dir;
+}
+
 var defaultPath = path.resolve(osenv.home(), '.galleon/galleon.conf');
+createDirectoryIfNotFound(path.resolve(osenv.home(), '.galleon'));
 
 var env = {
     get: function(callback) {
@@ -16,7 +25,7 @@ var env = {
         });
     },
     getSync: function() {
-        if(!fs.existsSync(defaultPath)) return "CONFIG FILE NOT FOUND!";
+        if(!fs.existsSync(defaultPath)) return {};
         return JSON.parse(fs.readFileSync(defaultPath, 'utf8'));
     },
     getModulesSync: function() {
@@ -28,6 +37,9 @@ var env = {
             if(callback) callback();
         });
     },
+    setSync: function(obj) {
+        return fs.writeFileSync(defaultPath, JSON.stringify(obj, null, 2));
+    },
     setModules: function(modules, callback) {
         var self = this;
         var modules = _.toArray(modules);
@@ -36,6 +48,16 @@ var env = {
 
             data.modules = modules;
             self.set(data, callback);
+        })
+    },
+    updateModuleConfig: function(Module, Config, callback) {
+        var self = this;
+        self.get(function(error, data) {
+            if(error) return callback(error);
+            var MODULE = _.findWhere(data.modules, { name: Module.name });
+            MODULE.config = _.merge(MODULE.config, Config);
+            if(typeof(callback) === 'function') self.set(data, callback);
+            else self.setSync(data);
         })
     },
     addModules: function(modules, callback) {

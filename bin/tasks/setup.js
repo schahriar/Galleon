@@ -20,7 +20,18 @@ var config = _.defaults(environment.getSync(), {
     },
     paths: new Object,
     modules: [],
-    secret: crypto.randomBytes(20).toString('hex')
+    secret: crypto.randomBytes(20).toString('hex'),
+    ssl: {
+        use: false,
+        incoming: {
+            cert: undefined,
+            key: undefined
+        },
+        api: {
+            cert: undefined,
+            key: undefined
+        }
+    }
 });
 
 var defaultDirectory = path.resolve(osenv.home(), '.galleon/');

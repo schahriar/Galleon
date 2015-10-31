@@ -43,7 +43,7 @@ module.exports = function() {
     				// Get all processes running
     				pm2.list(function(err, process_list) {
     					console.log("Process Started".green);
-    					console.log("Type".cyan + " galleon list ".bold + "to list all current processes".cyan);
+    					console.log("Type".cyan + " galleon status ".bold + "to show process status".cyan);
 
     					// Disconnect to PM2
     					pm2.disconnect(function() { process.exit(0) });
