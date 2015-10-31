@@ -76,6 +76,11 @@ var tasks = {
         category: "modules",
         FUNC: require("./tasks/install")
     },
+    config: {
+        description: "CONFIGURING|CONFIGURES| A SETTING IN A GIVEN MODULE",
+        category: "modules",
+        FUNC: require("./tasks/config")
+    },
     clean: {
         description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
         category: "maintenance",
