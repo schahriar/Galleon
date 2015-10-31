@@ -70,7 +70,8 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 
 	var ServerConfig = {
 		size: 20971520, // MAX 20MB Message
-		banner: "Galleon MailServer <galleon.email>",
+		banner: "Galleon MailServer <" + (_this.environment.domain || 'galleon.email') + ">",
+		name: (_this.environment.domain),
 		disabledCommands: ["AUTH"],  // INCOMING SMTP is open to all without AUTH
 		logger: false, // Disable Debug logs /* Add option for this in config */
 		onData: function(stream, session, callback) {
