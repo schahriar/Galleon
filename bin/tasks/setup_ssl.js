@@ -60,7 +60,7 @@ module.exports = function (callback) {
         fs.writeFile(path.resolve(defaultDirectory, 'galleon.conf'), JSON.stringify(config, null, 2), function(error) {
             if (error) herb.error(error);
             herb.log('SSL CONFIG SUCCESSFUL!');
-            herb.log('Get yourself started by typing', colors.magenta('galleon start'), 'in order to launch an instance of Galleon!');
+            herb.log('Get yourself started by typing', colors.magenta('galleon restart'), 'in order to restart Galleon!');
             process.exit(0);
         });
     
