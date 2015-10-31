@@ -3,14 +3,13 @@
 A badass SMTP mail server built on Node to make your life simpler.
 ======
 
-**\*Galleon** is a super fast & efficient mail server powered by **Node.JS**, **coffee** *(talking about the magical liquid here)* and our favorite Document Database **MongoDB**. It will feature all the awesome stuff the big providers have yet provides you with a powerful API to expand it on your own.
+**\*Galleon** is a super fast & efficient mail server powered by **Node.JS** and our favorite Document Database **MongoDB** or your own choice of Database. It will feature all the awesome stuff the big providers have, yet provides you with a powerful API to expand it on your own.
 
 Get ready to sail into a new world featuring:
-- ~~***Michael Bay explosions***~~ *fixed*
 - Web based user interface [SEASCAPE](https://github.com/schahriar/Seascape)
 - Spam protection by default [(Follow the tutorial here!)](https://github.com/schahriar/Galleon/blob/master/tutorials/SPAMASSASIN.md)
 - Simple Mail Transfer Protocol **SMTP** (Listen, Process, Send)
-- ~~Connection control (ratelimiting, bandwith limiting and other terms that makes me sound professional)~~ *soon*
+- ~~Connection control (ratelimiting, bandwith limiting and other terms that makes me sound professional)~~ *as a module*
 - Did I mention super fast? (Blame it on Node)
 
 [**\*Galleon**](http://en.wikipedia.org/wiki/Galleon) is named after multi-deck armed merchant ships dating back to 16th century.
@@ -22,7 +21,7 @@ Get ready to sail into a new world featuring:
 ```javascript
 npm install -g galleon
 ```
-*Note: This module requires NodeJS v0.12+. There is currently no support for v.0.10.x*
+`Note:` Galleon requires NodeJS v0.12+. There is currently no support for v.0.10.x
 
 [Visit the tutorial for more info.](tutorials/INSTALLATION.md)
 
@@ -43,6 +42,8 @@ Well, **Galleon** is your solution. All you need is a server a domain name and a
 
 # Launch An API Server
 You can easily run a Galleon server by installing the package globally and using the following command:
+
+`Note:` Use [Authbind](https://github.com/schahriar/Galleon/blob/master/tutorials/AUTHBIND.md) to run on port 25
 ```javascript
 galleon start
 ```
@@ -60,27 +61,27 @@ And use it on your port 2095
 ## Features
 
 - API (port 3080)
+- Module support
 - Database and Raw storage
 - Database Adapter support for -> `MongoDB`, `Redis`, `MySQL`, `PostgreSQL`, `SQLServer`, etc.
 - Outbound Support (Send Emails)
 - Daemon Manager [PM2][https://github.com/Unitech/pm2]
 - Spam detection/reporting/learning etc. with **SPAMASSASIN**
 - XSS protection
+- Encryption & SSL support
 - CLI Automation
 - Session based auth with bcrypt
 - Built-in user management
 - Full attachment support (multipart upload, checksums etc.)
+- Automatic file/email/raw deletion based on email status on the database
 - & many more ...
 --------
 VERSION: 0.3 [Golden Hind](https://en.wikipedia.org/wiki/Golden_Hind) -> Beta 2
 
-## Upcoming (October 2015)
+## Upcoming
 These features are currently being tested and will be released in October 2015:
-- Full module support
-- Encryption & SSL support
+
 - Tutorials and Documentation for creating modules and front-end interfaces
-- Automatic file/email/raw deletion based on email status on the database
-- Tons of bug fixes and improvements
 
 ## What's next?
 - DoS protection
