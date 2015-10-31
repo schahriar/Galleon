@@ -47,6 +47,15 @@ var env = {
             self.set(data, callback);
         })
     },
+    updateModuleConfig: function(Module, Config, callback) {
+        var self = this;
+        self.get(function(error, data) {
+            if(error) return callback(error);
+            var MODULE = _.findWhere(data.modules, { name: Module.name });
+            MODULE.config = _.merge(MODULE.config, Config);
+            self.set(data, callback);
+        })
+    },
     addModules: function(modules, callback) {
         var self = this;
         var modules = _.toArray(modules);
