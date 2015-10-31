@@ -42,11 +42,13 @@ module.exports = function (callback) {
                 use: true,
                 incoming: {
                     cert: answers['ssl-smtp-cert'],
-                    key: answers['ssl-smtp-key']
+                    key: answers['ssl-smtp-key'],
+                    ca: answers['ssl-smtp-ca']
                 },
                 api: {
                     cert: answers['ssl-api-cert'],
-                    key: answers['ssl-api-key']
+                    key: answers['ssl-api-key'],
+                    ca: answers['ssl-api-ca']
                 }
             }
         }

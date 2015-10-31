@@ -88,7 +88,7 @@ module.exports = {
         }, {
             type: "input",
             name: "ssl-smtp-cert",
-            message: "Enter the location for *SSL Certificate* for (SMTP SERVER):",
+            message: "Enter the location for *SSL Certificate* for (SMTP SERVER): (if any)",
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
             },
@@ -96,7 +96,15 @@ module.exports = {
         }, {
             type: "input",
             name: "ssl-smtp-key",
-            message: "Enter the location for *SSL Key* for (SMTP SERVER):",
+            message: "Enter the location for *SSL Key* for (SMTP SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-smtp-ca",
+            message: "Enter the location for *SSL CA* for (SMTP SERVER): (if any)",
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-smtp') + 1);
             },
@@ -104,7 +112,7 @@ module.exports = {
         }, {
             type: "input",
             name: "ssl-api-cert",
-            message: "Enter the location for *SSL Certificate* for (API/FRONTEND SERVER):",
+            message: "Enter the location for *SSL Certificate* for (API/FRONTEND SERVER): (if any)",
             when: function(answers) {
                 return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
             },
@@ -112,9 +120,17 @@ module.exports = {
         }, {
             type: "input",
             name: "ssl-api-key",
-            message: "Enter the location for *SSL Key* for (API/FRONTEND SERVER):",
+            message: "Enter the location for *SSL Key* for (API/FRONTEND SERVER): (if any)",
             when: function(answers) {
-                return answers.ssl && (answers.sslOpt.indexOf('ssl-api') + 1);
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
+            },
+            validate: validateFile
+        }, {
+            type: "input",
+            name: "ssl-api-ca",
+            message: "Enter the location for *SSL CA* for (API/FRONTEND SERVER): (if any)",
+            when: function(answers) {
+                return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
             },
             validate: validateFile
         },], callback)
