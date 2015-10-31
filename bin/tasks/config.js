@@ -12,5 +12,10 @@ module.exports = function(Galleon, argv) {
     }catch(e) {
         throw new Error("Failed to update Config. Try the following format \n galleon config <module_name> <config_name> <config_value>");
     }
-    Modulator.update(argv._[0], Config);
+    var SUCCESS = Modulator.update(argv._[0], Config);
+    if(SUCCESS) {
+        console.log("UPDATED SUCCESSFULLY");
+    }else{
+        console.log("MODULE NOT FOUND");
+    }
 }
