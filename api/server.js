@@ -50,9 +50,13 @@ module.exports = function(environment, port, connection, instance) {
     // Allow API access outside origin (This is an API after all)
     app.use(function(req, res, next) {
 		// Allow for Webmail interface
-        res.header("Access-Control-Allow-Origin", req.protocol + '://' + environment.domain + ":2095");
+        // Echo Back Origin if header is provided (Equivalent to * but allows Credentials)
+        if(req.get('origin') && (typeof req.get('origin') === 'string')) {
+            res.header("Access-Control-Allow-Origin", req.get('origin'));
+        }else res.header("Access-Control-Allow-Origin", req.protocol + '://' + environment.domain + ":2095");
+        
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-		res.header("Access-Control-Allow-Credentials", "true")
+		res.header("Access-Control-Allow-Credentials", "true");
         next();
     });
 
