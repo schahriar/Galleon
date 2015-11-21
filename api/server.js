@@ -55,6 +55,7 @@ module.exports = function(environment, port, connection, instance) {
             res.header("Access-Control-Allow-Origin", req.get('origin'));
         }else res.header("Access-Control-Allow-Origin", req.protocol + '://' + environment.domain + ":2095");
         
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		res.header("Access-Control-Allow-Credentials", "true");
         next();
