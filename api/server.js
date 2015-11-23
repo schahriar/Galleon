@@ -90,8 +90,8 @@ module.exports = function(environment, port, connection, instance) {
         login: '/access/login',
         logout: '/access/logout'
     }));
-    app.use('//access', ACCESS);
-    app.use('//', API);
+    app.use('/access', ACCESS);
+    app.use('/', API);
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
