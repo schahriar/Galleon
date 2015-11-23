@@ -10,7 +10,7 @@ describe('API Test Suite', function () {
 	this.timeout(8000);
 	it("should connect to API", function (done) {
 		request.post({
-			url: 'http://localhost:3080//access/login/',
+			url: 'http://localhost:3080/access/login/',
 			form: {
 				email: "info@example.com",
 				password: "bestpasswordever"
@@ -24,7 +24,7 @@ describe('API Test Suite', function () {
 	})
 	it("should remain connected with a cookie", function (done) {
 		request.get({
-			url: "http://localhost:3080//access/check",
+			url: "http://localhost:3080/access/check",
 			jar: true
 		}, function (err, httpResponse, body) {
 			if (err) throw err;
@@ -35,7 +35,7 @@ describe('API Test Suite', function () {
 	})
 	it("should change password correctly", function(done) {
 		request.post({
-			url: 'http://localhost:3080//access/changepassword/',
+			url: 'http://localhost:3080/access/changepassword/',
 			form: {
 				email: "info@example.com",
 				cpassword: "bestpasswordever",
@@ -50,7 +50,7 @@ describe('API Test Suite', function () {
 	})
 	it("should login with the new password", function (done) {
 		request.post({
-			url: 'http://localhost:3080//access/login',
+			url: 'http://localhost:3080/access/login',
 			form: {
 				email: "info@example.com",
 				password: "newpassword"
@@ -64,14 +64,14 @@ describe('API Test Suite', function () {
 	})
 	it("should logout correctly", function(done) {
 		request.post({
-			url: "http://localhost:3080//access/logout",
+			url: "http://localhost:3080/access/logout",
 			jar: true
 		}, function (err, httpResponse, body) {
 			if (err) throw err;
 			expect(JSON.parse(body).success).to.equal(true);
 			// Double check
 			request.get({
-				url: "http://localhost:3080//access/check",
+				url: "http://localhost:3080/access/check",
 				jar: true
 			}, function (err, httpResponse, body) {
 				if (err) throw err;
@@ -82,7 +82,7 @@ describe('API Test Suite', function () {
 	})
 	it("should deny invalid password", function(done) {
 		request.post({
-			url: 'http://localhost:3080//access/login',
+			url: 'http://localhost:3080/access/login',
 			form: {
 				email: "info@example.com",
 				password: "bestpasswordever"
