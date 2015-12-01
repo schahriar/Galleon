@@ -42,13 +42,13 @@ var env = {
     },
     setModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
 
             data.modules = modules;
             self.set(data, callback);
-        })
+        });
     },
     updateModuleConfig: function(Module, Config, callback) {
         var self = this;
@@ -58,33 +58,33 @@ var env = {
             MODULE.config = _.merge(MODULE.config, Config);
             if(typeof(callback) === 'function') self.set(data, callback);
             else self.setSync(data);
-        })
+        });
     },
     addModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
             _.each(modules, function(MODULE) {
                 if(!data.modules) data.modules = [];
                 _.remove(data.modules, { name: MODULE.name });
                 data.modules.push(MODULE);
-            })
+            });
             self.set(data, callback);
-        })
+        });
     },
     removeModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
 
             _.each(modules, function(MODULE) {
                 _.pull(data.modules, MODULE);
-            })
+            });
             self.set(data, callback);
-        })
+        });
     },
-}
+};
 
 module.exports = env;
