@@ -15,6 +15,17 @@ var defaultPath = path.resolve(osenv.home(), '.galleon/galleon.conf');
 createDirectoryIfNotFound(path.resolve(osenv.home(), '.galleon'));
 
 var env = {
+    watch: function(callback) {
+        // Listens to config file
+        // and calls callback when changed
+        fs.watchFile(defaultPath, function (curr, prev) {
+            if(curr.mtime > prev.mtime) {
+                env.get(function(error, data){
+                    callback(error, data, curr, prev);
+                });
+            }
+        });  
+    },
     get: function(callback) {
         fs.exists(defaultPath, function (exists) {
             if(!exists) return callback("CONFIG FILE NOT FOUND!");
