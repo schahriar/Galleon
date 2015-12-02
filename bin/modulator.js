@@ -45,7 +45,7 @@ Modulator.prototype.launch = function() {
     var callback = args.pop();
     var functions = [];
     // Populate functions
-    _.each(this.modules[cat], function(MODULE) {
+    _.each(context.modules[cat], function(MODULE) {
         functions.push(function(callback){
             /* Slows down module execution but prevents unintended crashes */
             // Prevents a bad module from corrupting the entire eco-system

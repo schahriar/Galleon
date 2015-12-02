@@ -101,7 +101,7 @@ var Galleon = function(env, callback){
 	if(_this.environment.safemode === true) {
 		_this.environment.modules = {};
 	}else{
-		_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
+		_this.environment.modules = _this.environment.modulator.load();
 	}
 
 	Database(_this.environment.connections, function(error, connection){
