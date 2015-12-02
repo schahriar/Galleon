@@ -7,7 +7,7 @@ var environment = require('./environment');
 
 var Modulator = function(env) {
     this.env = env || environment;
-    this._getModules();
+    this.modules = this.env.getModulesSync();
 };
 
 Modulator.prototype._getModules = function() {

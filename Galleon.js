@@ -96,7 +96,7 @@ var Galleon = function(env, callback){
 	_this.environment = environment;
 
 	// Assign module environment
-	_this.environment.modulator = new Modulator(_this.environment);
+	_this.environment.modulator = new Modulator();
 	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
 	if(_this.environment.safemode === true) {
 		_this.environment.modules = {}
