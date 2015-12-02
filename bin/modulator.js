@@ -5,8 +5,8 @@ var herb = require('herb');
 var colors = require('colors');
 var environment = require('./environment');
 
-var Modulator = function(env) {
-    this.env = env || environment;
+var Modulator = function() {
+    this.env = environment;
     this.modules = this.env.getModulesSync();
 };
 
