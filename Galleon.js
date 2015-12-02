@@ -136,9 +136,9 @@ var Galleon = function(env, callback){
 	})
 
 	// Load front-end modules
-	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
-		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
-	})
+	_this.environment.modulator.launch('frontend', osenv.tmpdir(), function(){
+		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments);
+	});
 
 	eventEmmiter.call(this);
 }

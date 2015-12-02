@@ -79,7 +79,7 @@ Incoming.prototype.listen = function (port, databaseConnection, Spamc) {
 			session.eID = shortId.generate() + '&&' + crypto.createHash('md5').update(session.id || "NONE").digest('hex');
 			session.path = undefined;
 
-			_this.environment.modulator.launch(_this.environment.modules['incoming-connection'], session, function(error, _session, _block){
+			_this.environment.modulator.launch('incoming-connection', session, function(error, _session, _block){
 				if(_this.environment.verbose) console.log("CONNECTION MODULES LAUNCHED".green, arguments);
 				
 				if(_.isObject(_session)) session = _session;

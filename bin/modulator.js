@@ -25,30 +25,31 @@ Modulator.prototype._add = function (MODULE) {
 };
 
 Modulator.prototype.load = function(modules) {
-    var container = {};
+    var context = this;
     // Modules are likely required to be loaded on start thus will be loaded Synchronously
-    _.each(modules || this.modules, function(MODULE) {
-        // Fill container according to 'extends' attribute
+    _.each(modules || context.modules, function(MODULE) {
+        // Fill context.modules according to 'extends' attribute
 
         // Assign array if key is undefined
-        if(!container[MODULE.extends]) container[MODULE.extends] = [];
+        if(!context.modules[MODULE.extends]) context.modules[MODULE.extends] = [];
         // Push current Module to the respective key
-        container[MODULE.extends].push(MODULE);
+        context.modules[MODULE.extends].push(MODULE);
     });
-    return container;
+    return context.modules;
 };
 
 Modulator.prototype.launch = function() {
     var args = _.toArray(arguments);
-    var modules = args.shift(), callback = args.pop();
+    var cat = args.shift();
+    var callback = args.pop();
     var functions = [];
     // Populate functions
-    _.each(modules, function(MODULE) {
+    _.each(this.modules[cat], function(MODULE) {
         functions.push(function(callback){
             /* Slows down module execution but prevents unintended crashes */
             // Prevents a bad module from corrupting the entire eco-system
             try {
-                require(MODULE.reference).exec.apply(MODULE, arguments);
+                require(MODULE.reference).exec.apply(MODULE, args);
             }catch(error){
                 callback(error);
             }
