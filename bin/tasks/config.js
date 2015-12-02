@@ -4,6 +4,8 @@ var Modulator = require('../modulator');
 module.exports = function(Galleon, argv) {
     // Format -> galleon config <module_name> <config_name> <config_value>
     
+    var modulator = new Modulator();
+    
     // Remove config from argv
     argv._.shift();
     var Config = {};
@@ -12,7 +14,7 @@ module.exports = function(Galleon, argv) {
     }catch(e) {
         throw new Error("Failed to update Config. Try the following format \n galleon config <module_name> <config_name> <config_value>");
     }
-    var SUCCESS = Modulator.update(argv._[0], Config);
+    var SUCCESS = modulator.update(argv._[0], Config);
     if(SUCCESS) {
         console.log("UPDATED SUCCESSFULLY");
     }else{
