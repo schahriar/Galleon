@@ -3,9 +3,10 @@ var _ = require('lodash');
 var async = require('async');
 var herb = require('herb');
 var colors = require('colors');
+var environment = require('./environment');
 
 var Modulator = function(env) {
-    this.env = env;
+    this.env = env || environment;
     this._getModules();
 };
 
