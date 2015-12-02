@@ -8,6 +8,7 @@ var configFile = require('./configFile');
 var Modulator = function() {
     this.env = configFile;
     this.modules = this.env.getModulesSync();
+    this.container = {};
 };
 
 Modulator.prototype._getModules = function() {
@@ -31,11 +32,11 @@ Modulator.prototype.load = function(modules) {
         // Fill context.modules according to 'extends' attribute
 
         // Assign array if key is undefined
-        if(!context.modules[MODULE.extends]) context.modules[MODULE.extends] = [];
+        if(!context.container[MODULE.extends]) context.container[MODULE.extends] = [];
         // Push current Module to the respective key
-        context.modules[MODULE.extends].push(MODULE);
+        context.container[MODULE.extends].push(MODULE);
     });
-    return context.modules;
+    return context.container;
 };
 
 Modulator.prototype.launch = function() {
@@ -44,14 +45,17 @@ Modulator.prototype.launch = function() {
     var cat = args.shift();
     var callback = args.pop();
     var functions = [];
+    
+    if((!context.container) || (!_.isPlainObject(context.container)) || (!context.container[cat])) return callback();
+    
     // Populate functions
-    _.each(context.modules[cat], function(MODULE) {
+    _.each(context.container[cat], function(MODULE) {
         functions.push(function(callback){
             /* Slows down module execution but prevents unintended crashes */
             // Prevents a bad module from corrupting the entire eco-system
             try {
-                context.modules[cat][MODULE.name].__gcopy = require(MODULE.reference);
-                context.modules[cat][MODULE.name].__gcopy.exec.apply(MODULE, args);
+                context.container[cat][MODULE.name].__gcopy = require(MODULE.reference);
+                context.container[cat][MODULE.name].__gcopy.exec.apply(MODULE, args);
             }catch(error){
                 callback(error);
             }
@@ -61,10 +65,10 @@ Modulator.prototype.launch = function() {
     // Watch for config changes
     configFile.watch(function() {
         var newConfig = context.env.getModulesSync();
-        _.each(context.modules[cat], function(MODULE) {
-            if(!_.isEqual(MODULE.config, newConfig.modules[cat][MODULE.name])) {
+        _.each(context.container[cat], function(MODULE) {
+            if(!_.isEqual(MODULE.config, newConfig.container[cat][MODULE.name])) {
                 try {
-                    if(MODULE.__gcopy.update) { MODULE.__gcopy.update(newConfig.modules[cat][MODULE.name].config); }
+                    if(MODULE.__gcopy.update) { MODULE.__gcopy.update(newConfig.container[cat][MODULE.name].config); }
                 }catch(e) {}
             }
         });
