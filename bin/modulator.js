@@ -39,6 +39,7 @@ Modulator.prototype.load = function(modules) {
 };
 
 Modulator.prototype.launch = function() {
+    var context = this;
     var args = _.toArray(arguments);
     var cat = args.shift();
     var callback = args.pop();
@@ -49,14 +50,26 @@ Modulator.prototype.launch = function() {
             /* Slows down module execution but prevents unintended crashes */
             // Prevents a bad module from corrupting the entire eco-system
             try {
-                require(MODULE.reference).exec.apply(MODULE, args);
+                context.modules[cat][MODULE.name].__gcopy = require(MODULE.reference);
+                context.modules[cat][MODULE.name].__gcopy.exec.apply(MODULE, args);
             }catch(error){
                 callback(error);
             }
         });
     });
     
-    // Watch for config changes **
+    // Watch for config changes
+    configFile.watch(function() {
+        var newConfig = context.env.getModulesSync();
+        _.each(context.modules[cat], function(MODULE) {
+            if(!_.isEqual(MODULE.config, newConfig.modules[cat][MODULE.name])) {
+                try {
+                    if(MODULE.__gcopy.update) { MODULE.__gcopy.update(newConfig.modules[cat][MODULE.name].config); }
+                }catch(e) {}
+            }
+        });
+        context._getModules();
+    });
     
     // Ignore if no modules are registered for the current task
     if(functions.length <= 0) return callback();
