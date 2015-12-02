@@ -88,7 +88,7 @@ Modulator.prototype.install = function(moduleName) {
     shell.exec('npm install -g ' + moduleName, function(code, output) {
       if(code === 0) {
           context._add(moduleName);
-          herb.log(name.toUpperCase().magenta, "SUCCESSFULLY INSTALLED!".green);
+          herb.log(moduleName.toUpperCase().magenta, "SUCCESSFULLY INSTALLED!".green);
           herb.warn("Changes will only take affect after restart!");
       }else{
           herb.log("INSTALLATION FAILED!".red, "\nCODE:", code);
