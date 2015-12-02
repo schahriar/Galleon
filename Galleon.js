@@ -13,7 +13,7 @@ var outbound = require('./fleet/outgoing/outbound');
 var queue = require('./fleet/outgoing/queue');
 
 var Database = require('./fleet/connection');
-var modulator = require('./bin/modulator/master');
+var Modulator = require('./bin/modulator');
 // -------------------------------------------
 
 // Query
@@ -96,7 +96,7 @@ var Galleon = function(env, callback){
 	_this.environment = environment;
 
 	// Assign module environment
-	_this.environment.modulator = modulator;
+	_this.environment.modulator = new Modulator(_this.environment);
 	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
 	if(_this.environment.safemode === true) {
 		_this.environment.modules = {}

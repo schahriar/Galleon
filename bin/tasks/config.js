@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var Modulator = require('../modulator/master');
+var Modulator = require('../modulator');
 
 module.exports = function(Galleon, argv) {
     // Format -> galleon config <module_name> <config_name> <config_value>
