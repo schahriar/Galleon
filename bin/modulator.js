@@ -32,9 +32,9 @@ Modulator.prototype.load = function(modules) {
         // Fill context.modules according to 'extends' attribute
 
         // Assign array if key is undefined
-        if(!context.container[MODULE.extends]) context.container[MODULE.extends] = [];
+        if(!context.container[MODULE.extends]) context.container[MODULE.extends] = {};
         // Push current Module to the respective key
-        context.container[MODULE.extends].push(MODULE);
+        context.container[MODULE.extends][MODULE.name] = MODULE;
     });
     return context.container;
 };
