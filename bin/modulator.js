@@ -81,11 +81,11 @@ Modulator.prototype.launch = function() {
     async.series(functions, callback);
 };
 
-Modulator.prototype.install = function() {
+Modulator.prototype.install = function(moduleName) {
     var context = this;
-    var name = name.toLowerCase();
-    var moduleName = (name.substring(0,8) !== 'galleon-')?'galleon-'+name:name;
-    var npm = shell.exec('npm install -g ' + moduleName, function(code, output) {
+    moduleName = moduleName.toLowerCase();
+    moduleName = (moduleName.substring(0,8) !== 'galleon-')?'galleon-'+moduleName:moduleName;
+    shell.exec('npm install -g ' + moduleName, function(code, output) {
       if(code === 0) {
           context._add(moduleName);
           herb.log(name.toUpperCase().magenta, "SUCCESSFULLY INSTALLED!".green);
