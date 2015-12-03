@@ -16,6 +16,7 @@ createDirectoryIfNotFound(path.resolve(osenv.home(), '.galleon'));
 
 var env = {
     watch: function(callback) {
+        if(typeof callback === 'function') callback = _.noop();
         // Listens to config file
         // and calls callback when changed
         fs.watchFile(defaultPath, function (curr, prev) {
@@ -27,6 +28,7 @@ var env = {
         });  
     },
     get: function(callback) {
+        if(typeof callback === 'function') callback = _.noop();
         fs.exists(defaultPath, function (exists) {
             if(!exists) return callback("CONFIG FILE NOT FOUND!");
             fs.readFile(defaultPath, 'utf8', function (error, data) {
@@ -43,6 +45,7 @@ var env = {
         return this.getSync().modules;
     },
     set: function(obj, callback) {
+        if(typeof callback === 'function') callback = _.noop();
         fs.writeFile(defaultPath, JSON.stringify(obj, null, 2), function (error) {
             if (error) return callback(error);
             if(callback) callback();
@@ -52,6 +55,7 @@ var env = {
         return fs.writeFileSync(defaultPath, JSON.stringify(obj, null, 2));
     },
     setModules: function(modules, callback) {
+        if(typeof callback === 'function') callback = _.noop();
         var self = this;
         modules = _.toArray(modules);
         self.get(function(error, data) {
@@ -62,6 +66,7 @@ var env = {
         });
     },
     updateModuleConfig: function(Module, Config, callback) {
+        if(typeof callback === 'function') callback = _.noop();
         var self = this;
         self.get(function(error, data) {
             if(error) return callback(error);
@@ -72,6 +77,7 @@ var env = {
         });
     },
     addModules: function(modules, callback) {
+        if(typeof callback === 'function') callback = _.noop();
         var self = this;
         modules = _.toArray(modules);
         self.get(function(error, data) {
@@ -85,6 +91,7 @@ var env = {
         });
     },
     removeModules: function(modules, callback) {
+        if(typeof callback === 'function') callback = _.noop();
         var self = this;
         modules = _.toArray(modules);
         self.get(function(error, data) {
