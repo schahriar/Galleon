@@ -34,7 +34,7 @@ Modulator.prototype.load = function(modules) {
         // Assign array if key is undefined
         if(!context.container[MODULE.extends]) context.container[MODULE.extends] = {};
         // Push current Module to the respective key
-        context.container[MODULE.extends][MODULE.name] = MODULE;
+        context.container[MODULE.extends][MODULE.reference] = MODULE;
     });
     return context.container;
 };
@@ -54,8 +54,8 @@ Modulator.prototype.launch = function() {
             /* Slows down module execution but prevents unintended crashes */
             // Prevents a bad module from corrupting the entire eco-system
             try {
-                context.container[cat][MODULE.name].__gcopy = require(MODULE.reference);
-                context.container[cat][MODULE.name].__gcopy.exec.apply(MODULE, args);
+                context.container[cat][MODULE.reference].__gcopy = require(MODULE.reference);
+                context.container[cat][MODULE.reference].__gcopy.exec.apply(MODULE, args);
             }catch(error){
                 callback(error);
             }
