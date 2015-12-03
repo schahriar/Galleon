@@ -13,7 +13,7 @@ var outbound = require('./fleet/outgoing/outbound');
 var queue = require('./fleet/outgoing/queue');
 
 var Database = require('./fleet/connection');
-var modulator = require('./bin/modulator/master');
+var Modulator = require('./bin/modulator');
 // -------------------------------------------
 
 // Query
@@ -26,7 +26,7 @@ var GalleonQuery = {
 	unlinkattachment: require('./query/unlink.attachment'),
 	clean: require('./query/clean.js'),
 	restore: require('./query/restore.js')
-}
+};
 
 // Essential
 var eventEmmiter = require('events').EventEmitter;
@@ -72,7 +72,7 @@ var Galleon = function(env, callback){
 		env = undefined;
 	}
 	if((!callback) || (typeof(callback) !== 'function')) {
-		callback = new Function;
+		callback = function() {};
 	}
 
 	if((typeof(env) !== 'object') || (!env.connections)) {
@@ -96,12 +96,12 @@ var Galleon = function(env, callback){
 	_this.environment = environment;
 
 	// Assign module environment
-	_this.environment.modulator = modulator;
+	_this.environment.modulator = new Modulator();
 	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
 	if(_this.environment.safemode === true) {
-		_this.environment.modules = {}
+		_this.environment.modules = {};
 	}else{
-		_this.environment.modules = _this.environment.modulator.load(_this.environment.modules);
+		_this.environment.modules = _this.environment.modulator.load();
 	}
 
 	Database(_this.environment.connections, function(error, connection){
@@ -133,15 +133,15 @@ var Galleon = function(env, callback){
 				}
 			});
 		}else _this.emit('ready');
-	})
+	});
 
 	// Load front-end modules
-	_this.environment.modulator.launch(_this.environment.modules['frontend'], osenv.tmpdir(), function(){
-		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments)
-	})
+	_this.environment.modulator.launch('frontend', osenv.tmpdir(), function(){
+		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments);
+	});
 
 	eventEmmiter.call(this);
-}
+};
 
 var InternalMethods = {
 	checkPorts: function(ports, callback){
@@ -149,7 +149,7 @@ var InternalMethods = {
 
 		// There should be a better way to do this
 		ports.forEach(function(port, index, array){
-			var finalCallback = undefined;
+			var finalCallback;
 
 			if(array.length-1 <= index) finalCallback = callback;
 			InternalMethods.checkPort(port, function(test) {
@@ -175,9 +175,9 @@ var InternalMethods = {
 				else if (status == 'closed') callback(null, pass);
 			}
 
-		})
+		});
 	}
-}
+};
 
 util.inherits(Galleon, eventEmmiter);
 
@@ -194,7 +194,7 @@ Galleon.prototype.dock = function(callback){
 
 	// ERROR | INCOMING | OUTGOING //
 	callback(undefined, INCOMING);
-}
+};
 
 Galleon.prototype.server = function(callback) {
 	var Server = require('./api/server');
@@ -204,7 +204,7 @@ Galleon.prototype.server = function(callback) {
 
 	Server(this.environment, this.environment.ports.server, this.connection, this);
 	callback(undefined, true);
-}
+};
 /* - --------------- - */
 
 /* - DISPATCH METHOD - */
@@ -212,7 +212,7 @@ Galleon.prototype.dispatch = function(mail, callback, connection){
 	connection = connection || this.connection;
 	var QUEUE = new queue(this.environment);
 	QUEUE.add(connection, mail, this.environment, callback);
-}
+};
 /* - ---------------- - */
 
 /* - USER MANAGEMENT - */
@@ -249,7 +249,7 @@ Galleon.prototype.createUser = function(user, callback) {
 		return callback(new Error("Invalid password"));
 
 	bcrypt.hash(user.password, 10, function(error, hash) {
-		if(error) return callback(error)
+		if(error) return callback(error);
 
 		_this.connection.collections.users.create({
 			email: user.email,
@@ -259,9 +259,9 @@ Galleon.prototype.createUser = function(user, callback) {
 		},function(error, user){
 			if(error) return callback(error);
 			callback(null, user);
-		})
+		});
 	});
-}
+};
 
 Galleon.prototype.listUsers = function(options, callback) {
 	// Internal
@@ -272,7 +272,7 @@ Galleon.prototype.listUsers = function(options, callback) {
 	if(!callback) callback = function(){};
 
 	this.connection.collections.users.find().limit(options.limit || 50).exec(callback);
-}
+};
 
 Galleon.prototype.removeUser = function(query, callback) {
 	// Internal
@@ -282,7 +282,7 @@ Galleon.prototype.removeUser = function(query, callback) {
 
 	if(query) this.connection.collections.users.destroy(query).exec(callback);
 	else callback(new Error("NO QUERY"));
-}
+};
 
 Galleon.prototype.changePassword = function(user, newPassword, oldPassword, callback, forceChange) {
 	var self = this;
@@ -311,18 +311,18 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 						});
 					else
 						return callback(new Error("INCORRECT PASSWORD"));
-				})
-			})
-		})
+				});
+			});
+		});
 	}else{
 		bcrypt.hash(newPassword, 10, function(error, hash) {
 			if(hash)
 				self.connection.collections.users.update({ email: user }, { password: hash }).exec(callback);
 			else
 				return callback(new Error("INCORRECT PASSWORD"));
-		})
+		});
 	}
-}
+};
 /* - --------------- - */
 
 /* - EMAIL MANAGEMENT - */
@@ -336,7 +336,7 @@ Galleon.prototype.query = function(method, query, callback) {
 
 	// Execute Query
 	GalleonQuery[method.toLowerCase()](this, query, callback);
-}
+};
 /* - ---------------- - */
 
 module.exports = Galleon;

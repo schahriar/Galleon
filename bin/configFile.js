@@ -15,6 +15,17 @@ var defaultPath = path.resolve(osenv.home(), '.galleon/galleon.conf');
 createDirectoryIfNotFound(path.resolve(osenv.home(), '.galleon'));
 
 var env = {
+    watch: function(callback) {
+        // Listens to config file
+        // and calls callback when changed
+        fs.watchFile(defaultPath, function (curr, prev) {
+            if(curr.mtime > prev.mtime) {
+                env.get(function(error, data){
+                    callback(error, data, curr, prev);
+                });
+            }
+        });  
+    },
     get: function(callback) {
         fs.exists(defaultPath, function (exists) {
             if(!exists) return callback("CONFIG FILE NOT FOUND!");
@@ -42,13 +53,13 @@ var env = {
     },
     setModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
 
             data.modules = modules;
             self.set(data, callback);
-        })
+        });
     },
     updateModuleConfig: function(Module, Config, callback) {
         var self = this;
@@ -58,33 +69,33 @@ var env = {
             MODULE.config = _.merge(MODULE.config, Config);
             if(typeof(callback) === 'function') self.set(data, callback);
             else self.setSync(data);
-        })
+        });
     },
     addModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
             _.each(modules, function(MODULE) {
                 if(!data.modules) data.modules = [];
                 _.remove(data.modules, { name: MODULE.name });
                 data.modules.push(MODULE);
-            })
+            });
             self.set(data, callback);
-        })
+        });
     },
     removeModules: function(modules, callback) {
         var self = this;
-        var modules = _.toArray(modules);
+        modules = _.toArray(modules);
         self.get(function(error, data) {
             if(error) return callback(error);
 
             _.each(modules, function(MODULE) {
                 _.pull(data.modules, MODULE);
-            })
+            });
             self.set(data, callback);
-        })
+        });
     },
-}
+};
 
 module.exports = env;

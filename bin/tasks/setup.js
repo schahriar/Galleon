@@ -11,9 +11,9 @@ var inquirer = require('inquirer');
 var askFor = require('./_questionnaire');
 var Database = require('../../fleet/connection');
 var crypto = require('crypto');
-var environment = require('../environment');
+var configFile = require('../configFile');
 
-var config = _.defaults(environment.getSync(), {
+var config = _.defaults(configFile.getSync(), {
     connections: {
         storage: new Object,
         authentication: new Object

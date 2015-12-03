@@ -203,7 +203,7 @@ queueAdd = function queueAdd(databaseConnection, mail, options, callback) {
 	};
 	
 	// Load queue modules
-	_this.environment.modulator.launch(_this.environment.modules['queue'], queue, function (error, _queue) {
+	_this.environment.modulator.launch('queue', queue, function (error, _queue) {
 		if (_queue !== undefined) queue = _queue;
 
 		queueUpdate = function queueUpdate(error, model) {

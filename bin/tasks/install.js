@@ -1,10 +1,11 @@
 var _ = require('lodash');
-var install = require('../modulator/install');
+var Modulator = require('../modulator');
 
 module.exports = function(Galleon, argv) {
+    var modulator = new Modulator();
     // Remove install from argv
     argv._.shift();
     _.each(argv._, function(Module) {
-        install(Module);
+        modulator.install(Module);
     })
 }

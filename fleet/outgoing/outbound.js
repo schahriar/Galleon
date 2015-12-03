@@ -88,7 +88,7 @@ Outbound.prototype.send = function (mail, options, callback) {
 	/* -------------------------------------------------------------- */
 	
 	// Load outbound modules
-	_this.environment.modulator.launch(_this.environment.modules['outbound'], mail, function(error, _mail){
+	_this.environment.modulator.launch('outbound', mail, function(error, _mail){
 		
 		if(_mail !== undefined) mail = _mail;
 		

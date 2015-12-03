@@ -65,7 +65,7 @@ module.exports = function(_this, database, session, parsed, callback){
     }
     
     // Load incoming modules
-	_this.environment.modulator.launch(_this.environment.modules['incoming'], parsed.associtaion, email, parsed, function(error, _email, _ignore){
+	_this.environment.modulator.launch('incoming', parsed.associtaion, email, parsed, function(error, _email, _ignore){
 		if(_this.environment.verbose) console.log("INCOMING MODULES LAUNCHED".green, arguments);
         
         // Ignore email if requested
