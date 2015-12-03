@@ -64,13 +64,14 @@ Modulator.prototype.launch = function() {
     
     // Watch for config changes
     configFile.watch(function() {
-        var newConfig = context.env.getModulesSync();
-        _.each(context.container[cat], function(MODULE) {
-            if(!_.isEqual(MODULE.config, newConfig.container[cat][MODULE.name])) {
-                try {
-                    if(MODULE.__gcopy.update) { MODULE.__gcopy.update(newConfig.container[cat][MODULE.name].config); }
-                }catch(e) {}
-            }
+        if (!context.container) return;
+        context._getModules();
+        _.each(context.container[cat], function (MODULE, NAME) {
+            try {
+                if (!_.isEqual(_.findWhere(context.modules, { name: NAME }).config, MODULE.config)) {
+                    if (typeof MODULE.__gcopy.update === 'function') { MODULE.__gcopy.update(_.findWhere(context.modules, { name: NAME }).config); }
+                }
+            } catch (e) { }
         });
         context._getModules();
     });
