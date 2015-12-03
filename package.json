@@ -1,6 +1,12 @@
 {
   "name": "galleon",
   "description": "A badass SMTP mail server built on Node to make your life simpler.",
+  "version": "0.4.3",
+  "main": "Galleon.js",
+  "preferGlobal": true,
+  "bin": {
+    "galleon": "./bin/startup"
+  },
   "author": "Schahriar SaffarShargh <info@schahriar.com>|www.schahriar.com",
   "keywords": [
     "Galleon",
@@ -10,6 +16,7 @@
     "EMAIL",
     "galleon.email"
   ],
+  "license": "MIT",
   "dependencies": {
     "async": "^0.9.2",
     "bcryptjs": "^2.3.0",
@@ -46,14 +53,9 @@
     "waterline": "^0.10.26",
     "yargs": "^2.3.0"
   },
-  "preferGlobal": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/schahriar/Galleon.git"
-  },
-  "bin": {
-    "Galleon": "bin/startup",
-    "galleon": "bin/startup"
   },
   "scripts": {
     "start": "node ./seascape/server.js",
@@ -71,10 +73,6 @@
       }
     }
   },
-  "main": "Galleon.js",
-  "license": "MIT",
-  "engine": "node 0.12.x",
-  "version": "0.4.2",
   "devDependencies": {
     "blanket": "^1.1.9",
     "chai": "^3.3.0",
