@@ -66,10 +66,10 @@ Modulator.prototype.launch = function() {
     configFile.watch(function() {
         if (!context.container) return;
         context._getModules();
-        _.each(context.container[cat], function (MODULE, NAME) {
+        _.each(context.container[cat], function (MODULE, REF) {
             try {
-                if (!_.isEqual(_.findWhere(context.modules, { name: NAME }).config, MODULE.config)) {
-                    if (typeof MODULE.__gcopy.update === 'function') { MODULE.__gcopy.update(_.findWhere(context.modules, { name: NAME }).config); }
+                if (!_.isEqual(_.findWhere(context.modules, { reference: REF }).config, MODULE.config)) {
+                    if (typeof MODULE.__gcopy.update === 'function') { MODULE.__gcopy.update(_.findWhere(context.modules, { reference: REF }).config); }
                 }
             } catch (e) { }
         });
