@@ -44,4 +44,4 @@ authbind --deep galleon start
 
 -------
 ## Front-end interface
-Galleon no longer packages a front-end interface but rather provides an API. You can install [**Seascape** from NPM](https://npmjs.com/schahriar/galleon-seascape) and serve as a front-facing interface.
+Galleon no longer packages a front-end interface but rather provides an API. You can install [**Seascape** from NPM](https://npmjs.com/package/galleon-seascape) and serve as a front-facing interface.
