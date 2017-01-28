@@ -29,19 +29,20 @@ var GalleonQuery = {
 };
 
 // Essential
-var eventEmmiter = require('events').EventEmitter;
+var EventEmitter = require('events').EventEmitter;
 var util         = require('util');
 var path 		 = require("path");
 var fs			 = require('fs');
 var osenv 		 = require('osenv');
 
 // Utilities
-var _ = require('lodash');
-var portscanner  = require('portscanner');
-var validator = require('validator');
-var bcrypt = require('bcryptjs');
-var colors = require('colors'); // Better looking error handling
-var Spamc = require('spamc-stream');
+const _ = require('lodash');
+const portscanner  = require('portscanner');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const async = require('async');
+const colors = require('colors'); // Better looking error handling
+const Spamc = require('spamc-stream');
 /* -- ------- -- */
 
 var pass = true, fail = false;
@@ -61,151 +62,138 @@ var Defaults = {
 	}
 };
 
-var Galleon = function(env, callback){
-
-	// Internal
-	var _this = this;
-	var environment;
+class Galleon extends EventEmitter {
+	constructor(env, callback) {
+		super();
+		var environment = {};
 	
-	if((!callback) && (typeof(env) === 'function')) {
-		callback = env;
-		env = undefined;
-	}
-	if((!callback) || (typeof(callback) !== 'function')) {
-		callback = function() {};
-	}
-
-	if((typeof(env) !== 'object') || (!env.connections)) {
-		try {
-			environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
-		}catch(e) {
-			console.trace(e);
-			if(e) throw new Error("Failed to resolve Environment. If you are using the API pass an environment object as the first parameter.");
+		if((!callback) && (typeof(env) === 'function')) {
+			callback = env;
+			env = undefined;
 		}
-	}
-	
-	// Set Spamc
-	this.spamc = new Spamc('localhost', 783, 60);
-	
-	// Defaults
-	environment = _.defaultsDeep(environment || {}, env);
-	environment = _.defaultsDeep(environment || {}, Defaults);
-	//
-
-	// Attach environment to Galleon Object
-	_this.environment = environment;
-
-	// Assign module environment
-	_this.environment.modulator = new Modulator();
-	// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
-	if(_this.environment.safemode === true) {
-		_this.environment.modules = {};
-	}else{
-		_this.environment.modules = _this.environment.modulator.load();
-	}
-
-	Database(_this.environment.connections, function(error, connection){
-		if(environment.verbose) console.log("Connection attempted".yellow);
-		if(error) {
-			console.error("Connection error!".red);
-			if(callback) callback(error);
-			else throw error;
+		if((!callback) || (typeof(callback) !== 'function')) {
+			callback = function() {};
 		}
 
-		if(environment.verbose) console.log("Database connection established".green);
-		// Add database connection to `this`
-		_this.connection = connection;
-
-		if(!environment.noCheck) {
-			var ports = environment.ports;
-			InternalMethods.checkPorts([ports.incoming, ports.server], function(check){
-				if(check && environment.verbose) console.log("All requested ports are free");
-
-				if(environment.dock) {
-					_this.dock(function(error, incoming) {
-						_this.emit('ready', error, incoming);
-						callback(error, incoming, connection);
-					});
-				}else{
-					// Emit -ready- event
-					_this.emit('ready');
-					callback(error, connection);
-				}
-			});
-		}else _this.emit('ready');
-	});
-
-	// Load front-end modules
-	_this.environment.modulator.launch('frontend', osenv.tmpdir(), function(){
-		if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments);
-	});
-
-	eventEmmiter.call(this);
-};
-
-var InternalMethods = {
-	checkPorts: function(ports, callback){
+		if((typeof(env) !== 'object') || (!env.connections)) {
+			try {
+				environment = JSON.parse(fs.readFileSync(path.resolve(osenv.home(), '.galleon/', 'galleon.conf'), 'utf8'));
+			}catch(e) {
+				console.trace(e);
+				if(e) throw new Error("Failed to resolve Environment. If you are using the API pass an environment object as the first parameter.");
+			}
+		}
+		
+		// Set Spamc
+		this.spamc = new Spamc('localhost', 783, 60);
+		
+		// Defaults
+		environment = _.defaultsDeep(environment || {}, env);
+		environment = _.defaultsDeep(environment || {}, Defaults);
+		//
+	
+		// Attach environment to Galleon Object
+		this.environment = environment;
+	
+		// Assign module environment
+		this.environment.modulator = new Modulator();
+		// Assign modules -> IF Environment is set to Safe Mode Ignore All Modules
+		if(this.environment.safemode === true) {
+			this.environment.modules = {};
+		}else{
+			this.environment.modules = this.environment.modulator.load();
+		}
+	
+		Database(this.environment.connections, (error, connection) => {
+			if(environment.verbose) console.log("Connection attempted".yellow);
+			if(error) {
+				console.error("Connection error!".red);
+				if(callback) callback(error);
+				else throw error;
+			}
+	
+			if(environment.verbose) console.log("Database connection established".green);
+			// Add database connection to `this`
+			this.connection = connection;
+	
+			if(!environment.noCheck) {
+				var ports = environment.ports;
+					Galleon.checkPorts([ports.incoming, ports.server], (check) => {
+					if(check && environment.verbose) console.log("All requested ports are free");
+	
+					if(environment.dock) {
+						this.dock((error, incoming) => {
+							this.emit('ready', error, incoming);
+							callback(error, incoming, connection);
+						});
+					}else{
+						// Emit -ready- event
+						this.emit('ready');
+						callback(error, connection);
+					}
+				});
+			}else this.emit('ready');
+		});
+	
+		// Load front-end modules
+		this.environment.modulator.launch('frontend', osenv.tmpdir(), function(){
+			if(environment.verbose) console.log("FRONTEND MODULES LAUNCHED".green, arguments);
+		});
+	}
+	
+	dock(callback) {
+		// Internal
+		if(!callback) callback = function(){};
+	
+		var INCOMING = new incoming(this.environment);
+		INCOMING.listen(this.environment.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
+	
+		//var OUTGOING = new outgoing();
+		//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
+	
+		// ERROR | INCOMING | OUTGOING //
+		callback(undefined, INCOMING);
+	}
+	
+	server(callback) {
+		var Server = require('./api/server');
+	
+		// Internal
+		if(!callback) callback = function(){};
+	
+		Server(this.environment, this.environment.ports.server, this.connection, this);
+		callback(undefined, true);
+	}
+	
+	query(method, query, callback) {
+		// Check if a corresponding Function is available
+		if(!GalleonQuery[method.toLowerCase()]) return callback(new Error("Method not found!"));
+		if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback(new Error("Method not found!"));
+	
+		// Log Query
+		if(this.environment.verbose) console.log(colors.green(method.toUpperCase()), query);
+	
+		// Execute Query
+		GalleonQuery[method.toLowerCase()](this, query, callback);
+	}
+	
+	static checkPorts(ports, callback){
 		var check = pass;
 
-		// There should be a better way to do this
-		ports.forEach(function(port, index, array){
-			var finalCallback;
-
-			if(array.length-1 <= index) finalCallback = callback;
-			InternalMethods.checkPort(port, function(test) {
-				if(test == fail) {
-					check = fail;
-					// Log failure
-					console.warn("Port " + port + " is occupied");
-				}
-			}, check, finalCallback);
-		});
-	},
-
-	checkPort: function(port, callback, check, finalCallback) {
-		portscanner.checkPortStatus(port, '127.0.0.1', function(error, status) {
-			if(error) console.error(error);
-
-			if(finalCallback){
-				if(status == 'open') finalCallback(fail);
-				else finalCallback(check);
-			}else{
-				// Status is 'open' if currently in use or 'closed' if available
-				if(status == 'open') callback(null, fail);
-				else if (status == 'closed') callback(null, pass);
+		async.mapSeries(ports, (port, callback) => {
+			portscanner.checkPortStatus(port, '127.0.0.1', callback);
+		}, (error, responses) => {
+			if (error) return callback(error);
+			
+			for (let i = 0; i < responses.length; i++) if (responses[i] === false) {
+				console.warn(`Port ${ports[i]} is occupied`);
+				return callback(null, false);
 			}
-
+			
+			callback(null, true);
 		});
 	}
 };
-
-util.inherits(Galleon, eventEmmiter);
-
-/* - STARTUP METHODS - */
-Galleon.prototype.dock = function(callback){
-	// Internal
-	if(!callback) callback = function(){};
-
-	var INCOMING = new incoming(this.environment);
-	INCOMING.listen(this.environment.ports.incoming, this.connection, this.spamc); // Start SMTP Incoming Server
-
-	//var OUTGOING = new outgoing();
-	//OUTGOING.listen(587); // Start SMTP Incoming Server - Sets to default port for now
-
-	// ERROR | INCOMING | OUTGOING //
-	callback(undefined, INCOMING);
-};
-
-Galleon.prototype.server = function(callback) {
-	var Server = require('./api/server');
-
-	// Internal
-	if(!callback) callback = function(){};
-
-	Server(this.environment, this.environment.ports.server, this.connection, this);
-	callback(undefined, true);
-};
-/* - --------------- - */
 
 /* - DISPATCH METHOD - */
 Galleon.prototype.dispatch = function(mail, callback, connection){
@@ -324,19 +312,5 @@ Galleon.prototype.changePassword = function(user, newPassword, oldPassword, call
 	}
 };
 /* - --------------- - */
-
-/* - EMAIL MANAGEMENT - */
-Galleon.prototype.query = function(method, query, callback) {
-	// Check if a corresponding Function is available
-	if(!GalleonQuery[method.toLowerCase()]) return callback(new Error("Method not found!"));
-	if(GalleonQuery[method.toLowerCase()].constructor !== Function) return callback(new Error("Method not found!"));
-
-	// Log Query
-	if(this.environment.verbose) console.log(colors.green(method.toUpperCase()), query);
-
-	// Execute Query
-	GalleonQuery[method.toLowerCase()](this, query, callback);
-};
-/* - ---------------- - */
 
 module.exports = Galleon;

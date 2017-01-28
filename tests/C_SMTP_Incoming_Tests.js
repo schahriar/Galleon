@@ -24,7 +24,7 @@ describe("SMTP Incoming Tests", function () {
 				paginate: false
 			}, function (error, results) {
 				if (error) throw error;
-				expect(results[0].text).to.equal('Sending a test message.');
+				expect(results[0].text).to.equal('Sending a test message.\n');
 				done();
 			});
 		});

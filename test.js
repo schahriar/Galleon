@@ -1,6 +1,3 @@
-require('blanket')({
-	pattern: __dirname
-});
 var chai = require("chai");
 var inspect = require("util").inspect;
 var crypto = require("crypto");
