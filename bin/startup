@@ -11,90 +11,90 @@ var herb = require('herb');
 var Galleon = require("../Galleon");
 
 var tasks = {
-    setup: {
-        description: "SETTING UP|SETS UP| GALLEON ENVIRONMENT",
-        category: "installation",
-        FUNC: require("./tasks/setup")
-    },
-    ssl: {
-        description: "SETTING UP|SETS UP| SSL FOR GALLEON",
-        category: "installation",
-        FUNC: require("./tasks/setup_ssl")
-    },
-    start: {
-        description: "STARTING|STARTS| A NEW GALLEON INSTANCE",
-        category: "process management",
-        FUNC: require("./tasks/start")
-    },
-    stop: {
-        description: "HALTING|HALTS| GALLEON INSTANCE",
-        category: "process management",
-        FUNC: require("./tasks/process").stop
-    },
-    delete: {
-        description: "DELETING|DELETES| GALLEON INSTANCE",
-        category: "process management",
-        FUNC: require("./tasks/process").delete
-    },
-    restart: {
-        description: "RESTARTING|RESTARTS| GALLEON INSTANCE",
-        category: "process management",
-        FUNC: require("./tasks/process").restart
-    },
-    status: {
-        description: "SHOWING|SHOWS| PROCESS STATUS",
-        category: "process management",
-        FUNC: require("./tasks/status")
-    },
-    startup: {
-        description: "GENERATING|GENERATES| AN OS DEPENDENT STARTUP SCRIPT",
-        category: "process management",
-        FUNC: require("./tasks/process").startup
-    },
-    add: {
-        description: "ADDING|ADDS| A NEW USER",
-        category: "user management",
-        FUNC: require("./tasks/add")
-    },
-    list: {
-        description: "LISTING|LISTS| USERS",
-        category: "user management",
-        FUNC: require("./tasks/list")
-    },
-    changepass: {
-        description: "CHANGING|CHANGES| USER PASSWORD",
-        category: "user management",
-        FUNC: require("./tasks/changePassword")
-    },
-    remove: {
-        description: "REMOVING|REMOVES| USER",
-        category: "user management",
-        FUNC: require("./tasks/remove")
-    },
-    install: {
-        description: "INSTALLING|INSTALLS| MODULES",
-        category: "modules",
-        FUNC: require("./tasks/install")
-    },
-    config: {
-        description: "CONFIGURING|CONFIGURES| A SETTING IN A GIVEN MODULE",
-        category: "modules",
-        FUNC: require("./tasks/config")
-    },
-    clean: {
-        description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
-        category: "maintenance",
-        FUNC: require("./tasks/clean")
-    },
-    restore: {
-        description: "RESTORING|RESTORES| RAW EMAILS TO DATABASE",
-        category: "maintenance",
-        FUNC: require("./tasks/restore")
-    }
+  setup: {
+    description: "SETTING UP|SETS UP| GALLEON ENVIRONMENT",
+    category: "installation",
+    FUNC: require("./tasks/setup")
+  },
+  ssl: {
+    description: "SETTING UP|SETS UP| SSL FOR GALLEON",
+    category: "installation",
+    FUNC: require("./tasks/setup_ssl")
+  },
+  start: {
+    description: "STARTING|STARTS| A NEW GALLEON INSTANCE",
+    category: "process management",
+    FUNC: require("./tasks/start")
+  },
+  stop: {
+    description: "HALTING|HALTS| GALLEON INSTANCE",
+    category: "process management",
+    FUNC: require("./tasks/process").stop
+  },
+  delete: {
+    description: "DELETING|DELETES| GALLEON INSTANCE",
+    category: "process management",
+    FUNC: require("./tasks/process").delete
+  },
+  restart: {
+    description: "RESTARTING|RESTARTS| GALLEON INSTANCE",
+    category: "process management",
+    FUNC: require("./tasks/process").restart
+  },
+  status: {
+    description: "SHOWING|SHOWS| PROCESS STATUS",
+    category: "process management",
+    FUNC: require("./tasks/status")
+  },
+  startup: {
+    description: "GENERATING|GENERATES| AN OS DEPENDENT STARTUP SCRIPT",
+    category: "process management",
+    FUNC: require("./tasks/process").startup
+  },
+  add: {
+    description: "ADDING|ADDS| A NEW USER",
+    category: "user management",
+    FUNC: require("./tasks/add")
+  },
+  list: {
+    description: "LISTING|LISTS| USERS",
+    category: "user management",
+    FUNC: require("./tasks/list")
+  },
+  changepass: {
+    description: "CHANGING|CHANGES| USER PASSWORD",
+    category: "user management",
+    FUNC: require("./tasks/changePassword")
+  },
+  remove: {
+    description: "REMOVING|REMOVES| USER",
+    category: "user management",
+    FUNC: require("./tasks/remove")
+  },
+  install: {
+    description: "INSTALLING|INSTALLS| MODULES",
+    category: "modules",
+    FUNC: require("./tasks/install")
+  },
+  config: {
+    description: "CONFIGURING|CONFIGURES| A SETTING IN A GIVEN MODULE",
+    category: "modules",
+    FUNC: require("./tasks/config")
+  },
+  clean: {
+    description: "CLEANING|CLEANS| UNUSED/UNLINKED FILES (ATTACHMENTS OR RAW) BASED ON INDIVIDUAL EMAIL STATUS",
+    category: "maintenance",
+    FUNC: require("./tasks/clean")
+  },
+  restore: {
+    description: "RESTORING|RESTORES| RAW EMAILS TO DATABASE",
+    category: "maintenance",
+    FUNC: require("./tasks/restore")
+  }
 }
 
 function verbalize(string, isVerb) {
-    return (isVerb) ? string.split('|')[0] + string.split('|')[2] : string.split('|')[1] + string.split('|')[2]
+  return (isVerb) ? string.split('|')[0] + string.split('|')[2] : string.split('|')[1] + string.split('|')[2]
 }
 
 function pad(width, string, padding) {
@@ -102,36 +102,36 @@ function pad(width, string, padding) {
 }
 
 function capitalizeFirstLetter(string) {
-    return string.replace(/\b./g, function(m){ return m.toUpperCase(); });
+  return string.replace(/\b./g, function (m) { return m.toUpperCase(); });
 }
 
 if (
-    (argv._[0]) &&
-    (tasks[argv._[0].toLowerCase()] !== undefined) &&
-    (argv._[0].constructor === String) &&
-    (argv._[0].substring(0, 1) !== '-') &&
-    (argv._[0] !== 'help') &&
-    (tasks[argv._[0].toLowerCase()].FUNC.constructor === Function)
+  (argv._[0]) &&
+  (tasks[argv._[0].toLowerCase()] !== undefined) &&
+  (argv._[0].constructor === String) &&
+  (argv._[0].substring(0, 1) !== '-') &&
+  (argv._[0] !== 'help') &&
+  (tasks[argv._[0].toLowerCase()].FUNC.constructor === Function)
 ) {
-    console.log("TASK INITIATED:".blue, verbalize(tasks[argv._[0].toLowerCase()].description, true) + " ...".blue);
-    tasks[argv._[0].toLowerCase()].FUNC(Galleon, argv);
+  console.log("TASK INITIATED:".blue, verbalize(tasks[argv._[0].toLowerCase()].description, true) + " ...".blue);
+  tasks[argv._[0].toLowerCase()].FUNC(Galleon, argv);
 } else if ((argv._[0] === '--help') || (argv._[0] === '-h') || (argv._[0] === 'help')) {
-    var categories = new Object;
-    // Sort tasks into their categories
-    _.forEach(tasks, function(task, command) {
-		if(!categories[task.category]) categories[task.category] = new Array;
-        categories[task.category].push({ command: command, get: task})
-    })
+  var categories = new Object;
+  // Sort tasks into their categories
+  _.forEach(tasks, function (task, command) {
+    if (!categories[task.category]) categories[task.category] = new Array;
+    categories[task.category].push({ command: command, get: task })
+  })
 
-	_.forEach(categories, function(tasks, category) {
-		herb.marker({ color: 'dim' }).line('- -');
-		herb.group(capitalizeFirstLetter(category));
-		_.each(tasks, function(task) {
-	        herb.log(pad(7-task.command.length, task.command, ' ').cyan, "\t", "->".blue, verbalize(task.get.description, false));
-	    })
-		herb.groupEnd();
-	})
-    
+  _.forEach(categories, function (tasks, category) {
+    herb.marker({ color: 'dim' }).line('- -');
+    herb.group(capitalizeFirstLetter(category));
+    _.each(tasks, function (task) {
+      herb.log(pad(7 - task.command.length, task.command, ' ').cyan, "\t", "->".blue, verbalize(task.get.description, false));
+    })
+    herb.groupEnd();
+  })
+
 } else {
-    console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help', 'for more info.'.cyan);
+  console.log("COMMAND NOT FOUND".yellow, "\r\nType".cyan, 'galleon help', 'for more info.'.cyan);
 }
