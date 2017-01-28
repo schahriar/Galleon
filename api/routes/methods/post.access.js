@@ -18,9 +18,9 @@ module.exports = {
     }*/
 
     // Login
-    req.signIn(req, res, function (error) {
+    req.signIn(req, res, function (error, token) {
       if (error) return res.json({ error: error, success: false });
-      res.json({ success: true });
+      res.json({ success: true, token: token });
     })
   },
   logout: function (req, res) {

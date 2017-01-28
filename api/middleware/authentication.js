@@ -1,27 +1,37 @@
-var moment = require('moment');
-var bcrypt = require('bcryptjs');
-var herb = require('herb');
+const moment = require('moment');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const herb = require('herb');
 
 exports = module.exports = function (urls) {
   return function authenticator(req, res, next) {
 
     // Use a REGEX like code here
     if ((req.path !== urls.login) || req.path !== urls.logout) {
-      /// Basic cookie based authentication
-      var cookie = req.signedCookies.authentication;
-      if ((!cookie) || (cookie == '')) { // :O No cookie!
+      // Basic cookie/token based authentication
+      let token = req.signedCookies.authentication;
+      if ((!token) || (token == '') || (!token.sessionID)) {
+        try {
+          token = jwt.verify(req.headers.token || "", req.envSecret);
+        } catch (error) {
+          token = null;
+          req.getCredentials = function (callback) { callback("NOT AUTHENTICATED") };
+        }
+      } // :O No cookie!
+
+      if (!token) {
         req.getCredentials = function (callback) { callback("NOT AUTHENTICATED") }
       } else {
         req.getCredentials = function (callback) {
-          if (!cookie.sessionID) return res.redirect(urls.login);
+          if (!token.sessionID) return res.redirect(urls.login);
           //
           /// Do a ton of cool security stuff here
           //
-          req.database.models.sessions.findOne({ sessionID: cookie.sessionID }).exec(function (error, session) {
+          req.database.models.sessions.findOne({ sessionID: token.sessionID }).exec(function (error, session) {
             if ((!session) || (!session.email)) return callback("Session Not Found");
 
             if (moment(session.stamp.expires).isBefore(moment())) {
-              req.database.models.sessions.destroy({ sessionID: cookie.sessionID }, function (error) {
+              req.database.models.sessions.destroy({ sessionID: token.sessionID }, function (error) {
                 // Should do better logging here
                 // An invalid sessionID would either
                 //   mean a broken secret key or
@@ -75,8 +85,11 @@ exports = module.exports = function (urls) {
               }, function (error, session) {
                 if (error) return callback(error);
 
-                res.cookie('authentication', { sessionID: session.sessionID, opened: opened }, { signed: true, httpOnly: true, secure: (req.protocol === 'https') });
-                return callback(error, session);
+                const payload = { sessionID: session.sessionID, opened: opened };
+                const token = jwt.sign(payload, req.envSecret);
+
+                res.cookie('authentication', payload, { signed: true, httpOnly: true, secure: (req.protocol === 'https') });
+                return callback(error, token);
               });
             })
           } else {
@@ -88,10 +101,11 @@ exports = module.exports = function (urls) {
     }
 
     req.signOut = function (req, res, callback) {
-      // If cookie does not exist then call it a success
-      if (!req.signedCookies.authentication) callback(null);
+      // If cookie/token does not exist then call it a success
+      const token = req.signedCookies.authentication || jwt.verify(req.headers.token || "", req.envSecret);
+      if (!token) callback(null);
 
-      req.database.models.sessions.destroy({ sessionID: req.signedCookies.authentication.sessionID }, function (error) {
+      req.database.models.sessions.destroy({ sessionID: token.sessionID }, function (error) {
         // Should do better logging here
         // An invalid sessionID would either
         //   mean a broken secret key or

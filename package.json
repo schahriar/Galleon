@@ -31,6 +31,7 @@
     "herb": "^2.2.6",
     "inquirer": "^3.0.1",
     "istanbul": "^0.4.5",
+    "jsonwebtoken": "^7.2.1",
     "lodash": "^3.10.1",
     "mailparser": "^0.6.1",
     "mocha": "^3.2.0",

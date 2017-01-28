@@ -29,7 +29,7 @@ module.exports = function (environment, port, connection, instance) {
   app.set("connections", connection.connections);
   app.set("galleon", instance);
   app.set("environment", environment);
-  app.set("secret", environment.secret);
+  app.set("secret", environment.secret || crypto.randomBytes(20).toString('hex'));
 
   // SSL Detection, Automatically switches between HTTP and HTTPS on start
   if (environment.ssl.use) {
@@ -68,7 +68,12 @@ module.exports = function (environment, port, connection, instance) {
   if (environment.verbose) app.use(logger('dev'));
 
   // If Environment secret is not set assign a random secret on every restart
-  app.use(cookieParser(app.get('secret') || crypto.randomBytes(20).toString('hex')));
+  app.use(cookieParser(app.get('secret')));
+  // Secret middleware
+  app.use((req, res, next) => {
+    req.envSecret = app.get('secret');
+    next();
+  });
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
