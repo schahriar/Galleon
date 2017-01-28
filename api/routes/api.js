@@ -9,29 +9,31 @@ var shortId = require('shortid');
 
 // Multipart parser for attachment uploads
 var storage = multer.diskStorage({
-	destination: function (req, file, callback) {
-		callback(null, req.environment.paths.attachments || "\tmp")
-	},
-	filename: function (req, file, callback) {
-		/* SECURITY -> Email ID Must be validated */
-		callback(null, "+" + req.param("eID") + "_" + shortId.generate())
-	}
+  destination: function (req, file, callback) {
+    callback(null, req.environment.paths.attachments || "\tmp")
+  },
+  filename: function (req, file, callback) {
+    /* SECURITY -> Email ID Must be validated */
+    callback(null, "+" + req.param("eID") + "_" + shortId.generate())
+  }
 })
 
-var upload = multer({ storage: storage, limits: {
-	fields: 20,
-	fileSize: 15000000,
-	files: 20,
-	parts: 20000,
-}})
+var upload = multer({
+  storage: storage, limits: {
+    fields: 20,
+    fileSize: 15000000,
+    files: 20,
+    parts: 20000,
+  }
+})
 
-router.use(function(req, res, next) {
-	// runs for all HTTP verbs first
-	req.getCredentials(function(error, credentials){
-		if(error) return res.status(403).json({ error: "Not Authenticated", definition: error });
-		req.credentials = credentials;
-		next();
-	});
+router.use(function (req, res, next) {
+  // runs for all HTTP verbs first
+  req.getCredentials(function (error, credentials) {
+    if (error) return res.status(403).json({ error: "Not Authenticated", definition: error });
+    req.credentials = credentials;
+    next();
+  });
 })
 
 router.get('/', require("./methods/get.emails.js"));

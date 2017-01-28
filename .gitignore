@@ -52,3 +52,4 @@ $RECYCLE.BIN/
 # Ignore Visual Studio Code settings
 .settings
 .vscode
+*.db

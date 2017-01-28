@@ -1,7 +1,7 @@
 /* -- Modules -- */
 // Essential
 var eventEmmiter = require('events').EventEmitter;
-var util         = require("util");
+var util = require("util");
 
 // Foundations
 
@@ -37,18 +37,18 @@ NO TESTS YET
 
 
 /* Start the Mailin server for Outgoing connections. */
-var Outgoing = function(port){
-	eventEmmiter.call(this);
-	
-	this.port = port;
+var Outgoing = function (port) {
+  eventEmmiter.call(this);
+
+  this.port = port;
 }
 
 util.inherits(Outgoing, eventEmmiter);
 
 Outgoing.prototype.listen = function (port) {
-	var _this = this;
-	
-    
+  var _this = this;
+
+
 };
 
 module.exports = Outgoing;

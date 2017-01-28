@@ -24,7 +24,7 @@ var _ = require('lodash')
   @return {Waterline}
  */
 
-module.exports = function bootstrap( options, cb ) {
+module.exports = function bootstrap(options, cb) {
 
   var adapters = options.adapters || {};
   var connections = options.connections || {};
@@ -34,7 +34,7 @@ module.exports = function bootstrap( options, cb ) {
     // Make sure our adapter defs have `identity` properties
     def.identity = def.identity || identity;
   });
-  
+
 
   var extendedCollections = [];
   _.each(collections, function (def, identity) {
