@@ -45,7 +45,7 @@ function createDirectoryIfNotFound() {
 }
 
 function checkDatabaseConnection(callback) {
-  askFor.database(function (answers) {
+  askFor.database().then(function (answers) {
     config.connections.storage = {
       adapter: answers.adapter,
       host: answers.host,
@@ -71,24 +71,30 @@ function checkDatabaseConnection(callback) {
     } catch (error) {
       return callback(error);
     }
-  })
+  }).catch((error) => {
+    throw error;
+  });
 }
 
 module.exports = function (Galleon) {
   async.waterfall([
     function (callback) {
-      askFor.domain(function (answer) {
+      askFor.domain().then(function (answer) {
         config.domain = answer.domain;
         callback();
-      })
+      }).catch((error) => {
+        throw error;
+      });
     },
     function (callback) {
       createDirectoryIfNotFound(defaultDirectory);
-      askFor.directory(function (answers) {
+      askFor.directory().then(function (answers) {
         if (answers.perform.indexOf('attachments') + 1) config.paths.attachments = answers.location_attachments || createDirectoryIfNotFound(defaultDirectory, 'attachments/');
         if (answers.perform.indexOf('raw') + 1) config.paths.raw = answers.location_raw || createDirectoryIfNotFound(defaultDirectory, 'raw/');
         callback();
-      })
+      }).catch((error) => {
+        throw error;
+      });
     },
     checkDatabaseConnection
   ], function (error, result) {

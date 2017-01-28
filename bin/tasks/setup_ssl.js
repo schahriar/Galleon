@@ -36,7 +36,7 @@ var config = _.defaults(configFile.getSync(), {
 var defaultDirectory = path.resolve(osenv.home(), '.galleon/');
 
 module.exports = function (callback) {
-  askFor.ssl(function (answers) {
+  askFor.ssl().then(function (answers) {
     if (answers.shouldUseSSL) {
       config.ssl = {
         use: true,
@@ -66,5 +66,7 @@ module.exports = function (callback) {
       process.exit(0);
     });
 
-  })
+  }).catch((error) => {
+    throw error;
+  });
 }

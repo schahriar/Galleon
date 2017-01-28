@@ -21,15 +21,15 @@ function validateFile(input) {
 }
 
 module.exports = {
-  domain: function (callback) {
-    inquirer.prompt([{
+  domain: function () {
+    return inquirer.prompt([{
       type: "input",
       name: "domain",
       message: "Enter your FQDN (fully qualified domain name) -> IMPORTANT:"
-    }], callback);
+    }]);
   },
-  directory: function (callback) {
-    inquirer.prompt([{
+  directory: function () {
+    return inquirer.prompt([{
       type: "confirm",
       name: "auto",
       message: "Should Galleon automatically create and set permissions of required directories?",
@@ -62,10 +62,10 @@ module.exports = {
         return !answers.auto && (answers.perform.indexOf('raw') + 1);
       },
       validate: validateDirectory
-    }], callback)
+    }]);
   },
-  ssl: function (callback) {
-    inquirer.prompt([{
+  ssl: function () {
+    return inquirer.prompt([{
       type: "confirm",
       name: "shouldUseSSL",
       message: "Do you want to setup SSL Certificates with Galleon? (You can use the same cert/key for both options | Certificates and Keys must be stored locally)",
@@ -133,10 +133,10 @@ module.exports = {
         return answers.shouldUseSSL && (answers.sslOpt.indexOf('ssl-api') + 1);
       },
       validate: validateFile
-    },], callback)
+    },]);
   },
-  database: function (callback) {
-    inquirer.prompt([{
+  database: function () {
+    return inquirer.prompt([{
       type: "list",
       name: "adapter",
       message: "Select Database Adapter",
@@ -184,6 +184,6 @@ module.exports = {
       type: "password",
       name: "password",
       message: "Enter password:",
-    }], callback);
+    }]);
   }
 }
