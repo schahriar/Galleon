@@ -28,7 +28,7 @@ var env = {
     });
   },
   get: function (callback) {
-    if (typeof callback === 'function') callback = _.noop();
+    if (typeof callback !== 'function') callback = _.noop();
     fs.exists(defaultPath, function (exists) {
       if (!exists) return callback("CONFIG FILE NOT FOUND!");
       fs.readFile(defaultPath, 'utf8', function (error, data) {
